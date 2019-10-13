@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-md-12">
             <h1 class="page-header">Hello World!</h1>
-            <a href="/logout">Log out</a>
+            <a href="/logout">Sign out</a>
         </div>
     </div>
 </div>

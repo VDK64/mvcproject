@@ -39,8 +39,8 @@
                     <input type="password" class="form-control" id="password" placeholder="Password"
                            name="password">
                 </div>
-                <button type="submit" class="btn btn-default">Log in</button>
-                <a href = "/register">Register</a>
+                <button type="submit" class="btn btn-primary">Sign in</button>
+                <a href = "/register" style="margin-left: 30px">Sign up</a>
             </form>
         </div>
     </div>
