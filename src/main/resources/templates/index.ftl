@@ -15,6 +15,9 @@
         <div class="col-md-12">
             <h1 class="page-header">Hello World!</h1>
             <a href="/logout">Sign out</a>
+            <#if admin??>
+                 <a href="/logout" style="margin-left:25px">Admin functions</a>
+            </#if>
         </div>
     </div>
 </div>

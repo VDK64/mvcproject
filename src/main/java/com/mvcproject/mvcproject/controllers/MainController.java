@@ -1,7 +1,10 @@
 package com.mvcproject.mvcproject.controllers;
 
+import com.mvcproject.mvcproject.entities.Role;
+import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +20,9 @@ public class MainController {
     private UserService userService;
 
     @RequestMapping("/")
-    public String getMainPage() {
+    public String getMainPage(@AuthenticationPrincipal User user, Model model) {
+        if (user.getAuthorities().contains(Role.ADMIN))
+            model.addAttribute("admin", true);
         return "index";
     }
 
