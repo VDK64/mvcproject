@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class MvcprojectApplicationTests {
     @Autowired
     private UserRepo userRepo;
-    private String request = ""
+    private String request = "";
 
     @Test
     public void contextLoads() {
