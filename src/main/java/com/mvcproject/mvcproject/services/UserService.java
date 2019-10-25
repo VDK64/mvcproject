@@ -29,7 +29,7 @@ public class UserService implements UserDetailsService {
                 .username("user")
                 .firstname("Ivan")
                 .lastname("Petrov")
-                .password(new BCryptPasswordEncoder().encode("pass"))
+                .password(new BCryptPasswordEncoder().encode("p"))
                 .authorities(Stream.of(Role.USER, Role.ADMIN).collect(Collectors.toSet()))
                 .accountNonExpired(true)
                 .accountNonLocked(true)
@@ -58,6 +58,10 @@ public class UserService implements UserDetailsService {
                 .build());
         checkUserExsist(user, source);
         userRepo.save(user);
+    }
+
+    public Iterable<User> getAllUsers() {
+        return userRepo.findAll();
     }
 
     @Override

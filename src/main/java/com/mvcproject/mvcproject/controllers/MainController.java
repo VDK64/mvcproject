@@ -4,6 +4,7 @@ import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,10 +45,5 @@ public class MainController {
         userService.createUser(firstname, lastname, username, password, "register");
         attributes.addFlashAttribute("ok", "true");
         return "redirect:/login";
-    }
-
-    @GetMapping("/userlist")
-    public String getList() {
-        return "userlist";
     }
 }
