@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-//@RequestMapping("/admin")
+@RequestMapping("/admin")
 public class AdminController {
     @Autowired
     private UserService userService;
@@ -25,9 +25,9 @@ public class AdminController {
         return "userList";
     }
 
-    @GetMapping("admin/{user}")
+    @GetMapping("/{user}")
     public String editUser(@PathVariable User user) {
-        return "redirect:/userList";
+        return "redirect:/admin/userList";
     }
 
 }
