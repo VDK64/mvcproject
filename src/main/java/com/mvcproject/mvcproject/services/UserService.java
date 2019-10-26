@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,6 +60,20 @@ public class UserService implements UserDetailsService {
                 .enabled(true)
                 .build());
         checkUserExsist(user, source);
+        userRepo.save(user);
+    }
+
+    public void changeUser(User user, String firstname, String lastname, String username, String password,
+                           Map<String, String> authorities) {
+        Set<Role> roles = new LinkedHashSet<>();
+        authorities.forEach((s1, s2) -> {
+            if (s1.equals("authorities")) { roles.add(Role.valueOf(s2)); }
+        });
+        user.setFirstname(firstname);
+        user.setLastname(lastname);
+        user.setUsername(username);
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        user.setAuthorities(roles);
         userRepo.save(user);
     }
 
