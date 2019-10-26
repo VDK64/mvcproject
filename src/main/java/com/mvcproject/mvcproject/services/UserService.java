@@ -64,7 +64,8 @@ public class UserService implements UserDetailsService {
     }
 
     public void changeUser(User user, String firstname, String lastname, String username, String password,
-                           Map<String, String> authorities) {
+                           Map<String, String> authorities, String source) {
+        checkUserExsist(user, source);
         Set<Role> roles = new LinkedHashSet<>();
         authorities.forEach((s1, s2) -> {
             if (s1.equals("authorities")) { roles.add(Role.valueOf(s2)); }

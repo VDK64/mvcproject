@@ -41,7 +41,7 @@ public class AdminController {
     public String editUser(@PathVariable User user, @RequestParam String firstname,
                            @RequestParam String lastname, @RequestParam String username, @RequestParam String password,
                            @RequestParam Map<String, String> authorities, Model model) {
-        userService.changeUser(user, firstname, lastname, username, password, authorities);
+        userService.changeUser(user, firstname, lastname, username, password, authorities, "userList");
         Iterable<User> allUsers = userService.getAllUsers();
         model.addAttribute("users", allUsers);
         model.addAttribute("username", user.getUsername());
