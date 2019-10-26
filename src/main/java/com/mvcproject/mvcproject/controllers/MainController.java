@@ -23,6 +23,7 @@ public class MainController {
     public String getMainPage(@AuthenticationPrincipal User user, Model model) {
         if (user.getAuthorities().contains(Role.ADMIN))
             model.addAttribute("admin", true);
+        model.addAttribute("username", user.getUsername());
         return "index";
     }
 

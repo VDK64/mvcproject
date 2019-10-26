@@ -6,6 +6,7 @@ import com.mvcproject.mvcproject.services.UserService;
 import org.dom4j.rule.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +22,10 @@ public class AdminController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/userList")
-    public String getList(Model model) {
+    public String getList(@AuthenticationPrincipal User user, Model model) {
         Iterable<User> allUsers = userService.getAllUsers();
         model.addAttribute("users", allUsers);
+        model.addAttribute("username", user.getUsername());
         return "userList";
     }
 
@@ -31,6 +33,7 @@ public class AdminController {
     public String getEditUser(@PathVariable User user, Model model) {
         model.addAttribute("user", user);
         model.addAttribute("authorities", Role.values());
+        model.addAttribute("username", user.getUsername());
         return "editUser";
     }
 
@@ -41,6 +44,7 @@ public class AdminController {
         userService.changeUser(user, firstname, lastname, username, password, authorities);
         Iterable<User> allUsers = userService.getAllUsers();
         model.addAttribute("users", allUsers);
+        model.addAttribute("username", user.getUsername());
         return "userList";
     }
 }
