@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Map;
 import java.util.Set;
@@ -41,7 +42,7 @@ public class AdminController {
     public String editUser(@PathVariable User user, @RequestParam String firstname,
                            @RequestParam String lastname, @RequestParam String username, @RequestParam String password,
                            @RequestParam Map<String, String> authorities, Model model) {
-        userService.changeUser(user, firstname, lastname, username, password, authorities, "userList");
+        userService.changeUser(user, firstname, lastname, username, password, authorities, new ModelAndView("editUser"));
         Iterable<User> allUsers = userService.getAllUsers();
         model.addAttribute("users", allUsers);
         model.addAttribute("username", user.getUsername());

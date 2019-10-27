@@ -45,13 +45,6 @@
   </nav>
 
   <div class="container" style="margin-top: 50px">
-
-    <#if error??>
-    <div class="alert alert-danger" role="alert">
-    Username is already exist! Try another!
-  </div>
-  </#if>
-
     <table class="table">
       <#assign i=0>
         <thead><b>

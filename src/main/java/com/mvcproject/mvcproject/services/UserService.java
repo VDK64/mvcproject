@@ -12,12 +12,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,12 +39,15 @@ public class UserService implements UserDetailsService {
                 .build());
     }
 
-    private void checkUserExsist(User user, String source) {
+    private void checkUserExsist(User user, ModelAndView model) {
         userRepo.findByUsername(user.getUsername()).
-                ifPresent( user1 -> { throw new CustomServerException(ServerErrors.ALREADY_EXIST, source); });
+                ifPresent( user1 -> {
+                    if (!user1.getId().equals(user.getId()))
+                    throw new CustomServerException(ServerErrors.ALREADY_EXIST, model);
+                });
     }
 
-    public void createUser(String firstname, String lastname, String username, String password, String source)
+    public void createUser(String firstname, String lastname, String username, String password, ModelAndView model)
             throws CustomServerException {
         User user = (User.builder()
                 .username(username)
@@ -59,23 +60,43 @@ public class UserService implements UserDetailsService {
                 .credentialsNonExpired(true)
                 .enabled(true)
                 .build());
-        checkUserExsist(user, source);
+        checkUserExsist(user, model);
         userRepo.save(user);
     }
 
     public void changeUser(User user, String firstname, String lastname, String username, String password,
-                           Map<String, String> authorities, String source) {
-        checkUserExsist(user, source);
+                           Map<String, String> authorities, ModelAndView model) {
+        Map<String, String> map = checkUserField(firstname, lastname, username, password, user);
+        model.addObject("username", user.getUsername());
+        model.addObject("authorities", Role.values());
         Set<Role> roles = new LinkedHashSet<>();
         authorities.forEach((s1, s2) -> {
-            if (s1.equals("authorities")) { roles.add(Role.valueOf(s2)); }
+            if (s1.contains("authority")) { roles.add(Role.valueOf(s2)); }
         });
-        user.setFirstname(firstname);
-        user.setLastname(lastname);
-        user.setUsername(username);
-        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        user.setFirstname(map.get("firstname"));
+        user.setLastname(map.get("lastname"));
+        user.setUsername(map.get("username"));
+        checkUserExsist(user, model);
+        user.setPassword(map.get("password"));
         user.setAuthorities(roles);
         userRepo.save(user);
+    }
+
+    private Map<String, String> checkUserField(String firstname, String lastname, String username, String password, User user) {
+        Map<String, String> res = new LinkedHashMap<>();
+        if (firstname == null || firstname.equals("")) {
+            res.put("firstname", user.getFirstname());
+        } else { res.put("firstname", firstname); }
+        if (lastname == null || lastname.equals("")) {
+            res.put("lastname", user.getLastname());
+        } else { res.put("lastname", lastname); }
+        if (username == null || username.equals("")) {
+            res.put("username", user.getUsername());
+        } else { res.put("username", username); }
+        if (password == null || password.equals("")) {
+            res.put("password", user.getPassword());
+        } else { res.put("password", new BCryptPasswordEncoder().encode(password)); }
+        return res;
     }
 
     public Iterable<User> getAllUsers() {
