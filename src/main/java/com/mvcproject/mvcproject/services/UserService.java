@@ -1,5 +1,6 @@
 package com.mvcproject.mvcproject.services;
 
+import com.mvcproject.mvcproject.email.EmailService;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.CustomServerException;
@@ -7,11 +8,13 @@ import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
@@ -23,6 +26,12 @@ import java.util.stream.Stream;
 public class UserService implements UserDetailsService {
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private EmailService emailService;
+    @Value("${project.name}")
+    private String subject;
+    @Value("${email.str}")
+    private String msg;
 
     @PostConstruct
     public void init() {
@@ -31,6 +40,8 @@ public class UserService implements UserDetailsService {
                 .firstname("Ivan")
                 .lastname("Petrov")
                 .password(new BCryptPasswordEncoder().encode("p"))
+                .email("user@mail.ru")
+                .activationCode(null)
                 .authorities(Stream.of(Role.USER, Role.ADMIN).collect(Collectors.toSet()))
                 .accountNonExpired(true)
                 .accountNonLocked(true)
@@ -47,13 +58,16 @@ public class UserService implements UserDetailsService {
                 });
     }
 
-    public void createUser(String firstname, String lastname, String username, String password, ModelAndView model)
+    public void createUser(String firstname, String lastname, String username, String password, String email,
+                           ModelAndView model)
             throws CustomServerException {
         User user = (User.builder()
                 .username(username)
                 .firstname(firstname)
                 .lastname(lastname)
                 .password(new BCryptPasswordEncoder().encode(password))
+                .email(email)
+                .activationCode(UUID.randomUUID().toString())
                 .authorities(Collections.singleton(Role.USER))
                 .accountNonExpired(true)
                 .accountNonLocked(true)
@@ -62,6 +76,12 @@ public class UserService implements UserDetailsService {
                 .build());
         checkUserExsist(user, model);
         userRepo.save(user);
+        sendMail(user);
+    }
+
+    private void sendMail(User user) {
+        emailService.sendSimpleMessage("dkvoznyuk@yandex.ru", subject, String.format(msg, user.getUsername(),
+                user.getActivationCode()));
     }
 
     public void changeUser(User user, String firstname, String lastname, String username, String password,
@@ -107,5 +127,21 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(@NonNull String username) {
         return userRepo.findByUsername(username).orElseThrow( () -> {
             throw new UsernameNotFoundException("user " + username + " was not found!");} );
+    }
+
+    public int confirmEmail(String code, Model model) {
+        User user = userRepo.findByActivationCode(code).orElse(null);
+        if (user != null && user.getActivationCode().equals(code)) {
+            model.addAttribute("username", user.getUsername());
+            if (user.getAuthorities().contains(Role.ADMIN)) {
+                model.addAttribute("admin", "true");
+            }
+            user.setActivationCode(null);
+            userRepo.save(user);
+            return 1;
+        } else {
+            model.addAttribute("username", "unknown");
+            return 2;
+        }
     }
 }

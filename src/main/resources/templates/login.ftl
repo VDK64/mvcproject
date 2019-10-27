@@ -28,7 +28,7 @@
                 <div class="alert alert-danger" role="alert">Invalid Username or Password!</div>
               </#if>
               <#if ok??>
-                <div class="alert alert-success" role="alert">You've been register successfully.</div>
+                <div class="alert alert-success" role="alert">You've been register successfully. Please, check your mailbox!</div>
               </#if>
               <form method="post">
                 <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">

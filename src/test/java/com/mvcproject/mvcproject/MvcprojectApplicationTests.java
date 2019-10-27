@@ -1,5 +1,7 @@
 package com.mvcproject.mvcproject;
 
+import com.mvcproject.mvcproject.email.EmailService;
+import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,16 +21,16 @@ import java.util.Arrays;
 public class MvcprojectApplicationTests {
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private EmailService emailService;
     private String request = "";
 
     @Test
     public void contextLoads() {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON_UTF8));
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        BigInteger modulus = new BigInteger("F56D...", 16);
-        BigInteger pubExp = new BigInteger("010001", 16);
+        User user = userRepo.findByUsername("user").orElse(null);
+        String str = String.format("Hello, %s! To confirm your email, please, follow this link: " +
+                        "http://localhost:8090/email/activate", user.getUsername(), user.getActivationCode());
+        emailService.sendSimpleMessage("dkvoznyuk@yandex.ru", "FriendBets", str);
     }
 
 }

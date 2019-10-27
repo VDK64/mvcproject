@@ -39,6 +39,10 @@
                 <label for="password">password</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="password">
               </div>
+              <div class="form-group">
+                <label for="password">password</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="example@example.com">
+              </div>
               <button type="submit" class="btn btn-primary">Registration</button>
               <a href="/login" style="margin-left: 30px">Sign in</a>
               <#if error??>

@@ -4,13 +4,11 @@ import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -42,9 +40,19 @@ public class MainController {
 
     @PostMapping("/register")
     public String registerUser(@RequestParam String firstname, @RequestParam String lastname,
-                               @RequestParam String username, @RequestParam String password, RedirectAttributes attributes) {
-        userService.createUser(firstname, lastname, username, password, new ModelAndView("register"));
+                               @RequestParam String username, @RequestParam String password, @RequestParam String email,
+                               RedirectAttributes attributes) {
+        userService.createUser(firstname, lastname, username, password, email, new ModelAndView("register"));
         attributes.addFlashAttribute("ok", "true");
         return "redirect:/login";
     }
+
+    @GetMapping("email/activate/{code}")
+    public String emailActivate(@PathVariable String code, Model model, @Value("${success.confirm}") String ok,
+                                @Value("${wrong.confirm}") String wrongConfirm) {
+        int res = userService.confirmEmail(code, model);
+        if (res == 1) { model.addAttribute("msg", ok); } else { model.addAttribute("msg", wrongConfirm); }
+        return "emailConfirm";
+    }
+
 }
