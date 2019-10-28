@@ -3,6 +3,7 @@ package com.mvcproject.mvcproject.controllers;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.services.UserService;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,6 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
 @Controller
 public class MainController {
@@ -38,7 +42,8 @@ public class MainController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@RequestParam String firstname, @RequestParam String lastname,
+    public String registerUser(@RequestParam String firstname,
+                               @RequestParam String lastname,
                                @RequestParam String username, @RequestParam String password, @RequestParam String email,
                                RedirectAttributes attributes) {
         userService.createUser(firstname, lastname, username, password, email, new ModelAndView("register"));

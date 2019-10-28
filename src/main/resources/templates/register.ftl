@@ -40,7 +40,7 @@
                 <input type="password" class="form-control" id="password" name="password" placeholder="password">
               </div>
               <div class="form-group">
-                <label for="password">password</label>
+                <label for="email">email</label>
                 <input type="email" class="form-control" id="email" name="email" placeholder="example@example.com">
               </div>
               <button type="submit" class="btn btn-primary">Registration</button>

@@ -34,10 +34,10 @@ public class UserService implements UserDetailsService {
     @Autowired
     private DataBaseCreate dbCreate;
 
-    @PostConstruct
-    public void init() {
-        dbCreate.formDataBase();
-    }
+//    @PostConstruct
+//    public void init() {
+//        dbCreate.formDataBase();
+//    }
 
     private void checkUserExsist(User user, ModelAndView model) {
         userRepo.findByUsername(user.getUsername()).
@@ -69,7 +69,7 @@ public class UserService implements UserDetailsService {
     }
 
     public static void ifAdmin(Model model, User user) {
-        if (user.getAuthorities().contains(Role.valueOf("ADMIN"))) { model.addAttribute("admin", true); }
+        if (user.getAuthorities().contains(Role.ADMIN)) { model.addAttribute("admin", true); }
     }
 
     private void sendMail(User user) {
