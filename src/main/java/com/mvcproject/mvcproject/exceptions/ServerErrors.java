@@ -7,7 +7,7 @@ public class ServerErrors {
     public static final String WRONG_LASTNAME = "Wrong last name! Use only letters. Last name have a range %d - %d";
     public static final String LASTNAME_NULL = "Last name can not be empty!";
     public static final String WRONG_PASSWORD = "Wrong password! Password must consist from letters" +
-            "(one upper case), min. one symbol (-_!@#$%^&*+=) and min. one number.";
+            "(one upper case), min. one symbol (-_!@#$%^&*+=) and min. one number. Password range: %d - %d";
     public static final String PASSWORD_NULL = "Password can not be null!";
     public static final String WRONG_EMAIL = "Wrong email. Please write an actual email.";
     public static final String EMAIL_NULL = "Email can not be null.";

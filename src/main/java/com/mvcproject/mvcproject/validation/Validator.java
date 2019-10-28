@@ -17,6 +17,15 @@ public class Validator {
     private final int maxPasswordLength = 15;
     private final int minPasswordLength = 4;
 
+    public void validate(String firstname, String lastname, String username, String password, String email,
+                         ModelAndView model) {
+        checkFirstname(firstname, model);
+        checkLastname(lastname, model);
+        checkUsername(username, model);
+        checkPassword(password, model);
+        checkEmail(email, model);
+    }
+
     public void checkFirstname(String firstname, ModelAndView model) {
         if (StringUtil.emptyToNull(firstname) == null) {
             throw new CustomServerException(ServerErrors.FIRSTNAME_NULL,
@@ -56,7 +65,7 @@ public class Validator {
             throw new CustomServerException(String.format(ServerErrors.WRONG_USERNAME, minNameLength, maxNameLength),
                     model);
         }
-        if (!username.matches(regexName)) {
+        if (!username.matches(regexUsername)) {
             throw new CustomServerException(String.format(ServerErrors.WRONG_USERNAME, minNameLength, maxNameLength),
                     model);
         }
@@ -68,11 +77,11 @@ public class Validator {
                     model);
         }
         if (password.length() > maxNameLength) {
-            throw new CustomServerException(String.format(ServerErrors.WRONG_USERNAME, minPasswordLength,
+            throw new CustomServerException(String.format(ServerErrors.WRONG_PASSWORD, minPasswordLength,
                     maxPasswordLength), model);
         }
-        if (!password.matches(regexName)) {
-            throw new CustomServerException(String.format(ServerErrors.WRONG_USERNAME, minPasswordLength,
+        if (!password.matches(regexPassword)) {
+            throw new CustomServerException(String.format(ServerErrors.WRONG_PASSWORD, minPasswordLength,
                     maxPasswordLength), model);
         }
     }
@@ -85,7 +94,7 @@ public class Validator {
         if (email.length() > maxNameLength || email.length() < minPasswordLength) {
             throw new CustomServerException(ServerErrors.WRONG_EMAIL, model);
         }
-        if (!email.matches(regexName)) {
+        if (!email.matches(regexEmail)) {
             throw new CustomServerException(ServerErrors.WRONG_EMAIL, model);
         }
     }
