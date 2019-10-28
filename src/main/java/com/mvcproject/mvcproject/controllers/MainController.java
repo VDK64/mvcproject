@@ -33,10 +33,10 @@ public class MainController {
         return "login";
     }
 
-    @RequestMapping("/upload")
-    public String uploadRedirect() {
-        return "redirect:/settings";
-    }
+//    @RequestMapping("/upload")
+//    public String uploadRedirect() {
+//        return "redirect:/settings";
+//    }
 
     @GetMapping("/register")
     public String register() {

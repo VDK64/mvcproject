@@ -53,9 +53,9 @@
     <div class="row">
       <div class="col-md-12" style="margin-top: 10px">
         <#if user.avatar??>
-          <img src="${user.avatar}" class="img-thumbnail">
+          <img src="/img/${user.id}/${user.avatar}" class="img-thumbnail">
           <#else>
-            <img src="/home/vdk/Загрузки/avatar.png" class="img-thumbnail" style="width:150px">
+            <img src="/img/avatar.png" class="img-thumbnail" style="width:150px">
         </#if>
       </div>
     </div>
