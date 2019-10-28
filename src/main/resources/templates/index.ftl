@@ -23,6 +23,9 @@
             <a class="nav-link" href="/admin/userList">Admin Panel</a>
           </li>
         </#if>
+        <li class="nav-item">
+          <a class="nav-link" href="/settings">Settings</a>
+        </li>
       </ul>
     </div>
 
@@ -37,7 +40,7 @@
     <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link"><font color="#dcf2ee">${username}</font></a>
+          <a class="nav-link"><font color="#dcf2ee">${user.username}</font></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/logout">Sign out</a>
@@ -46,10 +49,14 @@
     </div>
   </nav>
 
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
       <div class="col-md-12" style="margin-top: 10px">
-        <h1 class="page-header">Hello World!</h1>
+        <#if user.avatar??>
+          <img src="${user.avatar}" class="img-thumbnail">
+          <#else>
+            <img src="/home/vdk/Загрузки/avatar.png" class="img-thumbnail" style="width:150px">
+        </#if>
       </div>
     </div>
   </div>

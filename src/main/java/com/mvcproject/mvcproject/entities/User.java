@@ -29,6 +29,7 @@ public class User implements UserDetails {
     private String username;
     private String email;
     private String activationCode;
+    private String avatar;
     @ElementCollection(fetch = FetchType.EAGER, targetClass = Role.class)
     @CollectionTable(name = "roleAuthorities", joinColumns = @JoinColumn(name = "authorities_id"))
     @Column(name = "authorities", nullable = false)

@@ -22,6 +22,9 @@
         <li class="nav-item active">
           <a class="nav-link" href="/admin/userList">Admin Panel</a>
         </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="/settings">Settings</a>
+        </li>
       </ul>
     </div>
     <div class="mx-auto order-0">
