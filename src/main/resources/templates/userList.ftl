@@ -22,7 +22,7 @@
         <li class="nav-item active">
           <a class="nav-link" href="/admin/userList">Admin Panel</a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="/settings">Settings</a>
         </li>
       </ul>

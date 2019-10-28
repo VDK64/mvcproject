@@ -28,6 +28,7 @@ public class AdminController {
         return "userList";
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{user}")
     public String getEditUser(@PathVariable User user, Model model) {
         model.addAttribute("user", user);
@@ -36,6 +37,7 @@ public class AdminController {
         return "editUser";
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/{user}")
     public String editUser(@PathVariable User user, @RequestParam String firstname,
                            @RequestParam String lastname, @RequestParam String username, @RequestParam String password,

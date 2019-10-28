@@ -3,6 +3,7 @@ package com.mvcproject.mvcproject.controllers;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.services.SettingsService;
+import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -27,13 +28,13 @@ public class SettingsController {
     @GetMapping
     public String getSettings(@AuthenticationPrincipal User user, Model model) {
         model.addAttribute("user", user);
+        UserService.ifAdmin(model, user);
         return "settings";
     }
 
     @PostMapping
     public String setSettings(@AuthenticationPrincipal User user, Model model,
                               @RequestParam("file") MultipartFile file) throws IOException {
-        System.out.println();
         settingsService.saveFile(file, user);
         model.addAttribute("user", user);
         return "settings";

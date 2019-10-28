@@ -19,8 +19,7 @@ public class MainController {
 
     @RequestMapping("/")
     public String getMainPage(@AuthenticationPrincipal User user, Model model) {
-        if (user.getAuthorities().contains(Role.ADMIN))
-            model.addAttribute("admin", true);
+        UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         return "index";
     }
@@ -32,11 +31,6 @@ public class MainController {
         model.addAttribute("logout", logout != null);
         return "login";
     }
-
-//    @RequestMapping("/upload")
-//    public String uploadRedirect() {
-//        return "redirect:/settings";
-//    }
 
     @GetMapping("/register")
     public String register() {
