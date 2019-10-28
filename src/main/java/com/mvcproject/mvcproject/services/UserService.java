@@ -1,5 +1,6 @@
 package com.mvcproject.mvcproject.services;
 
+import com.mvcproject.mvcproject.data.DataBaseCreate;
 import com.mvcproject.mvcproject.email.EmailService;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
@@ -32,22 +33,12 @@ public class UserService implements UserDetailsService {
     private String subject;
     @Value("${email.str}")
     private String msg;
+    @Autowired
+    private DataBaseCreate dbCreate;
 
     @PostConstruct
     public void init() {
-        userRepo.save(User.builder()
-                .username("user")
-                .firstname("Ivan")
-                .lastname("Petrov")
-                .password(new BCryptPasswordEncoder().encode("p"))
-                .email("user@mail.ru")
-                .activationCode(null)
-                .authorities(Stream.of(Role.USER, Role.ADMIN).collect(Collectors.toSet()))
-                .accountNonExpired(true)
-                .accountNonLocked(true)
-                .credentialsNonExpired(true)
-                .enabled(true)
-                .build());
+        dbCreate.formDataBase();
     }
 
     private void checkUserExsist(User user, ModelAndView model) {
