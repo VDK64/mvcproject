@@ -14,6 +14,7 @@ import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class CustomExceptionHandler {
+
     @ExceptionHandler(CustomServerException.class)
     public ModelAndView handleServerErrors(CustomServerException serverExceptions) {
         ModelAndView model = serverExceptions.getModel();

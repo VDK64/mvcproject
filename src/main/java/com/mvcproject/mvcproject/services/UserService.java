@@ -7,6 +7,7 @@ import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.CustomServerException;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import com.mvcproject.mvcproject.repositories.UserRepo;
+import com.mvcproject.mvcproject.validation.Validator;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,11 +34,13 @@ public class UserService implements UserDetailsService {
     private String msg;
     @Autowired
     private DataBaseCreate dbCreate;
+    @Autowired
+    Validator validator;
 
-//    @PostConstruct
-//    public void init() {
-//        dbCreate.formDataBase();
-//    }
+    @PostConstruct
+    public void init() {
+        dbCreate.formDataBase();
+    }
 
     private void checkUserExsist(User user, ModelAndView model) {
         userRepo.findByUsername(user.getUsername()).
@@ -48,8 +51,8 @@ public class UserService implements UserDetailsService {
     }
 
     public void createUser(String firstname, String lastname, String username, String password, String email,
-                           ModelAndView model)
-            throws CustomServerException {
+                           ModelAndView model) {
+        validator.validate(firstname, lastname, username, password, email, model);
         User user = (User.builder()
                 .username(username)
                 .firstname(firstname)

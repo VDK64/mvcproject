@@ -26,7 +26,7 @@ public class Validator {
         checkEmail(email, model);
     }
 
-    public void checkFirstname(String firstname, ModelAndView model) {
+    private void checkFirstname(String firstname, ModelAndView model) {
         if (StringUtil.emptyToNull(firstname) == null) {
             throw new CustomServerException(ServerErrors.FIRSTNAME_NULL,
                     model);
@@ -41,7 +41,7 @@ public class Validator {
         }
     }
 
-    public void checkLastname(String lastname, ModelAndView model) {
+    private void checkLastname(String lastname, ModelAndView model) {
         if (StringUtil.emptyToNull(lastname) == null) {
             throw new CustomServerException(ServerErrors.LASTNAME_NULL,
                     model);
@@ -56,7 +56,7 @@ public class Validator {
         }
     }
 
-    public void checkUsername(String username, ModelAndView model) {
+    private void checkUsername(String username, ModelAndView model) {
         if (StringUtil.emptyToNull(username) == null) {
             throw new CustomServerException(ServerErrors.USERNAME_NULL,
                     model);
@@ -71,7 +71,7 @@ public class Validator {
         }
     }
 
-    public void checkPassword(String password, ModelAndView model) {
+    private void checkPassword(String password, ModelAndView model) {
         if (StringUtil.emptyToNull(password) == null) {
             throw new CustomServerException(ServerErrors.PASSWORD_NULL,
                     model);
@@ -86,7 +86,7 @@ public class Validator {
         }
     }
 
-    public void checkEmail(String email, ModelAndView model) {
+    private void checkEmail(String email, ModelAndView model) {
         if (StringUtil.emptyToNull(email) == null) {
             throw new CustomServerException(ServerErrors.EMAIL_NULL,
                     model);
