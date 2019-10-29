@@ -38,6 +38,7 @@ public class User implements UserDetails {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
+    @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "users")
     private Set<Dialog> dialogs = new LinkedHashSet<>();
 }

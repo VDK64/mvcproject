@@ -1,9 +1,7 @@
 package com.mvcproject.mvcproject.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -19,7 +17,9 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqMessage")
     private Long id;
     @NotNull
+    @ToString.Exclude
     private String text;
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dlg_id")
     private Dialog dialog;

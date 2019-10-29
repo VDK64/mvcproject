@@ -35,7 +35,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private DataBaseCreate dbCreate;
     @Autowired
-    Validator validator;
+    private Validator validator;
 
     @PostConstruct
     public void init() {
