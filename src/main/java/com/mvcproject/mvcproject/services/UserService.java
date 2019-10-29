@@ -39,7 +39,8 @@ public class UserService implements UserDetailsService {
 
     @PostConstruct
     public void init() {
-        dbCreate.formDataBase();
+        dbCreate.formUsersInDataBase();
+        dbCreate.formDialogsInDataBase();
     }
 
     private void checkUserExsist(User user, ModelAndView model) {

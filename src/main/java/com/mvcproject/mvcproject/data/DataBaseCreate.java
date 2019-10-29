@@ -1,12 +1,15 @@
 package com.mvcproject.mvcproject.data;
 
+import com.mvcproject.mvcproject.entities.Dialog;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
+import com.mvcproject.mvcproject.repositories.DialogRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -14,8 +17,10 @@ import java.util.stream.Stream;
 public class DataBaseCreate {
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private DialogRepo dialogRepo;
 
-    public void formDataBase() {
+    public void formUsersInDataBase() {
         userRepo.save(User.builder()
                 .username("vdk64")
                 .firstname("Дмитрий")
@@ -99,5 +104,17 @@ public class DataBaseCreate {
                 .credentialsNonExpired(true)
                 .enabled(true)
                 .build());
+    }
+
+    public void formDialogsInDataBase() {
+        User user1 = userRepo.findByUsername("vdk64").orElse(null);
+        User user2 = userRepo.findByUsername("kasha111").orElse(null);
+        User user3 = userRepo.findByUsername("petro123").orElse(null);
+        Dialog dialog1 = new Dialog(null, Stream.of(user1, user2).collect(Collectors.toSet()),
+                new ArrayList<>());
+        Dialog dialog2 = new Dialog(null, Stream.of(user1, user3).collect(Collectors.toSet()),
+                new ArrayList<>());
+        dialogRepo.save(dialog1);
+        dialogRepo.save(dialog2);
     }
 }
