@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 @Controller
 public class MessageController {
     @Autowired
-    MessageService messageService;
+    private MessageService messageService;
 
     @GetMapping()
     public String getDialogs(@AuthenticationPrincipal User user, Model model) {
