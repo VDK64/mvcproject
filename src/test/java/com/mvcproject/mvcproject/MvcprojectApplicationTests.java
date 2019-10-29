@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.util.*;
@@ -34,6 +35,7 @@ public class MvcprojectApplicationTests {
     private MessageRepo messageRepo;
 
     @Test
+//    @Transactional
     public void contextLoads() {
         Set<Role> roles = new HashSet<>(){{add(Role.USER);}};
         User user1 = new User(null, "Anton", "Alekseev", "aleks555",
@@ -47,6 +49,9 @@ public class MvcprojectApplicationTests {
         user1 = userRepo.findByUsername("aleks555").orElse(null);
         user2 = userRepo.findByUsername("Petr555").orElse(null);
         Dialog dialog1 = new Dialog(new DLGKey(user1.getId(), user2.getId()), user1, new ArrayList<>());
+        Dialog dialog2 = new Dialog(new DLGKey(user2.getId(), user1.getId()), user2, new ArrayList<>());
+        dialogRepo.save(dialog1);
+        dialogRepo.save(dialog2);
         System.out.println();
     }
 

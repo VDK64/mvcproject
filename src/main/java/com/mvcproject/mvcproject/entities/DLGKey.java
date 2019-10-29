@@ -13,8 +13,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Embeddable
 public class DLGKey implements Serializable {
-    @Column(name = "from_id", nullable = false)
+    @Column(name = "one_id", nullable = false)
     private Long fromId;
-    @Column(name = "to_id", nullable = false)
+    @Column(name = "two_id", nullable = false)
     private Long toId;
 }

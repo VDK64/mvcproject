@@ -20,8 +20,8 @@ public class Message {
     private String text;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
-            @JoinColumn(name = "from_id"),
-            @JoinColumn(name = "to_id")
+            @JoinColumn(name = "one_id"),
+            @JoinColumn(name = "two_id")
     })
     private Dialog dialog;
 
