@@ -26,6 +26,9 @@
         <li class="nav-item active">
           <a class="nav-link" href="/">Confirm Email</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/dialogs">Messages</a>
+        </li>
       </ul>
     </div>
 

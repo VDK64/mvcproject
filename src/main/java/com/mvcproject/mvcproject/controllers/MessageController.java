@@ -11,16 +11,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.StringReader;
 import java.util.Set;
 import java.util.stream.Stream;
 
-@RequestMapping("/dialogs")
 @Controller
 public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    @GetMapping()
+    @RequestMapping("/dialogs")
     public String getDialogs(@AuthenticationPrincipal User user, Model model) {
         Set<UserDtoResponse> response = messageService.getDialogs(user.getId());
         UserService.ifAdmin(model, user);
@@ -30,5 +30,11 @@ public class MessageController {
         return "dialogs";
     }
 
+    @RequestMapping("/messages")
+    public String getMessages(@AuthenticationPrincipal User user, Model model) {
+        UserService.ifAdmin(model, user);
+        model.addAttribute("user", user);
+        return "messages";
+    }
 
 }
