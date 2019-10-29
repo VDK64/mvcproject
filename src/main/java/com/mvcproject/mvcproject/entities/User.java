@@ -1,18 +1,16 @@
 package com.mvcproject.mvcproject.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Set;
+import java.util.*;
 
 @Data
+@EqualsAndHashCode(exclude = { "dialogs" } )
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,4 +40,6 @@ public class User implements UserDetails {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Dialog> dialogs = new LinkedHashSet<>();
 }
