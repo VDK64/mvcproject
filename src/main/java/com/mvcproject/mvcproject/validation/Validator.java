@@ -20,10 +20,15 @@ public class Validator {
     public void validate(String firstname, String lastname, String username, String password, String email,
                          ModelAndView model) {
         checkFirstname(firstname, model);
+        model.addObject("firstname", firstname);
         checkLastname(lastname, model);
+        model.addObject("lastname", lastname);
         checkUsername(username, model);
+        model.addObject("username", username);
         checkPassword(password, model);
+        model.addObject("password", password);
         checkEmail(email, model);
+        model.addObject("email", email);
     }
 
     private void checkFirstname(String firstname, ModelAndView model) {
@@ -91,7 +96,7 @@ public class Validator {
             throw new CustomServerException(ServerErrors.EMAIL_NULL,
                     model);
         }
-        if (email.length() > maxNameLength || email.length() < minPasswordLength) {
+        if (email.length() < minPasswordLength) {
             throw new CustomServerException(ServerErrors.WRONG_EMAIL, model);
         }
         if (!email.matches(regexEmail)) {

@@ -24,24 +24,44 @@
               <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
               <div class="form-group">
                 <label for="firstname">firstname</label>
-                <input type="text" class="form-control" id="firstname" name="firstname" aria-describedby="firstname" placeholder="Enter firstname" name="firstname">
+                <#if firstname??>
+                <input type="text" class="form-control" id="firstname" name="firstname" aria-describedby="firstname" placeholder=${firstname} value=${firstname}>
+                <#else>
+                <input type="text" class="form-control" id="firstname" name="firstname" aria-describedby="firstname" placeholder="Enter firstname">
+                </#if>
               </div>
               <div class="form-group">
                 <label for="lastname">lastname</label>
+                <#if lastname??>
+                <input type="text" class="form-control" id="lastname" name="lastname" aria-describedby="lastname" placeholder=${lastname} value=${lastname}>
+                <#else>
                 <input type="text" class="form-control" id="lastname" name="lastname" aria-describedby="lastname" placeholder="Enter lastname">
+                </#if>
               </div>
               <div class="form-group">
                 <label for="username">username</label>
+                <#if username??>
+                <input type="text" class="form-control" id="username" name="username" aria-describedby="username" placeholder=${username} value=${username}>
+                <#else>
                 <input type="text" class="form-control" id="username" name="username" aria-describedby="username" placeholder="Enter username">
+                </#if>
                 <small id="loginHelp" class="form-text text-muted">Username must be unique</small>
               </div>
               <div class="form-group">
                 <label for="password">password</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="password">
+                <#if password??>
+                <input type="password" class="form-control" id="password" name="password" placeholder=${password} value=${password}>
+                <#else>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
+                </#if>
               </div>
               <div class="form-group">
                 <label for="email">email</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="example@example.com">
+                <#if email??>
+                <input type="email" class="form-control" id="email" name="email" placeholder=${email} value=${email}>
+                <#else>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email. Example: example@example.com">
+                </#if>
               </div>
               <button type="submit" class="btn btn-primary">Registration</button>
               <a href="/login" style="margin-left: 30px">Sign in</a>

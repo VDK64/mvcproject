@@ -1,12 +1,16 @@
 package com.mvcproject.mvcproject.services;
 
 import com.mvcproject.mvcproject.entities.User;
+import com.mvcproject.mvcproject.exceptions.CustomServerException;
+import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import com.mvcproject.mvcproject.repositories.UserRepo;
+import freemarker.template.utility.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,5 +36,13 @@ public class SettingsService {
             user.setAvatar(resultFilename);
             userRepo.save(user);
         }
+    }
+
+    public void deleteAvatar(User user, ModelAndView model) {
+        if (StringUtil.emptyToNull(user.getAvatar()) == null) {
+            throw new CustomServerException(ServerErrors.DEFAULT_AVATAR, model);
+        }
+        user.setAvatar(null);
+        userRepo.save(user);
     }
 }

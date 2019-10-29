@@ -66,6 +66,10 @@
       <input type="file" name="file" /><br /><br />
       <input type="submit" value="Submit" />
     </form><br />
+    <form method="POST">
+      <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+      <input type="submit" name="button" placeholder="Delete avatar" value="Delete avatar"/>
+    </form>
     <div class="row">
       <#if error??>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">

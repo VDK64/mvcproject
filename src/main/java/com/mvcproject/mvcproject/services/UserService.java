@@ -75,6 +75,10 @@ public class UserService implements UserDetailsService {
         if (user.getAuthorities().contains(Role.ADMIN)) { model.addAttribute("admin", true); }
     }
 
+    public static void ifAdmin(ModelAndView model, User user) {
+        if (user.getAuthorities().contains(Role.ADMIN)) { model.addObject("admin", true); }
+    }
+
     private void sendMail(User user) {
         emailService.sendSimpleMessage("dkvoznyuk@yandex.ru", subject, String.format(msg, user.getUsername(),
                 user.getActivationCode()));

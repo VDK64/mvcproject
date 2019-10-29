@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 
@@ -37,6 +38,15 @@ public class SettingsController {
                               @RequestParam("file") MultipartFile file) throws IOException {
         settingsService.saveFile(file, user);
         model.addAttribute("user", user);
+        UserService.ifAdmin(model, user);
         return "settings";
+    }
+
+    @PostMapping(params = "button")
+    public ModelAndView deleteAvatar(@AuthenticationPrincipal User user, ModelAndView model) {
+        UserService.ifAdmin(model, user);
+        model.addObject("user", user);
+        settingsService.deleteAvatar(user, model);
+        return model;
     }
 }
