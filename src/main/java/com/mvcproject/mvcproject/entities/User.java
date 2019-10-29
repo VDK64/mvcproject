@@ -1,12 +1,10 @@
 package com.mvcproject.mvcproject.entities;
 
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.*;
 
 @Data
@@ -40,6 +38,6 @@ public class User implements UserDetails {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "users")
     private Set<Dialog> dialogs = new LinkedHashSet<>();
 }

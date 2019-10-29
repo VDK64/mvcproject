@@ -2,11 +2,13 @@ package com.mvcproject.mvcproject.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Data
+@EqualsAndHashCode(exclude = { "dialog" } )
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -19,10 +21,6 @@ public class Message {
     @NotNull
     private String text;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "one_id"),
-            @JoinColumn(name = "two_id")
-    })
+    @JoinColumn(name = "dlg_id")
     private Dialog dialog;
-
 }
