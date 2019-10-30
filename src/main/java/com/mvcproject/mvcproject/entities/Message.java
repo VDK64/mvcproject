@@ -17,8 +17,11 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqMessage")
     private Long id;
     @NotNull
-    @ToString.Exclude
     private String text;
+    @NotNull
+    private Long fromId;
+    @NotNull
+    private Long toId;
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dlg_id")
