@@ -66,7 +66,7 @@
           <#list dialogs as dialog>
             <tr>
               <td>
-                <a class="nav-link" href="/messages"> ${dialog.username} </a>
+                <a class="nav-link" href="/messages/${dialog.dialogId}"> ${dialog.username} </a>
               </td>
             </tr>
           </#list>
