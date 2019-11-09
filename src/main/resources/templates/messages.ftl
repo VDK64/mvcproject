@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
-<script src="./static/js/sock.js"></script>
-<script src="./static/js/stomp.js"></script>
+<script src="/static/js/sock.js"></script>
+<script src="/static/js/stomp.js"></script>
 <script type="text/javascript">
   var stompClient = null;
 
@@ -150,6 +150,7 @@
               <hr>
       </#if>
     </#list>
+    <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
     <input type="text" id="text" placeholder="Write a message..."/>
     <button id="sendMessage" onclick="sendMessage();">Send</button>
   </div>

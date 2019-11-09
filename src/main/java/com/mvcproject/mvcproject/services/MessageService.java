@@ -69,7 +69,7 @@ public class MessageService {
         return interlocutorDto[0];
     }
 
-    public void sendMessage(User user, MessageDto msg) {
+    public void sendMessage(Principal user, MessageDto msg) {
         User fromUser = userRepo.findByUsername(msg.getFrom()).orElseThrow();
         User toUser = userRepo.findByUsername(msg.getTo()).orElseThrow();
         Dialog dialog = dialogRepo.findById(msg.getDialogId()).orElseThrow();

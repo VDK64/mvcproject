@@ -51,9 +51,8 @@ public class MessageController {
     }
 
     @MessageMapping("/secured/room")
-    public void sendSpecific(@Payload MessageDto msg, Principal user, @Header("simpSessionId") String sessionId,
-                             @AuthenticationPrincipal User userAuth) {
-        messageService.sendMessage(userAuth, msg);
+    public void sendSpecific(@Payload MessageDto msg, Principal user, @Header("simpSessionId") String sessionId) {
+        messageService.sendMessage(user, msg);
     }
 
 }
