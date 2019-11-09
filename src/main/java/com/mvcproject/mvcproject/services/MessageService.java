@@ -52,7 +52,8 @@ public class MessageService {
         //noinspection OptionalGetWithoutIsPresent
         dialogRepo.findById(dialogId).ifPresent(dialogDB -> dialogDB.getMessages().forEach(
                 message -> response.add(new MessageDto(userRepo.findById(message.getFromId()).get().getUsername(),
-                        userRepo.findById(message.getToId()).get().getUsername(), message.getText(), message.getDate()
+                        userRepo.findById(message.getToId()).get().getUsername(), message.getText(), message.getDate(),
+                        dialogId
         ))));
         return response;
     }
@@ -69,6 +70,7 @@ public class MessageService {
         return interlocutorDto[0];
     }
 
+    @Transactional
     public void sendMessage(Principal user, MessageDto msg) {
         User fromUser = userRepo.findByUsername(msg.getFrom()).orElseThrow();
         User toUser = userRepo.findByUsername(msg.getTo()).orElseThrow();

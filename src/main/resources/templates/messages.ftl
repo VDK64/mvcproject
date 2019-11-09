@@ -49,7 +49,8 @@
         'from': from,
         'to' : to,
         'text': text,
-        'date' : null
+        'date' : null,
+        'dialogId' : "${dialogId}"
       }));
   }
 
