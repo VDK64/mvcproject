@@ -8,4 +8,5 @@ import lombok.Data;
 public class InterlocutorDto {
     private Long id;
     private String avatar;
+    private String username;
 }

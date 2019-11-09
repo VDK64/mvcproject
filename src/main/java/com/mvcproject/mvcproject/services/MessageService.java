@@ -10,9 +10,11 @@ import com.mvcproject.mvcproject.repositories.DialogRepo;
 import com.mvcproject.mvcproject.repositories.MessageRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -24,6 +26,8 @@ public class MessageService {
     private UserRepo userRepo;
     @Autowired
     private MessageRepo messageRepo;
+    @Autowired
+    private SimpMessagingTemplate template;
 
     @Transactional
     public Set<DialogDtoResponse> getDialogs(Long id) {
@@ -58,10 +62,20 @@ public class MessageService {
         final InterlocutorDto[] interlocutorDto = new InterlocutorDto[1];
         dialogRepo.findById(dialogId).orElseThrow().getUsers().forEach(user -> {
             if (!user.getId().equals(id)) {
-                interlocutorDto[0] = new InterlocutorDto(user.getId(), user.getAvatar());
+                interlocutorDto[0] = new InterlocutorDto(user.getId(), user.getAvatar(), user.getUsername());
             }
         });
 
         return interlocutorDto[0];
+    }
+
+    public void sendMessage(User user, MessageDto msg) {
+        User fromUser = userRepo.findByUsername(msg.getFrom()).orElseThrow();
+        User toUser = userRepo.findByUsername(msg.getTo()).orElseThrow();
+        Dialog dialog = dialogRepo.findById(msg.getDialogId()).orElseThrow();
+        Message message = new Message(null, msg.getText(), new Date(), fromUser.getId(), toUser.getId(), dialog);
+        messageRepo.save(message);
+        MessageDto out = new MessageDto(msg.getFrom(), msg.getTo(), msg.getText(), message.getDate());
+        template.convertAndSendToUser(msg.getTo(), "/secured/user/queue/specific-user", out);
     }
 }

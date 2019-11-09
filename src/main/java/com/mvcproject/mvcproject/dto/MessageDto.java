@@ -19,5 +19,12 @@ public class MessageDto {
     private String text;
     @NotNull
     private Date date;
+    private Long dialogId;
 
+    public MessageDto(@NotNull String from, @NotNull String to, @NotNull String text, @NotNull Date date) {
+        this.from = from;
+        this.to = to;
+        this.text = text;
+        this.date = date;
+    }
 }

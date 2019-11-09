@@ -10,6 +10,63 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
+<script src="./static/js/sock.js"></script>
+<script src="./static/js/stomp.js"></script>
+<script type="text/javascript">
+  var stompClient = null;
+
+  function connect() {
+    stompClient = Stomp.over(new SockJS('/secured/room'));
+    stompClient.connect({}, function(frame) {
+      console.log('Connected: ' + frame);
+      stompClient.subscribe('/spring-security-mvc-socket/secured/room', function(messageOutput) {
+        showMessageOutput(JSON.parse(messageOutput.body));
+      });
+    });
+  }
+
+
+  function disconnect() {
+    if (stompClient != null) {
+      stompClient.disconnect();
+    }
+    console.log("Disconnected");
+  }
+
+  function sendMessage() {
+    var text = document.getElementById('text').value;
+    var to = "${interlocutor.username}";
+    var from = "${user.username}";
+    var response = document.getElementById('response-area');
+    var p = document.createElement('p');
+    p.setAttribute('id', 'message-from');
+    p.setAttribute('align', 'right');
+    p.setAttribute('class', 'message-from');
+    p.appendChild(document.createTextNode(text));
+    response.appendChild(p);
+    stompClient.send("/spring-security-mvc-socket/secured/room", {},
+      JSON.stringify({
+        'from': from,
+        'to' : to,
+        'text': text,
+        'date' : null
+      }));
+  }
+
+  function showMessageOutput(messageOutput) {
+    var response = document.getElementById('response-area');
+    var p = document.createElement('p');
+    p.style.wordWrap = 'break-word';
+    p.appendChild(document.createTextNode(messageOutput.from + ": " +
+      messageOutput.text + " (" + messageOutput.time + ")"));
+    response.appendChild(p);
+  }
+
+  connect();
+</script>
+
+
+
 <body>
   <style>
     body {
@@ -69,32 +126,32 @@
       </ul>
     </div>
   </nav>
-  <div class="container" style="margin-top: 15px">
+  <div class="container" id="response-area" style="margin-top: 15px">
     <#list messages as message>
-      <#if message.from == user.username>
-        <p align="right" class="message-from">
+      <#if message.from==user.username>
+        <p align="right" id="message-from" class="message-from">
           <#if user.avatar??>
             <img src="/img/${user.id}/${user.avatar}" class="img-thumbnail" style="width:50px">
             <#else>
               <img src="/img/avatar.png" class="img-thumbnail" style="width:50px">
           </#if>
           ${message.text}
-          <p align="right" class="time-info"><i> ${message.date} </i></p>
+          <p align="right" id="time" class="time-info"><i> ${message.date} </i></p>
           <hr>
-        </p>
-        <#else>
-          <p align="left" class="message-to">
-            <#if interlocutor.avatar??>
-              <img src="/img/${interlocutor.id}/${interlocutor.avatar}" class="img-thumbnail" style="width:50px">
-              <#else>
-                <img src="/img/avatar.png" class="img-thumbnail" style="width:50px">
-            </#if>
-            ${message.text}
-            <p align="left" class="time-info"><i> ${message.date} </i></p>
-            <hr>
-          </p>
-          </#if>
+          <#else>
+            <p align="left" id="message-to" class="message-to">
+              <#if interlocutor.avatar??>
+                <img src="/img/${interlocutor.id}/${interlocutor.avatar}" class="img-thumbnail" style="width:50px">
+                <#else>
+                  <img src="/img/avatar.png" class="img-thumbnail" style="width:50px">
+              </#if>
+              ${message.text}
+              <p align="left" id="time" class="time-info"><i> ${message.date} </i></p>
+              <hr>
+      </#if>
     </#list>
+    <input type="text" id="text" placeholder="Write a message..."/>
+    <button id="sendMessage" onclick="sendMessage();">Send</button>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
