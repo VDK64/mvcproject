@@ -20,28 +20,28 @@
   function connect() {
     // stompClient = Stomp.over(new SockJS('/secured/room'));
 
-    stompClient.connect({}, function (frame) {
-      var url = stompClient.ws._transport.url;
-      url = url.replace(
-        "ws://localhost:8090/secured/room/",  "");
-      url = url.replace("/websocket", "");
-      url = url.replace(/^[0-9]+\//, "");
-      console.log("Your current session is: " + url);
-      sessionId = url;
-      console.log('Connected: ' + frame);
-      stompClient.subscribe('secured/user/queue/updates-'
-      + "${user.username}", function(messageOutput) {
-       showMessageOutput(JSON.parse(messageOutput.body));
-     });
-  });
-
-    // stompClient.connect({}, function(frame) {
+    // stompClient.connect({}, function (frame) {
+    //   var url = stompClient.ws._transport.url;
+    //   url = url.replace(
+    //     "ws://localhost:8090/secured/room/",  "");
+    //   url = url.replace("/websocket", "");
+    //   url = url.replace(/^[0-9]+\//, "");
+    //   console.log("Your current session is: " + url);
+    //   sessionId = url;
     //   console.log('Connected: ' + frame);
-    //   stompClient.subscribe('secured/user/queue/specific-user', function(messageOutput) {
-    //     showMessageOutput(JSON.parse(messageOutput.body));
-    //   });
-    // });
-  }
+     //  stompClient.subscribe('secured/user/queue/updates-'
+     //  + "${user.username}", function(messageOutput) {
+     //   showMessageOutput(JSON.parse(messageOutput.body));
+     // });
+  // });
+
+    stompClient.connect({}, function(frame) {
+      console.log('Connected: ' + frame);
+      stompClient.subscribe('secured/user/queue/updates', function(messageOutput) {
+        showMessageOutput(JSON.parse(messageOutput.body));
+    });
+  });
+}
 
 //   stompClient.subscribe('secured/user/queue/specific-user'
 //   + '-user' + that.sessionId, function (msgOut) {

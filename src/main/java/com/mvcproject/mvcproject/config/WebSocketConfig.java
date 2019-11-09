@@ -12,7 +12,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/secured/user/queue/specific-user");
+        config.enableSimpleBroker("/secured/user/queue/updates");
         config.setApplicationDestinationPrefixes("/spring-security-mvc-socket");
         config.setUserDestinationPrefix("/secured/user");
     }
