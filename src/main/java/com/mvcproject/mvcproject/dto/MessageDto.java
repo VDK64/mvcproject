@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,5 +17,7 @@ public class MessageDto {
     private String to;
     @NotNull
     private String text;
+    @NotNull
+    private Date date;
 
 }

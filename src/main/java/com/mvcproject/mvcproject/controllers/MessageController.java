@@ -1,6 +1,7 @@
 package com.mvcproject.mvcproject.controllers;
 
 import com.mvcproject.mvcproject.dto.DialogDtoResponse;
+import com.mvcproject.mvcproject.dto.InterlocutorDto;
 import com.mvcproject.mvcproject.dto.MessageDto;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.services.MessageService;
@@ -38,6 +39,7 @@ public class MessageController {
                               @PathVariable Long dialogId,  Model model) {
         List<MessageDto> response = messageService.loadMessages(user, dialogId);
         UserService.ifAdmin(model, user);
+        model.addAttribute("interlocutor", messageService.getInterlocutor(dialogId, user.getId()));
         model.addAttribute("user", user);
         model.addAttribute("messages", response);
         return "messages";

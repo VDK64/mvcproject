@@ -1,5 +1,6 @@
 package com.mvcproject.mvcproject.services;
 
+import com.mvcproject.mvcproject.dto.InterlocutorDto;
 import com.mvcproject.mvcproject.dto.MessageDto;
 import com.mvcproject.mvcproject.dto.DialogDtoResponse;
 import com.mvcproject.mvcproject.entities.Dialog;
@@ -47,8 +48,20 @@ public class MessageService {
         //noinspection OptionalGetWithoutIsPresent
         dialogRepo.findById(dialogId).ifPresent(dialogDB -> dialogDB.getMessages().forEach(
                 message -> response.add(new MessageDto(userRepo.findById(message.getFromId()).get().getUsername(),
-                        userRepo.findById(message.getToId()).get().getUsername(), message.getText()
+                        userRepo.findById(message.getToId()).get().getUsername(), message.getText(), message.getDate()
         ))));
         return response;
+    }
+
+    @Transactional
+    public InterlocutorDto getInterlocutor(Long dialogId, Long id) {
+        final InterlocutorDto[] interlocutorDto = new InterlocutorDto[1];
+        dialogRepo.findById(dialogId).orElseThrow().getUsers().forEach(user -> {
+            if (!user.getId().equals(id)) {
+                interlocutorDto[0] = new InterlocutorDto(user.getId(), user.getAvatar());
+            }
+        });
+
+        return interlocutorDto[0];
     }
 }

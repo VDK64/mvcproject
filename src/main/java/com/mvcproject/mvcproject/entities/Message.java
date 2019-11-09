@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Data
 @EqualsAndHashCode(exclude = { "dialog" } )
@@ -18,6 +19,8 @@ public class Message {
     private Long id;
     @NotNull
     private String text;
+    @NotNull
+    private Date date;
     @NotNull
     private Long fromId;
     @NotNull

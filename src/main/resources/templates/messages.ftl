@@ -73,14 +73,24 @@
     <#list messages as message>
       <#if message.from == user.username>
         <p align="right" class="message-from">
+          <#if user.avatar??>
+            <img src="/img/${user.id}/${user.avatar}" class="img-thumbnail" style="width:50px">
+            <#else>
+              <img src="/img/avatar.png" class="img-thumbnail" style="width:50px">
+          </#if>
           ${message.text}
-          <p align="right" class="time-info"><i> Time message </i></p>
-          <hr>  
+          <p align="right" class="time-info"><i> ${message.date} </i></p>
+          <hr>
         </p>
         <#else>
           <p align="left" class="message-to">
+            <#if interlocutor.avatar??>
+              <img src="/img/${interlocutor.id}/${interlocutor.avatar}" class="img-thumbnail" style="width:50px">
+              <#else>
+                <img src="/img/avatar.png" class="img-thumbnail" style="width:50px">
+            </#if>
             ${message.text}
-            <p align="left" class="time-info"><i> Time message </i></p>
+            <p align="left" class="time-info"><i> ${message.date} </i></p>
             <hr>
           </p>
           </#if>

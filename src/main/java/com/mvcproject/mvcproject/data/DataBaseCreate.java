@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -120,11 +121,11 @@ public class DataBaseCreate {
                 new ArrayList<>());
         dialogRepo.save(dialog1);
         dialogRepo.save(dialog2);
-        Message message1 = new Message(null, "Hey, Kasha!", user1.getId(), user2.getId(), dialog1);
-        Message message2 = new Message(null, "Hello, vkd64!", user2.getId(), user1.getId(), dialog1);
-        Message message3 = new Message(null, "How are you?", user1.getId(), user2.getId(), dialog1);
-        Message message4 = new Message(null, "Fine, and you?", user2.getId(), user1.getId(), dialog1);
-        Message message5 = new Message(null, "Fine thanks", user1.getId(), user2.getId(), dialog1);
+        Message message1 = new Message(null, "Hey, Kasha!", new Date(), user1.getId(), user2.getId(), dialog1);
+        Message message2 = new Message(null, "Hello, vkd64!", new Date(), user2.getId(), user1.getId(), dialog1);
+        Message message3 = new Message(null, "How are you?", new Date(), user1.getId(), user2.getId(), dialog1);
+        Message message4 = new Message(null, "Fine, and you?", new Date(), user2.getId(), user1.getId(), dialog1);
+        Message message5 = new Message(null, "Fine thanks", new Date(), user1.getId(), user2.getId(), dialog1);
         messageRepo.save(message1);
         messageRepo.save(message2);
         messageRepo.save(message3);
