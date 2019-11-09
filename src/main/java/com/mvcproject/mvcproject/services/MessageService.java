@@ -1,8 +1,9 @@
 package com.mvcproject.mvcproject.services;
 
 import com.mvcproject.mvcproject.dto.MessageDto;
-import com.mvcproject.mvcproject.dto.UserDtoResponse;
+import com.mvcproject.mvcproject.dto.DialogDtoResponse;
 import com.mvcproject.mvcproject.entities.Dialog;
+import com.mvcproject.mvcproject.entities.Message;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.DialogRepo;
 import com.mvcproject.mvcproject.repositories.MessageRepo;
@@ -11,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Consumer;
 
 @Service
 public class MessageService {
@@ -26,15 +25,15 @@ public class MessageService {
     private MessageRepo messageRepo;
 
     @Transactional
-    public Set<UserDtoResponse> getDialogs(Long id) {
-        Set<UserDtoResponse> response = new LinkedHashSet<>();
+    public Set<DialogDtoResponse> getDialogs(Long id) {
+        Set<DialogDtoResponse> response = new LinkedHashSet<>();
         User user = userRepo.findById(id).orElse(null);
         assert user != null;
         Set<Dialog> dialogs = user.getDialogs();
         for (Dialog dialog : dialogs) {
             for (User dUser : dialog.getUsers()) {
                 if (!dUser.getId().equals(id)) {
-                    response.add(new UserDtoResponse(dialog.getId(), dUser.getFirstname(),
+                    response.add(new DialogDtoResponse(dialog.getId(), dUser.getFirstname(),
                             dUser.getLastname(), dUser.getUsername()));
                 }
             }
@@ -42,11 +41,14 @@ public class MessageService {
         return response;
     }
 
-    public List<MessageDto> loadMessages(User user, Long id) {
+    @Transactional
+    public List<MessageDto> loadMessages(User user, Long dialogId) {
         List<MessageDto> response = new ArrayList<>();
         //noinspection OptionalGetWithoutIsPresent
-        messageRepo.findByFromIdAndToId(user.getId(), id).forEach(message -> response.add(new MessageDto(
-                userRepo.findById(message.getFromId()).get().getUsername(), message.getText())));
+        dialogRepo.findById(dialogId).ifPresent(dialogDB -> dialogDB.getMessages().forEach(
+                message -> response.add(new MessageDto(userRepo.findById(message.getFromId()).get().getUsername(),
+                        userRepo.findById(message.getToId()).get().getUsername(), message.getText()
+        ))));
         return response;
     }
 }

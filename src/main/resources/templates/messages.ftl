@@ -15,11 +15,17 @@
     body {
       background: #f5f5f5;
     }
+
     .message-from {
-      color: #ffe6f2;
+      color: #FF00FF;
     }
+
     .message-to {
-      color: #e6ecff;
+      color: #0000FF;
+    }
+
+    .time-info {
+      font-weight: lighter;
     }
   </style>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
@@ -64,20 +70,21 @@
     </div>
   </nav>
   <div class="container" style="margin-top: 15px">
-    <#if my??>
-    <p align="right" class="message-from">
-      asdasdasdasld asd asdhasjfh;djsafh ajdsf hsj;dfh ajksf hajkdsf h
-      asd;la ;la ksdjfk'sdj;askfaod skldfj a;sf sdkfj skdf
-      adkf jsldkfj slkdfj
-    </p>
-    <#else>
-    <p align="left" class="message-to">
-      a;sdok as;dkasdaklfsjkhgsduf ghalksf joief sgisd sfkdSdf sdfj
-      o;sidhg ldjf sdifhs;ldhfasdgh asfdgh dslnv;xjghasdgfsadfgdfh
-      lasdkdkfgjldkfgldnb;zjgas'dfgjas;lfdg
-    </p>
-    </#if>
-
+    <#list messages as message>
+      <#if message.from == user.username>
+        <p align="right" class="message-from">
+          ${message.text}
+          <p align="right" class="time-info"><i> Time message </i></p>
+          <hr>  
+        </p>
+        <#else>
+          <p align="left" class="message-to">
+            ${message.text}
+            <p align="left" class="time-info"><i> Time message </i></p>
+            <hr>
+          </p>
+          </#if>
+    </#list>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

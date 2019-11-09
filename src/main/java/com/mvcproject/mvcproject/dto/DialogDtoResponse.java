@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDtoResponse {
+public class DialogDtoResponse {
     private Long dialogId;
     private String firstname;
     private String lastname;

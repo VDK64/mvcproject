@@ -1,9 +1,11 @@
 package com.mvcproject.mvcproject.data;
 
 import com.mvcproject.mvcproject.entities.Dialog;
+import com.mvcproject.mvcproject.entities.Message;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.DialogRepo;
+import com.mvcproject.mvcproject.repositories.MessageRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +21,8 @@ public class DataBaseCreate {
     private UserRepo userRepo;
     @Autowired
     private DialogRepo dialogRepo;
+    @Autowired
+    private MessageRepo messageRepo;
 
     public void formUsersInDataBase() {
         userRepo.save(User.builder()
@@ -107,14 +111,24 @@ public class DataBaseCreate {
     }
 
     public void formDialogsInDataBase() {
-        User user1 = userRepo.findByUsername("vdk64").orElse(null);
-        User user2 = userRepo.findByUsername("kasha111").orElse(null);
-        User user3 = userRepo.findByUsername("petro123").orElse(null);
+        User user1 = userRepo.findByUsername("vdk64").orElseThrow();
+        User user2 = userRepo.findByUsername("kasha111").orElseThrow();
+        User user3 = userRepo.findByUsername("petro123").orElseThrow();
         Dialog dialog1 = new Dialog(null, Stream.of(user1, user2).collect(Collectors.toSet()),
                 new ArrayList<>());
         Dialog dialog2 = new Dialog(null, Stream.of(user1, user3).collect(Collectors.toSet()),
                 new ArrayList<>());
         dialogRepo.save(dialog1);
         dialogRepo.save(dialog2);
+        Message message1 = new Message(null, "Hey, Kasha!", user1.getId(), user2.getId(), dialog1);
+        Message message2 = new Message(null, "Hello, vkd64!", user2.getId(), user1.getId(), dialog1);
+        Message message3 = new Message(null, "How are you?", user1.getId(), user2.getId(), dialog1);
+        Message message4 = new Message(null, "Fine, and you?", user2.getId(), user1.getId(), dialog1);
+        Message message5 = new Message(null, "Fine thanks", user1.getId(), user2.getId(), dialog1);
+        messageRepo.save(message1);
+        messageRepo.save(message2);
+        messageRepo.save(message3);
+        messageRepo.save(message4);
+        messageRepo.save(message5);
     }
 }
