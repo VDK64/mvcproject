@@ -78,6 +78,7 @@ public class MessageService {
         Message message = new Message(null, msg.getText(), new Date(), fromUser.getId(), toUser.getId(), dialog);
         messageRepo.save(message);
         MessageDto out = new MessageDto(msg.getFrom(), msg.getTo(), msg.getText(), message.getDate());
-        template.convertAndSendToUser(msg.getTo(), "/secured/user/queue/specific-user", out);
+        template.convertAndSendToUser(msg.getTo(), "/queue/updates", out);
+//        "/secured/user/queue/update"
     }
 }

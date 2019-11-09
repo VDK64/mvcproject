@@ -13,17 +13,40 @@
 <script src="/static/js/sock.js"></script>
 <script src="/static/js/stomp.js"></script>
 <script type="text/javascript">
-  var stompClient = null;
+  // var stompClient = null;
+  var stompClient = Stomp.over(new SockJS('/secured/room'));
+  var sessionId = "";
 
   function connect() {
-    stompClient = Stomp.over(new SockJS('/secured/room'));
-    stompClient.connect({}, function(frame) {
+    // stompClient = Stomp.over(new SockJS('/secured/room'));
+
+    stompClient.connect({}, function (frame) {
+      var url = stompClient.ws._transport.url;
+      url = url.replace(
+        "ws://localhost:8090/secured/room/",  "");
+      url = url.replace("/websocket", "");
+      url = url.replace(/^[0-9]+\//, "");
+      console.log("Your current session is: " + url);
+      sessionId = url;
       console.log('Connected: ' + frame);
-      stompClient.subscribe('/spring-security-mvc-socket/secured/room', function(messageOutput) {
-        showMessageOutput(JSON.parse(messageOutput.body));
-      });
-    });
+      stompClient.subscribe('secured/user/queue/updates-'
+      + "${user.username}", function(messageOutput) {
+       showMessageOutput(JSON.parse(messageOutput.body));
+     });
+  });
+
+    // stompClient.connect({}, function(frame) {
+    //   console.log('Connected: ' + frame);
+    //   stompClient.subscribe('secured/user/queue/specific-user', function(messageOutput) {
+    //     showMessageOutput(JSON.parse(messageOutput.body));
+    //   });
+    // });
   }
+
+//   stompClient.subscribe('secured/user/queue/specific-user'
+//   + '-user' + that.sessionId, function (msgOut) {
+//      //handle messages
+// }
 
 
   function disconnect() {
@@ -58,8 +81,7 @@
     var response = document.getElementById('response-area');
     var p = document.createElement('p');
     p.style.wordWrap = 'break-word';
-    p.appendChild(document.createTextNode(messageOutput.from + ": " +
-      messageOutput.text + " (" + messageOutput.time + ")"));
+    p.appendChild(document.createTextNode(messageOutput.text + " (" + messageOutput.date + ")"));
     response.appendChild(p);
   }
 
