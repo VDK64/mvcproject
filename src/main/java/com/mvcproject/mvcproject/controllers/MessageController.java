@@ -41,7 +41,7 @@ public class MessageController {
 
     @RequestMapping("/messages/{dialogId}")
     public String getMessages(@AuthenticationPrincipal User user,
-                              @PathVariable Long dialogId,  Model model) {
+                              @PathVariable Long dialogId, Model model) {
         List<MessageDto> response = messageService.loadMessages(user, dialogId);
         UserService.ifAdmin(model, user);
         model.addAttribute("interlocutor", messageService.getInterlocutor(dialogId, user.getId()));
@@ -55,5 +55,4 @@ public class MessageController {
     public void sendSpecific(@Payload MessageDto msg, Principal user, @Header("simpSessionId") String sessionId) {
         messageService.sendMessage(user, msg);
     }
-
 }

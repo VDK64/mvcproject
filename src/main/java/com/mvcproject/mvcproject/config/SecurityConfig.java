@@ -13,7 +13,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableGlobalMethodSecurity(
         prePostEnabled = true,
         securedEnabled = true,
@@ -31,12 +30,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .formLogin().loginPage("/login").permitAll()
                 .and()
-                    .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()
-                .and()
-                    .csrf()
-                    .ignoringAntMatchers("/secured/room").
-                and()
-                    .headers().frameOptions().sameOrigin();
+                    .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll();
+//                .and()
+//                    .csrf()
+//                    .ignoringAntMatchers("/secured/room").
+//                and()
+//                    .headers().frameOptions().sameOrigin();
     }
 
     @Autowired

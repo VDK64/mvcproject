@@ -10,86 +10,6 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
-<script src="/static/js/sock.js"></script>
-<script src="/static/js/stomp.js"></script>
-<script type="text/javascript">
-  // var stompClient = null;
-  var stompClient = Stomp.over(new SockJS('/secured/room'));
-  var sessionId = "";
-
-  function connect() {
-    // stompClient = Stomp.over(new SockJS('/secured/room'));
-
-    // stompClient.connect({}, function (frame) {
-    //   var url = stompClient.ws._transport.url;
-    //   url = url.replace(
-    //     "ws://localhost:8090/secured/room/",  "");
-    //   url = url.replace("/websocket", "");
-    //   url = url.replace(/^[0-9]+\//, "");
-    //   console.log("Your current session is: " + url);
-    //   sessionId = url;
-    //   console.log('Connected: ' + frame);
-     //  stompClient.subscribe('secured/user/queue/updates-'
-     //  + "${user.username}", function(messageOutput) {
-     //   showMessageOutput(JSON.parse(messageOutput.body));
-     // });
-  // });
-
-    stompClient.connect({}, function(frame) {
-      console.log('Connected: ' + frame);
-      stompClient.subscribe('secured/user/queue/updates', function(messageOutput) {
-        showMessageOutput(JSON.parse(messageOutput.body));
-    });
-  });
-}
-
-//   stompClient.subscribe('secured/user/queue/specific-user'
-//   + '-user' + that.sessionId, function (msgOut) {
-//      //handle messages
-// }
-
-
-  function disconnect() {
-    if (stompClient != null) {
-      stompClient.disconnect();
-    }
-    console.log("Disconnected");
-  }
-
-  function sendMessage() {
-    var text = document.getElementById('text').value;
-    var to = "${interlocutor.username}";
-    var from = "${user.username}";
-    var response = document.getElementById('response-area');
-    var p = document.createElement('p');
-    p.setAttribute('id', 'message-from');
-    p.setAttribute('align', 'right');
-    p.setAttribute('class', 'message-from');
-    p.appendChild(document.createTextNode(text));
-    response.appendChild(p);
-    stompClient.send("/spring-security-mvc-socket/secured/room", {},
-      JSON.stringify({
-        'from': from,
-        'to' : to,
-        'text': text,
-        'date' : null,
-        'dialogId' : "${dialogId}"
-      }));
-  }
-
-  function showMessageOutput(messageOutput) {
-    var response = document.getElementById('response-area');
-    var p = document.createElement('p');
-    p.style.wordWrap = 'break-word';
-    p.appendChild(document.createTextNode(messageOutput.text + " (" + messageOutput.date + ")"));
-    response.appendChild(p);
-  }
-
-  connect();
-</script>
-
-
-
 <body>
   <style>
     body {
@@ -177,6 +97,56 @@
     <input type="text" id="text" placeholder="Write a message..."/>
     <button id="sendMessage" onclick="sendMessage();">Send</button>
   </div>
+
+  <script src="/static/js/sock.js"></script>
+  <script src="/static/js/stomp.js"></script>
+  <script type="text/javascript">
+
+    var stompClient = Stomp.over(new SockJS('/secured/room'));
+    var sessionId = "";
+
+    stompClient.connect({}, function (frame) {
+        var url = stompClient.ws._transport.url;
+        url = url.replace("ws://localhost:8090/secured/room/",  "");
+        url = url.replace("/websocket", "");
+        url = url.replace(/^[0-9]+\//, "");
+        console.log("Your current session is: " + url);
+        this.sessionId = url;
+        stompClient.subscribe('/secured/user/queue/updates-' + "${user.username}", function (msgOut) {
+            showMessageOutput(JSON.parse(msgOut.body));
+        });
+    });
+
+    function sendMessage() {
+      var text = document.getElementById('text').value;
+      var to = "${interlocutor.username}";
+      var from = "${user.username}";
+      var response = document.getElementById('response-area');
+      var p = document.createElement('p');
+      p.setAttribute('id', 'message-from');
+      p.setAttribute('align', 'right');
+      p.setAttribute('class', 'message-from');
+      p.appendChild(document.createTextNode(text));
+      response.appendChild(p);
+      stompClient.send("/app/secured/room", {},
+        JSON.stringify({
+          'from': from,
+          'to' : to,
+          'text': text,
+          'date' : null,
+          'dialogId' : "${dialogId}"
+        }));
+    }
+
+    function showMessageOutput(msgOut) {
+      var response = document.getElementById('response-area');
+      var p = document.createElement('p');
+      p.style.wordWrap = 'break-word';
+      p.appendChild(document.createTextNode(msgOut.text + " (" + msgOut.date + ")"));
+      response.appendChild(p);
+    }
+
+  </script>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
