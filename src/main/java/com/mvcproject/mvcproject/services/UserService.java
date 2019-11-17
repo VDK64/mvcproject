@@ -74,10 +74,12 @@ public class UserService implements UserDetailsService {
 
     public static void ifAdmin(Model model, User user) {
         if (user.getAuthorities().contains(Role.ADMIN)) { model.addAttribute("admin", true); }
+        else { model.addAttribute("admin", false); }
     }
 
     public static void ifAdmin(ModelAndView model, User user) {
         if (user.getAuthorities().contains(Role.ADMIN)) { model.addObject("admin", true); }
+        else { model.addObject("admin", false); }
     }
 
     private void sendMail(User user) {

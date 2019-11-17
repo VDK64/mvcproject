@@ -24,7 +24,7 @@
                 <a class="nav-link" href="/">Home</a>
               </li>
           </#if>
-          <#if admin??>
+          <#if admin>
             <#if position=="admin">
               <li class="nav-item active">
                 <a class="nav-link" href="/admin/userList">Admin Panel</a>
@@ -37,7 +37,7 @@
             <#if position="email">
               <li class="nav-item active">
                 <a class="nav-link" href="/">Confirm Email</a>
-              </li>          
+              </li>
             </#if>
 
             <#if position=="editU">
