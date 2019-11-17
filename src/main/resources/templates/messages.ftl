@@ -16,6 +16,33 @@
           <h2>Spring WebSocket Chat Demo</h2>
         </div>
         <ul id="messageArea">
+          <#if messages??>
+            <#list messages as message>
+              <li class='chat-message'>
+                <i>
+                  <#if message.from==user.username>
+                    <#if user.avatar??>
+                      <img src="/img/${user.id}/${user.avatar}" class="img-thumbnail" style="width:50px">
+                      <#else>
+                        <img src="/img/avatar.png" class="img-thumbnail" style="width:50px">
+                    </#if>
+                    <#else>
+                      <#if interlocutor.avatar??>
+                        <img src="/img/${interlocutor.id}/${interlocutor.avatar}" class="img-thumbnail" style="width:50px">
+                        <#else>
+                          <img src="/img/avatar.png" class="img-thumbnail" style="width:50px">
+                      </#if>
+                  </#if>
+                </i>
+                <span>
+                  ${message.from}
+                </span>
+                <p>
+                  ${message.text}
+                </p>
+              </li>
+            </#list>
+          </#if>
         </ul>
         <div class="form-group">
           <div class="input-group clearfix">
@@ -37,6 +64,7 @@
       var messageInput = document.querySelector('#message');
       var messageArea = document.querySelector('#messageArea');
       var stompClient = Stomp.over(new SockJS('/room'));
+      var interlocutor = "${interlocutor}";
       var username = null;
       var colors = [
         '#2196F3', '#32c787', '#00BCD4', '#ff5652',
@@ -56,7 +84,7 @@
         if (messageContent && stompClient) {
           var chatMessage = {
             from: username,
-            to: to,
+            to: interlocutor.username,
             text: messageContent
           };
           stompClient.send("/app/room", {}, JSON.stringify(chatMessage));
