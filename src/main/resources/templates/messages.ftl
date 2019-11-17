@@ -64,7 +64,7 @@
       var messageInput = document.querySelector('#message');
       var messageArea = document.querySelector('#messageArea');
       var stompClient = Stomp.over(new SockJS('/room'));
-      var interlocutor = "${interlocutor}";
+      var interlocutor = '${interlocutor}';
       var username = null;
       var colors = [
         '#2196F3', '#32c787', '#00BCD4', '#ff5652',
@@ -80,7 +80,6 @@
 
       function sendMessage(event) {
         var messageContent = messageInput.value.trim();
-        var to = document.getElementById('to').value;
         if (messageContent && stompClient) {
           var chatMessage = {
             from: username,
