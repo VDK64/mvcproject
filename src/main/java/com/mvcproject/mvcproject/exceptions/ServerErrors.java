@@ -1,7 +1,5 @@
 package com.mvcproject.mvcproject.exceptions;
 
-import freemarker.template.utility.StringUtil;
-
 public class ServerErrors {
     public static final String ALREADY_EXIST = "This username is already exist. Please, try another username.";
     public static final String FIRSTNAME_NULL = "First name can not be empty!";

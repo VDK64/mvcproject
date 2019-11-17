@@ -1,8 +1,8 @@
 package com.mvcproject.mvcproject.services;
 
+import com.mvcproject.mvcproject.dto.DialogDtoResponse;
 import com.mvcproject.mvcproject.dto.InterlocutorDto;
 import com.mvcproject.mvcproject.dto.MessageDto;
-import com.mvcproject.mvcproject.dto.DialogDtoResponse;
 import com.mvcproject.mvcproject.entities.Dialog;
 import com.mvcproject.mvcproject.entities.Message;
 import com.mvcproject.mvcproject.entities.User;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.*;
-import java.util.function.Consumer;
 
 @Service
 public class MessageService {

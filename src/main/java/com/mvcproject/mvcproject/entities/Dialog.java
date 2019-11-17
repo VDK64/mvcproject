@@ -3,7 +3,10 @@ package com.mvcproject.mvcproject.entities;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(exclude = { "users", "messages" } )
