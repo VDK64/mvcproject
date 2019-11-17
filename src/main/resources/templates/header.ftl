@@ -78,7 +78,9 @@
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             <a class="nav-link">
-              <font color="#dcf2ee">${user.username}</font>
+              <#if user.username??>
+                <font color="#dcf2ee">${user.username}</font>
+              </#if>
             </a>
           </li>
           <li class="nav-item">

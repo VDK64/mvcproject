@@ -51,6 +51,8 @@ public class MainController {
                                 @Value("${wrong.confirm}") String wrongConfirm) {
         int res = userService.confirmEmail(code, model);
         if (res == 1) { model.addAttribute("msg", ok); } else { model.addAttribute("msg", wrongConfirm); }
+        model.addAttribute("admin", false);
+        model.addAttribute("user", new User());
         return "emailConfirm";
     }
 
