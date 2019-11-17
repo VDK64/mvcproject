@@ -79,6 +79,5 @@ public class MessageService {
         messageRepo.save(message);
         MessageDto out = new MessageDto(msg.getFrom(), msg.getTo(), msg.getText(), message.getDate());
         template.convertAndSendToUser(msg.getTo(), "/queue/updates", out);
-//        "/secured/user/queue/update"
     }
 }
