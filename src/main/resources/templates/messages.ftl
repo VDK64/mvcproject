@@ -93,7 +93,12 @@
           messageElement.classList.add('chat-message');
           var avatarElement = document.createElement('i');
           var image = document.createElement('img');
-          image.setAttribute('src', '/img/avatar.png');
+          var avatar = '${user.avatar}';
+          if (avatar != null) {
+            image.setAttribute('src', '/img/${user.id}/${user.avatar}');
+          } else {
+            image.setAttribute('src', '/img/avatar.png');
+          }
           image.setAttribute('class', 'img-thumbnail');
           image.setAttribute('style', 'width:50px');
           image.setAttribute('border', '0');
@@ -118,7 +123,12 @@
         messageElement.classList.add('chat-message');
         var avatarElement = document.createElement('i');
         var image = document.createElement('img');
-        image.setAttribute('src', '/img/avatar.png');
+        var avatar = '${interlocutor.avatar}';
+        if (avatar != null) {
+          image.setAttribute('src', '/img/${interlocutor.id}/${interlocutor.avatar}');
+        } else {
+          image.setAttribute('src', '/img/avatar.png');
+        }
         image.setAttribute('class', 'img-thumbnail');
         image.setAttribute('style', 'width:50px');
         image.setAttribute('border', '0');
