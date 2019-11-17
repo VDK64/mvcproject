@@ -17,7 +17,6 @@ public class MessageDto {
     private String to;
     @NotNull
     private String text;
-    @NotNull
     private Date date;
     private Long dialogId;
 

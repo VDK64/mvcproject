@@ -64,7 +64,6 @@
       var messageInput = document.querySelector('#message');
       var messageArea = document.querySelector('#messageArea');
       var stompClient = Stomp.over(new SockJS('/room'));
-      var interlocutor = '${interlocutor}';
       var username = null;
       var colors = [
         '#2196F3', '#32c787', '#00BCD4', '#ff5652',
@@ -83,8 +82,10 @@
         if (messageContent && stompClient) {
           var chatMessage = {
             from: username,
-            to: interlocutor.username,
-            text: messageContent
+            to: '${interlocutor.username}',
+            text: messageContent,
+            date: null,
+            dialogId: ${dialogId}
           };
           stompClient.send("/app/room", {}, JSON.stringify(chatMessage));
           messageInput.value = '';
