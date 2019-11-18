@@ -1,5 +1,5 @@
 <#import "/header.ftl" as h>
-  <@h.header admin=admin user=user position="messages">
+  <@h.header admin=admin user=user position="messagesD">
 
     <div class="container col-sm-6">
       <table class="table">
