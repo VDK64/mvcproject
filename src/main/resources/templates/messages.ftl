@@ -2,14 +2,6 @@
   <@h.header admin=admin user=user position="messages">
     <link rel="stylesheet" href="../static/css/style.css">
 
-    <div class="container" style="margin-top: 15px">
-      <#if error??>
-        <div class="alert alert-danger" role="alert">
-          ${error}
-        </div>
-        <a href="/" class="badge badge-primary">Main page</a>
-        <#else>
-    </div>
     <div id="chat-page" class="">
       <div class="chat-container">
         <div class="chat-header">
