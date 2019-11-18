@@ -65,12 +65,13 @@
       var messageArea = document.querySelector('#messageArea');
       var stompClient = Stomp.over(new SockJS('/room'));
       var username = null;
-      var colors = [
-        '#2196F3', '#32c787', '#00BCD4', '#ff5652',
-        '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
-      ];
+      var headerName = "${_csrf.headerName}";
+      var token = "${_csrf.token}";
+      var headers = {};
+      headers[headerName] = token;
+      console.log(headers);
 
-      stompClient.connect({}, function(frame) {
+      stompClient.connect(headers, function(frame) {
         stompClient.subscribe('/user/queue/updates', function(msgOut) {
           onMessageReceived(msgOut);
         });
