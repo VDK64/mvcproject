@@ -69,7 +69,6 @@
       var token = "${_csrf.token}";
       var headers = {};
       headers[headerName] = token;
-      console.log(headers);
 
       stompClient.connect(headers, function(frame) {
         stompClient.subscribe('/user/queue/updates', function(msgOut) {
