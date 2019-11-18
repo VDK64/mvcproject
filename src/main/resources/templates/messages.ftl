@@ -21,16 +21,16 @@
               <li class='chat-message'>
                 <i>
                   <#if message.from==user.username>
-                    <#if user.avatar??>
-                      <img src="/img/${user.id}/${user.avatar}" class="img-thumbnail" style="width:50px">
+                    <#if user.avatar="default">
+                      <img src="/img/avatar.png" class="img-thumbnail" style="width:50px">
                       <#else>
-                        <img src="/img/avatar.png" class="img-thumbnail" style="width:50px">
+                      <img src="/img/${user.id}/${user.avatar}" class="img-thumbnail" style="width:50px">
                     </#if>
                     <#else>
-                      <#if interlocutor.avatar??>
-                        <img src="/img/${interlocutor.id}/${interlocutor.avatar}" class="img-thumbnail" style="width:50px">
+                      <#if interlocutor.avatar="default">
+                        <img src="/img/avatar.png" class="img-thumbnail" style="width:50px">
                         <#else>
-                          <img src="/img/avatar.png" class="img-thumbnail" style="width:50px">
+                        <img src="/img/${interlocutor.id}/${interlocutor.avatar}" class="img-thumbnail" style="width:50px">
                       </#if>
                   </#if>
                 </i>
@@ -94,10 +94,10 @@
           var avatarElement = document.createElement('i');
           var image = document.createElement('img');
           var avatar = '${user.avatar}';
-          if (avatar != null) {
-            image.setAttribute('src', '/img/${user.id}/${user.avatar}');
-          } else {
+          if (avatar == 'default') {
             image.setAttribute('src', '/img/avatar.png');
+          } else {
+            image.setAttribute('src', '/img/${user.id}/${user.avatar}');
           }
           image.setAttribute('class', 'img-thumbnail');
           image.setAttribute('style', 'width:50px');
@@ -124,10 +124,10 @@
         var avatarElement = document.createElement('i');
         var image = document.createElement('img');
         var avatar = '${interlocutor.avatar}';
-        if (avatar != null) {
-          image.setAttribute('src', '/img/${interlocutor.id}/${interlocutor.avatar}');
-        } else {
+        if (avatar == "default") {
           image.setAttribute('src', '/img/avatar.png');
+        } else {
+          image.setAttribute('src', '/img/${interlocutor.id}/${interlocutor.avatar}');
         }
         image.setAttribute('class', 'img-thumbnail');
         image.setAttribute('style', 'width:50px');

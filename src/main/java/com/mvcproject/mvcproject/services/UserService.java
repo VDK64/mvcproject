@@ -63,6 +63,7 @@ public class UserService implements UserDetailsService {
                 .activationCode(UUID.randomUUID().toString())
                 .authorities(Collections.singleton(Role.USER))
                 .accountNonExpired(true)
+                .avatar("default")
                 .accountNonLocked(true)
                 .credentialsNonExpired(true)
                 .enabled(true)

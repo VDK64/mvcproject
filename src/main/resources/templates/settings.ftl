@@ -4,10 +4,10 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12" style="margin-top: 10px">
-          <#if user.avatar??>
-            <img src="/img/${user.id}/${user.avatar}" class="img-thumbnail" style="width:150px">
+          <#if user.avatar=="default">
+            <img src="/img/avatar.png" class="img-thumbnail" style="width:150px">
             <#else>
-              <img src="/img/avatar.png" class="img-thumbnail" style="width:150px">
+            <img src="/img/${user.id}/${user.avatar}" class="img-thumbnail" style="width:150px">
           </#if>
         </div>
       </div>
