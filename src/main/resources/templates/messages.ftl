@@ -1,7 +1,7 @@
 <#import "/header.ftl" as h>
   <@h.header admin=admin user=user position="messages">
     <link rel="stylesheet" href="../static/css/style.css">
-
+    
     <div id="chat-page" class="">
       <div class="chat-container">
         <div class="chat-header">
@@ -44,7 +44,6 @@
         </div>
       </div>
     </div>
-    </#if>
 
     <script src="/static/js/sock.js"></script>
     <script src="/static/js/stomp.js"></script>
