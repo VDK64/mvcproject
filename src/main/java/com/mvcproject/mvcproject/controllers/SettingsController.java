@@ -4,8 +4,11 @@ import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.services.SettingsService;
 import com.mvcproject.mvcproject.services.UserService;
+import com.mvcproject.mvcproject.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,11 +36,21 @@ public class SettingsController {
     }
 
     @PostMapping
-    public String setSettings(@AuthenticationPrincipal User user, Model model,
-                              @RequestParam("file") MultipartFile file) throws IOException {
+    public String setAvatar(@AuthenticationPrincipal User user, Model model,
+                            @RequestParam("file") MultipartFile file) throws IOException {
         settingsService.saveFile(file, user);
         model.addAttribute("user", user);
         UserService.ifAdmin(model, user);
+        return "settings";
+    }
+
+    @PostMapping(params = "button2")
+    public String setSettings(@AuthenticationPrincipal User user, Model model, @RequestParam String firstname,
+                              @RequestParam String lastname, @RequestParam String username) {
+        User updateUser = settingsService.setSettings(user, firstname, lastname, username, new ModelAndView("settings"));
+        UserService.ifAdmin(model, updateUser);
+        model.addAttribute("user", updateUser);
+        model.addAttribute("ok", true);
         return "settings";
     }
 

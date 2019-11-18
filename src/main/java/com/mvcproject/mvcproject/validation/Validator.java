@@ -13,7 +13,7 @@ public class Validator {
     private final String regexEmail = "^(.+)@(.+)$";
     private final String regexPassword = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[-_!@#$%^&*+=])(?=\\S+$).{4,}$";
     private final int maxNameLength = 15;
-    private final int minNameLength = 1;
+    private final int minNameLength = 2;
     private final int maxPasswordLength = 15;
     private final int minPasswordLength = 4;
 
@@ -31,6 +31,20 @@ public class Validator {
         model.addObject("email", email);
     }
 
+    public void validFirstname(String firstname, ModelAndView modelAndView) {
+        checkFirstname(firstname, modelAndView);
+        modelAndView.addObject("firstname", firstname);
+    }
+    public void validLastname(String lastname, ModelAndView modelAndView) {
+        checkLastname(lastname, modelAndView);
+        modelAndView.addObject("lastname", lastname);
+    }
+
+    public void validUsername(String username, ModelAndView modelAndView) {
+        checkLastname(username, modelAndView);
+        modelAndView.addObject("lastname", username);
+    }
+
     private void checkFirstname(String firstname, ModelAndView model) {
         if (StringUtil.emptyToNull(firstname) == null) {
             throw new CustomServerException(ServerErrors.FIRSTNAME_NULL,
@@ -41,6 +55,10 @@ public class Validator {
                     model);
         }
         if (!firstname.matches(regexName)) {
+            throw new CustomServerException(String.format(ServerErrors.WRONG_FIRSTNAME, minNameLength, maxNameLength),
+                    model);
+        }
+        if (firstname.length()<minNameLength) {
             throw new CustomServerException(String.format(ServerErrors.WRONG_FIRSTNAME, minNameLength, maxNameLength),
                     model);
         }
@@ -57,6 +75,10 @@ public class Validator {
         }
         if (!lastname.matches(regexName)) {
             throw new CustomServerException(String.format(ServerErrors.WRONG_LASTNAME, minNameLength, maxNameLength),
+                    model);
+        }
+        if (lastname.length()<minNameLength) {
+            throw new CustomServerException(String.format(ServerErrors.WRONG_FIRSTNAME, minNameLength, maxNameLength),
                     model);
         }
     }

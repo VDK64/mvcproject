@@ -4,6 +4,7 @@ import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.CustomServerException;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import com.mvcproject.mvcproject.repositories.UserRepo;
+import com.mvcproject.mvcproject.validation.Validator;
 import freemarker.template.utility.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,8 @@ import java.util.UUID;
 public class SettingsService {
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private Validator validator;
     @Value("${upload.path}")
     private String uploadPath;
 
@@ -43,5 +46,26 @@ public class SettingsService {
         }
         user.setAvatar(null);
         userRepo.save(user);
+    }
+
+    public User setSettings(User user, String firstname, String lastname, String username, ModelAndView modelAndView) {
+        User userFromDB = userRepo.findById(user.getId()).orElseThrow();
+        UserService.ifAdmin(modelAndView, user);
+        modelAndView.addObject("user", user);
+        if (!(StringUtil.emptyToNull(firstname) == null)) {
+            validator.validFirstname(firstname, modelAndView);
+            userFromDB.setFirstname(firstname);
+
+        }
+        if (!(StringUtil.emptyToNull(lastname) == null)) {
+            validator.validLastname(lastname, modelAndView);
+            userFromDB.setLastname(lastname);
+        }
+        if (!(StringUtil.emptyToNull(username) == null)) {
+            validator.validUsername(username, modelAndView);
+            userFromDB.setUsername(username);
+        }
+        userRepo.save(userFromDB);
+        return userFromDB;
     }
 }

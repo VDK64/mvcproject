@@ -19,18 +19,47 @@
       <form method="POST">
         <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
         <input type="submit" name="button" placeholder="Delete avatar" value="Delete avatar" />
-      </form>
+      </form><br />
+
       <div class="row">
-        <#if error??>
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            ${error}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+        <div class="form-group">
+          <div class="col-md-12" style="margin-top: 10px">
+            <div class="form-group">
+              <form method="POST">
+                <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+                <input type="text" class="form-control" name="firstname" placeholder=${user.firstname}>
+                <input type="text" class="form-control" name="lastname" placeholder=${user.lastname}>
+                <input type="text" class="form-control" name="username" placeholder=${user.username}>
+                <button type="submit" name="button2">Change data</button>
+              </form>
+            </div>
           </div>
-        </#if>
+        </div>
       </div>
-    </div>
-    </div>
+
+      <div class="row">
+        <div class="form-group">
+        <div class="col-md-12" style="margin-top: 10px">
+          <#if error??>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              ${error}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </#if>
+          <#if ok??>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              Please, relogin to update changes!
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </#if>
+        </div>
+      </div>
+      </div>
+      </div>
+      </div>
 
   </@h.header>
