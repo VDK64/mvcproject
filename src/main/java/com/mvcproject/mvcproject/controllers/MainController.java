@@ -49,8 +49,8 @@ public class MainController {
     @GetMapping("email/activate/{code}")
     public String emailActivate(@PathVariable String code, Model model, @Value("${success.confirm}") String ok,
                                 @Value("${wrong.confirm}") String wrongConfirm) {
-        int res = userService.confirmEmail(code, model);
-        if (res == 1) { model.addAttribute("msg", ok); } else { model.addAttribute("msg", wrongConfirm); }
+        boolean res = userService.confirmEmail(code, model);
+        if (res) { model.addAttribute("msg", ok); } else { model.addAttribute("msg", wrongConfirm); }
         model.addAttribute("admin", false);
         model.addAttribute("user", new User());
         return "emailConfirm";

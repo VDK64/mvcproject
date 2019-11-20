@@ -133,7 +133,7 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("user " + username + " was not found!");} );
     }
 
-    public int confirmEmail(String code, Model model) {
+    public boolean confirmEmail(String code, Model model) {
         User user = userRepo.findByActivationCode(code).orElse(null);
         if (user != null && user.getActivationCode().equals(code)) {
             model.addAttribute("username", user.getUsername());
@@ -142,10 +142,10 @@ public class UserService implements UserDetailsService {
             }
             user.setActivationCode(null);
             userRepo.save(user);
-            return 1;
+            return true;
         } else {
             model.addAttribute("username", "unknown");
-            return 2;
+            return false;
         }
     }
 }
