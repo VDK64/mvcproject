@@ -44,7 +44,8 @@ public class SettingsService {
         if (StringUtil.emptyToNull(user.getAvatar()) == null) {
             throw new CustomServerException(ServerErrors.DEFAULT_AVATAR, model);
         }
-        user.setAvatar(null);
+        new File(uploadPath + "/" + user.getId(), user.getAvatar()).delete();
+        user.setAvatar("default");
         userRepo.save(user);
     }
 
