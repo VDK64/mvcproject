@@ -10,6 +10,8 @@ import com.mvcproject.mvcproject.repositories.DialogRepo;
 import com.mvcproject.mvcproject.repositories.MessageRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +55,7 @@ public class MessageService {
                 message -> response.add(new MessageDto(userRepo.findById(message.getFromId()).get().getUsername(),
                         userRepo.findById(message.getToId()).get().getUsername(), message.getText(), message.getDate(),
                         dialogId
-        ))));
+                ))));
         return response;
     }
 
@@ -78,5 +80,17 @@ public class MessageService {
         messageRepo.save(message);
         MessageDto out = new MessageDto(msg.getFrom(), msg.getTo(), msg.getText(), message.getDate());
         template.convertAndSendToUser(msg.getTo(), "/queue/updates", out);
+    }
+
+    @Transactional
+    public boolean haveNewMessages(User user) {
+        User userFromDB = userRepo.findByUsername(user.getUsername()).orElseThrow();
+        Set<Dialog> dialogs = userFromDB.getDialogs();
+        for (Dialog dialog : dialogs) {
+            if (dialog.getNewMessages()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

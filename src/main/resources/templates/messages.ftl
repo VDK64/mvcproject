@@ -60,7 +60,7 @@
       // stompClient.debug = null;
       var username = null;
       var headerName = "${_csrf.headerName}";
-      var token = "aasdasdasd";
+      var token = "${_csrf.token}";
       var headers = {};
       headers[headerName] = token;
 
@@ -140,14 +140,6 @@
         messageArea.scrollTop = messageArea.scrollHeight;
       }
 
-      function getAvatarColor(messageSender) {
-        var hash = 0;
-        for (var i = 0; i < messageSender.length; i++) {
-          hash = 31 * hash + messageSender.charCodeAt(i);
-        }
-        var index = Math.abs(hash % colors.length);
-        return colors[index];
-      }
     </script>
 
   </@h.header>

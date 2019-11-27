@@ -20,6 +20,7 @@ public class MainController {
     public String getMainPage(@AuthenticationPrincipal User user, Model model) {
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
+        model.addAttribute("newMessages", user);
         return "index";
     }
 

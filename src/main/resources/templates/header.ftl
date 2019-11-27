@@ -60,11 +60,11 @@
               </li>
           </#if>
           <#if position=="messages" || position=="messagesD">
-            <li class="nav-item active">
+            <li id="messagesId" class="nav-item active">
               <a class="nav-link" href="/dialogs">Messages</a>
             </li>
             <#else>
-              <li class="nav-item">
+              <li id="messagesId" class="nav-item">
                 <a class="nav-link" href="/dialogs">Messages</a>
               </li>
           </#if>

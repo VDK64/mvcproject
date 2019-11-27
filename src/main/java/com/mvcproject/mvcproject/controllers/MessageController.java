@@ -6,6 +6,7 @@ import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +52,7 @@ public class MessageController {
     }
 
     @MessageMapping("/room")
-    public void sendSpecific(@Payload MessageDto msg, Principal user, @Header("simpSessionId") String sessionId) {
+    public void sendSpecific(@Payload MessageDto msg, Principal user) {
         messageService.sendMessage(user, msg);
     }
 }
