@@ -1,7 +1,7 @@
 <#import "/header.ftl" as h>
   <@h.header admin=admin user=user position="messages">
     <link rel="stylesheet" href="../static/css/style.css">
-    
+
     <div id="chat-page" class="">
       <div class="chat-container">
         <div class="chat-header">
@@ -55,9 +55,10 @@
       var messageInput = document.querySelector('#message');
       var messageArea = document.querySelector('#messageArea');
       var stompClient = Stomp.over(new SockJS('/room'));
+      // stompClient.debug = null;
       var username = null;
       var headerName = "${_csrf.headerName}";
-      var token = "${_csrf.token}";
+      var token = "aasdasdasd";
       var headers = {};
       headers[headerName] = token;
 
