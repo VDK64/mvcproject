@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="../static/css/style.css">
 
     <div id="chat-page" class="">
-      <div class="chat-container">
+      <div id="chat-container" class="chat-container">
         <div class="chat-header">
           <h2>Spring WebSocket Chat Demo</h2>
         </div>
@@ -49,8 +49,8 @@
     <script src="/static/js/stomp.js"></script>
     <script type="text/javascript">
       'use strict';
-      var block = document.querySelector('#chat-container');
-      block.scrollBottom = block.scrollHeight;
+      var block = document.querySelector('#messageArea');
+      block.scrollTop = block.scrollHeight;
       var usernamePage = document.querySelector('#username-page');
       var chatPage = document.querySelector('#chat-page');
       var messageForm = document.querySelector('#messageForm');
