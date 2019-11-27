@@ -49,6 +49,8 @@
     <script src="/static/js/stomp.js"></script>
     <script type="text/javascript">
       'use strict';
+      var block = document.querySelector('#chat-container');
+      block.scrollBottom = block.scrollHeight;
       var usernamePage = document.querySelector('#username-page');
       var chatPage = document.querySelector('#chat-page');
       var messageForm = document.querySelector('#messageForm');
