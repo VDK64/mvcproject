@@ -69,4 +69,18 @@ public class SettingsService {
         userRepo.save(userFromDB);
         return userFromDB;
     }
+
+    public void deposit(User user, String deposit, ModelAndView modelAndView) {
+        Float value = validator.validValueAndConvertToFlat(deposit, modelAndView);
+        if (user.getDeposit() != 0f) { user.setDeposit(user.getDeposit() + value); }
+        else { user.setDeposit(value); }
+        userRepo.save(user);
+    }
+
+    public void withdraw(User user, String deposit, ModelAndView modelAndView) {
+        Float value = validator.validValueAndConvertToFlat(deposit, modelAndView);
+        if (user.getDeposit() < value) { throw new CustomServerException(ServerErrors.NOT_ENOUGH_DEPOSIT, modelAndView); }
+        else { user.setDeposit(user.getDeposit() - value); }
+        userRepo.save(user);
+    }
 }

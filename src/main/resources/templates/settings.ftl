@@ -26,13 +26,30 @@
         <div class="form-group">
           <div class="col-md-12" style="margin-top: 10px">
             <div class="form-group">
+              Choose your data
               <form method="POST">
                 <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
                 <input type="text" class="form-control" name="firstname" placeholder=${user.firstname}>
                 <input type="text" class="form-control" name="lastname" placeholder=${user.lastname}>
                 <input type="text" class="form-control" name="username" placeholder=${user.username}>
                 <!-- <button type="submit" name="button2">Change data</button> -->
-                <button type="submit" name="button2" class="btn btn-success">Change data</button>
+                <button type="submit" name="button2" class="btn btn-success" style="margin-top: 5px">Change data</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="form-group">
+          <div class="col-md-12" style="margin-top: 10px">
+            <div class="form-group">
+              Draw or withdraw your deposit
+              <form method="POST">
+                <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+                <input type="text" class="form-control" name="value" placeholder=${user.deposit}>
+                <button type="submit" name="deposit" class="btn btn-success" style="margin-top: 5px">Deposit</button>
+                <button type="submit" name="withdraw" class="btn btn-secondary" style="margin-top: 5px">Withdraw</button>
               </form>
             </div>
           </div>
@@ -52,7 +69,7 @@
           </#if>
           <#if ok??>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-              Please, relogin to update changes!
+              ${ok}
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
               </button>

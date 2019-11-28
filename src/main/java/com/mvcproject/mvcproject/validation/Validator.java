@@ -6,6 +6,8 @@ import freemarker.template.utility.StringUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.rmi.ServerException;
+
 @Component
 public class Validator {
     private final String regexName = "^(?!\\s*$)[а-яА-Яa-zA-z]*$";
@@ -124,5 +126,23 @@ public class Validator {
         if (!email.matches(regexEmail)) {
             throw new CustomServerException(ServerErrors.WRONG_EMAIL, model);
         }
+    }
+
+    private Float checkCorrectlyValueOfDeposit(String deposit, ModelAndView modelAndView) {
+        String replace = deposit.replace(',', '.');
+        @SuppressWarnings("WrapperTypeMayBePrimitive") Float value;
+        try {
+            value = Float.parseFloat(replace);
+        } catch (NumberFormatException e) {
+            throw new CustomServerException(ServerErrors.WRONG_VALUE, modelAndView);
+        }
+        if (value<0) {
+            throw new CustomServerException(ServerErrors.WRONG_VALUE, modelAndView);
+        }
+        return value;
+    }
+
+    public Float validValueAndConvertToFlat(String deposit, ModelAndView modelAndView) {
+        return checkCorrectlyValueOfDeposit(deposit, modelAndView);
     }
 }

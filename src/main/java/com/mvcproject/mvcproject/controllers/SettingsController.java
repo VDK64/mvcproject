@@ -55,7 +55,7 @@ public class SettingsController {
         User updateUser = settingsService.setSettings(user, firstname, lastname, username, new ModelAndView("settings"));
         UserService.ifAdmin(model, updateUser);
         model.addAttribute("user", updateUser);
-        model.addAttribute("ok", true);
+        model.addAttribute("ok", "Please, relogin to update changes!");
         return "settings";
     }
 
@@ -65,6 +65,28 @@ public class SettingsController {
         UserService.ifAdmin(model, user);
         model.addObject("user", user);
         settingsService.deleteAvatar(user, model);
+        return model;
+    }
+
+    @PostMapping(params = "deposit")
+    public ModelAndView deposit(@AuthenticationPrincipal User user, ModelAndView model,
+                                @RequestParam String value) {
+        UserService.ifAdmin(model, user);
+        model.addObject("user", user);
+        model.addObject("newMessages", messageService.haveNewMessages(user));
+        settingsService.deposit(user, value, model);
+        model.addObject("ok", "Your deposit was successfully replenished!");
+        return model;
+    }
+
+    @PostMapping(params = "withdraw")
+    public ModelAndView withdraw(@AuthenticationPrincipal User user, ModelAndView model,
+                                @RequestParam String value) {
+        UserService.ifAdmin(model, user);
+        model.addObject("user", user);
+        model.addObject("newMessages", messageService.haveNewMessages(user));
+        settingsService.withdraw(user, value, model);
+        model.addObject("ok", "Withdraw was successfully!");
         return model;
     }
 }
