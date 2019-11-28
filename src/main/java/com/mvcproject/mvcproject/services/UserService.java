@@ -68,6 +68,7 @@ public class UserService implements UserDetailsService {
                 .accountNonLocked(true)
                 .credentialsNonExpired(true)
                 .enabled(true)
+                .deposit(0f)
                 .build());
         checkUserExsist(user, model);
         userRepo.save(user);

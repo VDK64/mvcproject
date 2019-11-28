@@ -42,4 +42,6 @@ public class User implements UserDetails {
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "users")
     private Set<Dialog> dialogs = new LinkedHashSet<>();
+    @NotNull
+    private Float deposit;
 }
