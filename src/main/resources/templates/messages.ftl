@@ -71,15 +71,8 @@
         stompClient.subscribe('/user/queue/updates', function(msgOut) {
           onMessageReceived(msgOut);
         });
-        stompClient2.connect(headers, function(frame) {
-          stompClient.subscribe('/user/queue/newMessages', function(msgOut) {
-            updateMessage(msgOut)
-          });
-        });
         username = frame.headers['user-name'];
       });
-
-
 
       function updateMessage(payload) {
         let message = JSON.parse(payload.body);
@@ -90,7 +83,7 @@
           date: message.date,
           dialogId: '${dialogId}'
         };
-        stompClient2.send("/app/newMessage", {}, JSON.stringify(chatMessage));
+          stompClient2.send("/app/newMessage", {}, JSON.stringify(chatMessage))
       }
 
       function sendMessage(event) {

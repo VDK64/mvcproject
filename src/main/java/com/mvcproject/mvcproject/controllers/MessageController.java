@@ -55,7 +55,8 @@ public class MessageController {
 
     @MessageMapping("/room")
     public void sendSpecific(@Payload MessageDto msg) {
-        messageService.sendMessage(msg);
+        MessageDto out = messageService.sendMessage(msg);
+        template.convertAndSendToUser(msg.getTo(), "/queue/updates", out);
     }
 
     @MessageMapping("/newMessage")

@@ -30,7 +30,8 @@
                 <input type="text" class="form-control" name="firstname" placeholder=${user.firstname}>
                 <input type="text" class="form-control" name="lastname" placeholder=${user.lastname}>
                 <input type="text" class="form-control" name="username" placeholder=${user.username}>
-                <button type="submit" name="button2">Change data</button>
+                <!-- <button type="submit" name="button2">Change data</button> -->
+                <button type="submit" name="button2" class="btn btn-success">Change data</button>
               </form>
             </div>
           </div>

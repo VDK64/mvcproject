@@ -72,15 +72,14 @@ public class MessageService {
     }
 
     @Transactional
-    public void sendMessage(MessageDto msg) {
+    public MessageDto sendMessage(MessageDto msg) {
         User fromUser = userRepo.findByUsername(msg.getFrom()).orElseThrow();
         User toUser = userRepo.findByUsername(msg.getTo()).orElseThrow();
         Dialog dialog = dialogRepo.findById(msg.getDialogId()).orElseThrow();
         Message message = new Message(null, msg.getText(), new Date(), fromUser.getId(), toUser.getId(), dialog,
                 true);
         messageRepo.save(message);
-        MessageDto out = new MessageDto(msg.getFrom(), msg.getTo(), msg.getText(), message.getDate());
-        template.convertAndSendToUser(msg.getTo(), "/queue/updates", out);
+        return new MessageDto(msg.getFrom(), msg.getTo(), msg.getText(), message.getDate());
     }
 
     @Transactional
@@ -97,11 +96,12 @@ public class MessageService {
         return false;
     }
 
-    @Transactional
     public void readNewMessage(Long dialogId) {
         List<Message> messages = messageRepo.findByNewMessageAndDialog(true,
                 dialogRepo.findById(dialogId).orElseThrow());
-        messages.forEach(message -> message.setNewMessage(false));
+        messages.forEach(message -> {
+            message.setNewMessage(false);
+        });
         messageRepo.saveAll(messages);
     }
 }
