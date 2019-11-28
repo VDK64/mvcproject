@@ -29,4 +29,5 @@ public class Message {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dlg_id")
     private Dialog dialog;
+    private Boolean newMessage;
 }

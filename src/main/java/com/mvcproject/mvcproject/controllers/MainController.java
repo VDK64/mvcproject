@@ -1,6 +1,7 @@
 package com.mvcproject.mvcproject.controllers;
 
 import com.mvcproject.mvcproject.entities.User;
+import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,12 +16,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class MainController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private MessageService messageService;
 
     @RequestMapping("/")
     public String getMainPage(@AuthenticationPrincipal User user, Model model) {
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
-        model.addAttribute("newMessages", user);
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
         return "index";
     }
 

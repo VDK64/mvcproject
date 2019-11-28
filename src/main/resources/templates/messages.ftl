@@ -57,6 +57,7 @@
       var messageInput = document.querySelector('#message');
       var messageArea = document.querySelector('#messageArea');
       var stompClient = Stomp.over(new SockJS('/room'));
+      var stompClient2 = Stomp.over(new SockJS('/newMessage'));
       // stompClient.debug = null;
       var username = null;
       var headerName = "${_csrf.headerName}";
@@ -64,12 +65,33 @@
       var headers = {};
       headers[headerName] = token;
 
+
+
       stompClient.connect(headers, function(frame) {
         stompClient.subscribe('/user/queue/updates', function(msgOut) {
           onMessageReceived(msgOut);
         });
+        stompClient2.connect(headers, function(frame) {
+          stompClient.subscribe('/user/queue/newMessages', function(msgOut) {
+            updateMessage(msgOut)
+          });
+        });
         username = frame.headers['user-name'];
       });
+
+
+
+      function updateMessage(payload) {
+        let message = JSON.parse(payload.body);
+        let chatMessage = {
+          from: message.from,
+          to: message.to,
+          text: message.text,
+          date: message.date,
+          dialogId: '${dialogId}'
+        };
+        stompClient2.send("/app/newMessage", {}, JSON.stringify(chatMessage));
+      }
 
       function sendMessage(event) {
         var messageContent = messageInput.value.trim();
@@ -138,6 +160,7 @@
         messageElement.appendChild(textElement);
         messageArea.appendChild(messageElement);
         messageArea.scrollTop = messageArea.scrollHeight;
+        updateMessage(payload);
       }
 
     </script>

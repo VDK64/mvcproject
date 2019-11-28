@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Data
 @EqualsAndHashCode(exclude = { "users", "messages" } )
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "dlg")
@@ -28,11 +29,4 @@ public class Dialog {
     @ToString.Exclude
     @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
-    private Boolean newMessages = false;
-
-    public Dialog(Long id, Set<User> users, List<Message> messages) {
-        this.id = id;
-        this.users = users;
-        this.messages = messages;
-    }
 }

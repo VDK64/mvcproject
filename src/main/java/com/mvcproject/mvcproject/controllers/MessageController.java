@@ -2,6 +2,7 @@ package com.mvcproject.mvcproject.controllers;
 
 import com.mvcproject.mvcproject.dto.DialogDtoResponse;
 import com.mvcproject.mvcproject.dto.MessageDto;
+import com.mvcproject.mvcproject.entities.Message;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
@@ -42,6 +43,7 @@ public class MessageController {
     @RequestMapping("/messages/{dialogId}")
     public String getMessages(@AuthenticationPrincipal User user,
                               @PathVariable Long dialogId, Model model) {
+        messageService.readNewMessage(dialogId);
         List<MessageDto> response = messageService.loadMessages(user, dialogId);
         UserService.ifAdmin(model, user);
         model.addAttribute("interlocutor", messageService.getInterlocutor(dialogId, user.getId()));
@@ -52,7 +54,12 @@ public class MessageController {
     }
 
     @MessageMapping("/room")
-    public void sendSpecific(@Payload MessageDto msg, Principal user) {
-        messageService.sendMessage(user, msg);
+    public void sendSpecific(@Payload MessageDto msg) {
+        messageService.sendMessage(msg);
+    }
+
+    @MessageMapping("/newMessage")
+    public void updateMessage(@Payload MessageDto msg) {
+        messageService.readNewMessage(msg.getDialogId());
     }
 }

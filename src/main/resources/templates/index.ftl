@@ -28,7 +28,20 @@
       var token = "${_csrf.token}";
       var headers = {};
       headers[headerName] = token;
-      var newMessages = true;
+      var newMessages = '${newMessages?c}';
+      var once = false;
+
+      onMessage('');
+
+      console.log('once ' + once);
+
+      console.log('newMessages ' + newMessages);
+
+      event = new Event("message");
+
+      document.addEventListener("message", function(event) {
+        onMessage('true');
+      });
 
       function showNotification(html) {
         let notification = document.createElement('div');
@@ -43,23 +56,25 @@
 
       stompClient.connect(headers, function(frame) {
         stompClient.subscribe('/user/queue/updates', function(msgOut) {
-          onMessageReceived(msgOut);
+          newMessages = true;
+          showNotification('You have new message');
+          document.dispatchEvent(event);
         });
         username = frame.headers['user-name'];
       });
 
-      function onMessageReceived(payload) {
-        showNotification('You have new message');
+      function onMessage(arg) {
+      if (arg === 'true' || newMessages == 'true') {
+        if (!once) {
+        setInterval(function() {
+          var a = document.getElementById('messagesId').style.opacity || 1;
+          document.getElementById('messagesId').style.opacity = ((parseInt(a)) ? 0 : 1);
+        }, 450);
+        once = true;
       }
+    }
+  }
 
-      function opacityMessages() {
-        if (newMessages) {
-          setInterval(function() {
-            var a = document.getElementById('messagesId').style.opacity || 1;
-            document.getElementById('messagesId').style.opacity = ((parseInt(a)) ? 0 : 1);
-          }, 450);
-        }
-      }
     </script>
 
   </@h.header>
