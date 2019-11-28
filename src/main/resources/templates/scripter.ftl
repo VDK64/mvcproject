@@ -28,7 +28,7 @@
 
   function showNotification(html) {
     let notification = document.createElement('div');
-    let div = document.getElementById('${class}');    
+    let div = document.getElementById('${class}');
     notification.className = "alert alert-info notification";
     notification.setAttribute('role', 'alert');
     notification.setAttribute('style', 'margin-top:10px; right:10px')

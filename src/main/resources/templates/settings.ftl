@@ -60,19 +60,13 @@
         <div class="form-group">
         <div class="col-md-12" style="margin-top: 10px">
           <#if error??>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div id="errorSit" class="alert alert-danger alert-dismissible fade show" role="alert">
               ${error}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-              </button>
             </div>
           </#if>
           <#if ok??>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div id="successSit" class="alert alert-success alert-dismissible fade show" role="alert">
               ${ok}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-              </button>
             </div>
           </#if>
         </div>
@@ -80,6 +74,20 @@
       </div>
       </div>
 
+      <script type="text/javascript">
+        let not = document.getElementById('errorSit');
+        let ok = document.getElementById('successSit');
+        if (not !== null) {
+          setTimeout(() => {
+            not.remove();
+          }, 5000);
+        }
+        if (ok !== null) {
+          setTimeout(() => {
+            ok.remove();
+          }, 5000);
+        }
+      </script>
       <@s.scripter class="container-fluid" />
 
   </@h.header>

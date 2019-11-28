@@ -92,7 +92,7 @@
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             <a class="nav-link">
-              <font color="#dcf2ee">Your deposit: ${user.deposit} &#8381</font>
+              <font color="#dcf2ee">Deposit: ${user.deposit} &#8381</font>
             </a>
           </li>
           <li class="nav-item">
