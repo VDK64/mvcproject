@@ -76,6 +76,7 @@ public class MessageService {
         User fromUser = userRepo.findByUsername(msg.getFrom()).orElseThrow();
         User toUser = userRepo.findByUsername(msg.getTo()).orElseThrow();
         Dialog dialog = dialogRepo.findById(msg.getDialogId()).orElseThrow();
+        dialog.setHaveNewMessages(true);
         Message message = new Message(null, msg.getText(), new Date(), fromUser.getId(), toUser.getId(), dialog,
                 true);
         messageRepo.save(message);
@@ -87,20 +88,20 @@ public class MessageService {
         User userFromDB = userRepo.findByUsername(user.getUsername()).orElseThrow();
         Set<Dialog> dialogs = userFromDB.getDialogs();
         for (Dialog dialog : dialogs) {
-            for (Message message : messageRepo.findByNewMessageAndDialog(true, dialog)) {
-                if (message.getNewMessage()) {
-                    return true;
-                }
-            }
+           if (dialog.getHaveNewMessages()) {
+               return true;
+           }
         }
         return false;
     }
 
+    @Transactional
     public void readNewMessage(Long dialogId) {
         List<Message> messages = messageRepo.findByNewMessageAndDialog(true,
                 dialogRepo.findById(dialogId).orElseThrow());
         messages.forEach(message -> {
             message.setNewMessage(false);
+            message.getDialog().setHaveNewMessages(false);
         });
         messageRepo.saveAll(messages);
     }

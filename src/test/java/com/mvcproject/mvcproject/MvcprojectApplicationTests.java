@@ -44,7 +44,8 @@ public class MvcprojectApplicationTests {
         userRepo.save(user2);
         user1 = userRepo.findByUsername("aleks555").orElse(null);
         user2 = userRepo.findByUsername("Petr555").orElse(null);
-        Dialog dialog1 = new Dialog(null, Stream.of(user1, user2).collect(Collectors.toSet()), new ArrayList<>());
+        Dialog dialog1 = new Dialog(null, Stream.of(user1, user2).collect(Collectors.toSet()), new ArrayList<>()
+                , false);
         dialogRepo.save(dialog1);
         user1 = userRepo.findByUsername("aleks555").orElse(null);
         System.out.println();

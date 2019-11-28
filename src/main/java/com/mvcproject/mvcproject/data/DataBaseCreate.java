@@ -122,9 +122,9 @@ public class DataBaseCreate {
         User user2 = userRepo.findByUsername("kasha111").orElseThrow();
         User user3 = userRepo.findByUsername("petro123").orElseThrow();
         Dialog dialog1 = new Dialog(null, Stream.of(user1, user2).collect(Collectors.toSet()),
-                new ArrayList<>());
+                new ArrayList<>(), false);
         Dialog dialog2 = new Dialog(null, Stream.of(user1, user3).collect(Collectors.toSet()),
-                new ArrayList<>());
+                new ArrayList<>(), false);
         dialogRepo.save(dialog1);
         dialogRepo.save(dialog2);
         Message message1 = new Message(null, "Hey, Kasha!", new Date(), user1.getId(), user2.getId(), dialog1
