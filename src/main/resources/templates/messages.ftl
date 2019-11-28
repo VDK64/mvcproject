@@ -5,7 +5,7 @@
     <div id="chat-page" class="">
       <div id="chat-container" class="chat-container">
         <div class="chat-header">
-          <h2>Spring WebSocket Chat Demo</h2>
+          <h2>Chat with ${interlocutor.username}</h2>
         </div>
         <ul id="messageArea">
           <#if messages??>

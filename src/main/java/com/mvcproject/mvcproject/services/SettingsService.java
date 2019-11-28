@@ -32,11 +32,13 @@ public class SettingsService {
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + file.getOriginalFilename();
-            file.transferTo(new File(uploadPath + "/" + user.getId() + "/" + resultFilename));
-            user.setAvatar(resultFilename);
-            userRepo.save(user);
+            if (user.getAvatar().equals("default")) {
+                String uuidFile = UUID.randomUUID().toString();
+                String resultFilename = uuidFile + "." + file.getOriginalFilename();
+                file.transferTo(new File(uploadPath + "/" + user.getId() + "/" + resultFilename));
+                user.setAvatar(resultFilename);
+                userRepo.save(user);
+            }
         }
     }
 

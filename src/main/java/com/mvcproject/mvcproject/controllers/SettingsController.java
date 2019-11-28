@@ -44,6 +44,7 @@ public class SettingsController {
                             @RequestParam("file") MultipartFile file) throws IOException {
         settingsService.saveFile(file, user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("user", user);
         UserService.ifAdmin(model, user);
         return "settings";
     }
