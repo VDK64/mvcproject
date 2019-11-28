@@ -2,6 +2,7 @@ package com.mvcproject.mvcproject.controllers;
 
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.UserRepo;
+import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.SettingsService;
 import com.mvcproject.mvcproject.services.UserService;
 import com.mvcproject.mvcproject.validation.Validator;
@@ -27,9 +28,12 @@ public class SettingsController {
     private SettingsService settingsService;
     @Autowired
     private UserRepo userrepo;
+    @Autowired
+    private MessageService messageService;
 
     @GetMapping
     public String getSettings(@AuthenticationPrincipal User user, Model model) {
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("user", user);
         UserService.ifAdmin(model, user);
         return "settings";
@@ -39,7 +43,7 @@ public class SettingsController {
     public String setAvatar(@AuthenticationPrincipal User user, Model model,
                             @RequestParam("file") MultipartFile file) throws IOException {
         settingsService.saveFile(file, user);
-        model.addAttribute("user", user);
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
         UserService.ifAdmin(model, user);
         return "settings";
     }
@@ -47,6 +51,7 @@ public class SettingsController {
     @PostMapping(params = "button2")
     public String setSettings(@AuthenticationPrincipal User user, Model model, @RequestParam String firstname,
                               @RequestParam String lastname, @RequestParam String username) {
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
         User updateUser = settingsService.setSettings(user, firstname, lastname, username, new ModelAndView("settings"));
         UserService.ifAdmin(model, updateUser);
         model.addAttribute("user", updateUser);
@@ -56,6 +61,7 @@ public class SettingsController {
 
     @PostMapping(params = "button")
     public ModelAndView deleteAvatar(@AuthenticationPrincipal User user, ModelAndView model) {
+        model.addObject("newMessages", messageService.haveNewMessages(user));
         UserService.ifAdmin(model, user);
         model.addObject("user", user);
         settingsService.deleteAvatar(user, model);

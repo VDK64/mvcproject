@@ -1,8 +1,9 @@
 <#import "/header.ftl" as h>
+<#import "/scripter.ftl" as s>
   <@h.header admin=admin user=user position="messagesD">
-  
 
-    <div class="container col-sm-6">
+
+    <div id="container col-sm-6" class="container col-sm-6">
       <table class="table">
         <thead align="center">
           <tr>
@@ -29,4 +30,5 @@
       </table>
     </div>
 
+    <@s.scripter class="container col-sm-6" />
     </@h.header>

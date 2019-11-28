@@ -2,6 +2,7 @@ package com.mvcproject.mvcproject.controllers;
 
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
+import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,10 +19,13 @@ import java.util.Map;
 public class AdminController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private MessageService messageService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/userList")
     public String getList(@AuthenticationPrincipal User user, Model model) {
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
         Iterable<User> allUsers = userService.getAllUsers();
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
@@ -34,6 +38,7 @@ public class AdminController {
     @GetMapping("/{user}")
     public String getEditUser(@PathVariable User user, Model model) {
         UserService.ifAdmin(model, user);
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("user", user);
         model.addAttribute("authorities", Role.values());
         model.addAttribute("username", user.getUsername());
@@ -47,6 +52,7 @@ public class AdminController {
                            @RequestParam Map<String, String> authorities, Model model) {
         userService.changeUser(user, firstname, lastname, username, password, authorities, new ModelAndView("editUser"));
         Iterable<User> allUsers = userService.getAllUsers();
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("users", allUsers);
         model.addAttribute("user", user);
         model.addAttribute("username", user.getUsername());

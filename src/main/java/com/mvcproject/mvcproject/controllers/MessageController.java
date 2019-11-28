@@ -32,6 +32,7 @@ public class MessageController {
 
     @RequestMapping("/dialogs")
     public String getDialogs(@AuthenticationPrincipal User user, Model model) {
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
         Set<DialogDtoResponse> response = messageService.getDialogs(user.getId());
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);

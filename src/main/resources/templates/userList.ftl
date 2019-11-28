@@ -1,7 +1,8 @@
 <#import "/header.ftl" as h>
+<#import "/scripter.ftl" as s>
   <@h.header admin=admin user=user position="admin">
 
-    <div class="container" style="margin-top: 50px">
+    <div id="container" class="container" style="margin-top: 50px">
       <table class="table">
         <#assign i=0>
           <thead><b>
@@ -36,5 +37,7 @@
           </tbody>
       </table>
     </div>
+
+    <@s.scripter class="container" />
 
   </@h.header>

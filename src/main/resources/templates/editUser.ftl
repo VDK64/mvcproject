@@ -1,6 +1,6 @@
 <#import "/header.ftl" as h>
   <@h.header admin=admin user=user position="editU">
-  
+
 
     <div class="container" style="margin-top:45px">
       <div class="row">
@@ -44,5 +44,7 @@
         </div>
       </div>
     </div>
+
+    <@s.scripter class="container" />
 
   </@h.header>

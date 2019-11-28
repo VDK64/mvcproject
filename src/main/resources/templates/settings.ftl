@@ -1,7 +1,8 @@
 <#import "/header.ftl" as h>
+<#import "/scripter.ftl" as s>
   <@h.header admin=admin user=user position="settings">
 
-    <div class="container-fluid">
+    <div id="container-fluid" class="container-fluid">
       <div class="row">
         <div class="col-md-12" style="margin-top: 10px">
           <#if user.avatar=="default">
@@ -61,6 +62,7 @@
       </div>
       </div>
       </div>
-      </div>
+
+      <@s.scripter class="container-fluid" />
 
   </@h.header>
