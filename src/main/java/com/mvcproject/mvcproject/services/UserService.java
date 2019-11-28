@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -147,5 +148,19 @@ public class UserService implements UserDetailsService {
             model.addAttribute("username", "unknown");
             return false;
         }
+    }
+
+    @Transactional
+    public List<User> getFriends(User user) {
+        List<User> friendsList = new ArrayList<>();
+        User userFromDB = userRepo.findById(user.getId()).orElseThrow();
+        userFromDB.getDialogs().forEach(dialog -> {
+            dialog.getUsers().forEach(user1 -> {
+                if (!user1.getUsername().equals(user.getUsername())) {
+                    friendsList.add(user1);
+                }
+            });
+        });
+        return friendsList;
     }
 }

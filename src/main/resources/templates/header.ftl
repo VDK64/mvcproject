@@ -29,6 +29,15 @@
                 <a class="nav-link" href="/">Home</a>
               </li>
           </#if>
+          <#if position=="friends">
+            <li class="nav-item active">
+              <a class="nav-link" href="/friends">Friends</a>
+            </li>
+            <#else>
+              <li class="nav-item">
+                <a class="nav-link" href="/friends">Friends</a>
+              </li>
+          </#if>
           <#if admin>
             <#if position=="admin">
               <li class="nav-item active">
