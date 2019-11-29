@@ -3,7 +3,7 @@
   <@h.header admin=admin user=user position="friends">
     <link rel="stylesheet" href="../static/css/style.css">
 
-    <div id="container-fluid" class="container-fluid">
+    <div id="container-fluid" class="container-fluid" style="margin-left:10px; margin-top:10px">
       <#list friends as friend>
        <div class="row">
          <#if friend.avatar=="default">

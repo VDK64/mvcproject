@@ -26,7 +26,7 @@
   // event = new Event("message");
 
   document.addEventListener("message", function(event) {
-    onMessage('true', event.username);
+    onMessage('true', event.detail);
   });
 
   function showNotification(html) {
@@ -45,8 +45,8 @@
       newMessages = true;
       let message = JSON.parse(msgOut.body);
       showNotification('You have new message');
-      let event = new CustomEvent("message", {'username':message.username});
-      console.log(event);
+      let event = new CustomEvent("message", {'detail':message.username});
+      // console.log(event);
       document.dispatchEvent(event);
     });
     username = frame.headers['user-name'];
