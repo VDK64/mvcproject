@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/friends")
 public class UserController {
     @Autowired
     private UserRepo userRepo;
@@ -23,7 +22,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
+    @GetMapping("/friends")
     public String friends(@AuthenticationPrincipal User user, Model model) {
         List<User> friends = userService.getFriends(user);
         model.addAttribute("friends", friends);
@@ -31,5 +30,13 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         return "friends";
+    }
+
+    @GetMapping("/bets")
+    public String bets(@AuthenticationPrincipal User user, Model model) {
+        UserService.ifAdmin(model, user);
+        model.addAttribute("user", user);
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        return "bets";
     }
 }

@@ -105,4 +105,14 @@ public class MessageService {
         });
         messageRepo.saveAll(messages);
     }
+
+    @Transactional
+    public boolean accessRouter(Long id, Long dialogId) {
+        User userFromDB = userRepo.findById(id).orElseThrow();
+        for(Dialog dialog : userFromDB.getDialogs()) {
+            if (dialog.getId().equals(dialogId))
+                return true;
+        }
+        return false;
+    }
 }

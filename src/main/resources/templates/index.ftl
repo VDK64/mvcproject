@@ -3,7 +3,7 @@
   <@h.header admin=admin user=user position="home">
     <link rel="stylesheet" href="../static/css/style.css">
 
-    <div id="container-fluid" class="container-fluid">
+    <div id="container-fluid" class="container-fluid" style="margin-left:10px">
       <div class="row">
         <div class="col-md-12" style="margin-top: 10px">
           <#if user.avatar=="default">

@@ -44,11 +44,12 @@ public class MessageController {
     @RequestMapping("/messages/{dialogId}")
     public String getMessages(@AuthenticationPrincipal User user,
                               @PathVariable Long dialogId, Model model) {
+        UserService.ifAdmin(model, user);
+        model.addAttribute("user", user);
+        if (!messageService.accessRouter(user.getId(), dialogId)) { return "errorPage"; }
         messageService.readNewMessage(dialogId);
         List<MessageDto> response = messageService.loadMessages(user, dialogId);
-        UserService.ifAdmin(model, user);
         model.addAttribute("interlocutor", messageService.getInterlocutor(dialogId, user.getId()));
-        model.addAttribute("user", user);
         model.addAttribute("messages", response);
         model.addAttribute("dialogId", dialogId);
         return "messages";

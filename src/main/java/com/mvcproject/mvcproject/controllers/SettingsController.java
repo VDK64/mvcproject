@@ -49,7 +49,7 @@ public class SettingsController {
         return "settings";
     }
 
-    @PostMapping(params = "button2")
+    @PostMapping(params = "changeData")
     public String setSettings(@AuthenticationPrincipal User user, Model model, @RequestParam String firstname,
                               @RequestParam String lastname, @RequestParam String username) {
         model.addAttribute("newMessages", messageService.haveNewMessages(user));

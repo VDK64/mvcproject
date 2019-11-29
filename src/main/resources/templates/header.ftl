@@ -38,6 +38,15 @@
                 <a class="nav-link" href="/friends">Friends</a>
               </li>
           </#if>
+          <#if position=="bets">
+            <li class="nav-item active">
+              <a class="nav-link" href="/bets">Bets</a>
+            </li>
+            <#else>
+              <li class="nav-item">
+                <a class="nav-link" href="/bets">Bets</a>
+              </li>
+          </#if>
           <#if admin>
             <#if position=="admin">
               <li class="nav-item active">
@@ -82,7 +91,7 @@
       </div>
       <div class="mx-auto order-0">
         <a class="navbar-brand mx-auto">
-          <font color="#dcf2ee"> FriendBets </font>
+          <font color="#dcf2ee"> FriendsBets </font>
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
           <span class="navbar-toggler-icon"></span>
