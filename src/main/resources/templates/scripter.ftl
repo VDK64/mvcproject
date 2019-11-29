@@ -46,7 +46,7 @@
       newMessages = true;
       let message = JSON.parse(msgOut.body);
       showNotification('You have new message');
-      let event = new CustomEvent("message", {'detail':message.username});
+      let event = new CustomEvent("message", {'detail':message.from});
       // console.log(event);
       document.dispatchEvent(event);
     });
@@ -68,11 +68,18 @@
 
   function dialogStyle(username) {
     let elem = document.getElementById(username + '-new');
-    if (!elem) {
+    if (!elem && username !== undefined) {
       let a = document.getElementById(username);
+      console.log(a);
+      let td = a.parentElement;
+      let tr = td.parentElement;
+      let tbody = tr.parentElement;
       let b = document.createElement('b');
       b.setAttribute('id', username + '-new');
       b.append(a);
+      td.prepend(b);
+      tr.prepend(td);
+      tbody.prepend(tr);
     }
   }
 </script>
