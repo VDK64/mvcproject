@@ -37,6 +37,7 @@
     notification.setAttribute('style', 'margin-top:10px; right:10px')
     notification.innerHTML = html;
     div.prepend(notification);
+
     setTimeout(() => notification.remove(), 5000);
   }
 
