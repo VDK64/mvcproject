@@ -19,7 +19,7 @@ public class Bet {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqBet")
     private Long id;
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "usr_id")
     private User user;
     @NotNull

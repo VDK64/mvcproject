@@ -33,22 +33,6 @@ public class MvcprojectApplicationTests {
 
     @Test
     public void contextLoads1() {
-        Set<Role> roles = new HashSet<>(){{add(Role.USER);}};
-        User user1 = new User(null, "Anton", "Alekseev", "aleks555",
-                "mail@mail.ru", null, null, roles, "pass", true,
-                true, true, true, new LinkedHashSet<>(), 0f);
-        userRepo.save(user1);
-        User user2 = new User(null, "Petr", "Ivanov", "Petr555",
-                "mail@rambler.ru", null, null, roles, "pass", true,
-                true, true, true, new LinkedHashSet<>(),0f);
-        userRepo.save(user2);
-        user1 = userRepo.findByUsername("aleks555").orElse(null);
-        user2 = userRepo.findByUsername("Petr555").orElse(null);
-        Dialog dialog1 = new Dialog(null, Stream.of(user1, user2).collect(Collectors.toSet()), new ArrayList<>()
-                , false);
-        dialogRepo.save(dialog1);
-        user1 = userRepo.findByUsername("aleks555").orElse(null);
-        System.out.println();
     }
 
 }
