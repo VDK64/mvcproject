@@ -12,4 +12,5 @@ public class DialogDtoResponse {
     private String firstname;
     private String lastname;
     private String username;
+    private boolean haveNewMessages;
 }

@@ -40,7 +40,7 @@ public class MessageService {
             for (User dUser : dialog.getUsers()) {
                 if (!dUser.getId().equals(id)) {
                     response.add(new DialogDtoResponse(dialog.getId(), dUser.getFirstname(),
-                            dUser.getLastname(), dUser.getUsername()));
+                            dUser.getLastname(), dUser.getUsername(), dialog.getHaveNewMessages()));
                 }
             }
         }

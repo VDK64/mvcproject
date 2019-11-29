@@ -5,7 +5,7 @@
 <script type="text/javascript">
   'use strict';
   var stompClient = Stomp.over(new SockJS('/room'));
-  // stompClient.debug = null;
+  stompClient.debug = null;
   var username = null;
   var headerName = "${_csrf.headerName}";
   var token = "${_csrf.token}";
@@ -13,17 +13,20 @@
   headers[headerName] = token;
   var newMessages = '${newMessages?c}';
   var once = false;
+  var url = window.location.href.toString();
+
+  // console.log(url);
 
   onMessage('');
 
-  console.log('once ' + once);
+  // console.log('once ' + once);
 
-  console.log('newMessages ' + newMessages);
+  // console.log('newMessages ' + newMessages);
 
-  event = new Event("message");
+  // event = new Event("message");
 
   document.addEventListener("message", function(event) {
-    onMessage('true');
+    onMessage('true', event.username);
   });
 
   function showNotification(html) {
@@ -40,21 +43,35 @@
   stompClient.connect(headers, function(frame) {
     stompClient.subscribe('/user/queue/updates', function(msgOut) {
       newMessages = true;
+      let message = JSON.parse(msgOut.body);
       showNotification('You have new message');
+      let event = new CustomEvent("message", {'username':message.username});
+      console.log(event);
       document.dispatchEvent(event);
     });
     username = frame.headers['user-name'];
   });
 
-  function onMessage(arg) {
+  function onMessage(arg, username) {
     if (arg === 'true' || newMessages == 'true') {
       if (!once) {
         setInterval(function() {
           var a = document.getElementById('messagesId').style.opacity || 1;
           document.getElementById('messagesId').style.opacity = ((parseInt(a)) ? 0 : 1);
         }, 450);
+        if (url.includes('/dialogs')) { dialogStyle(username); }
         once = true;
       }
+    }
+  }
+
+  function dialogStyle(username) {
+    let elem = document.getElementById(username + '-new');
+    if (!elem) {
+      let a = document.getElementById(username);
+      let b = document.createElement('b');
+      b.setAttribute('id', username + '-new');
+      b.append(a);
     }
   }
 </script>

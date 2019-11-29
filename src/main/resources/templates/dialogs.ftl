@@ -15,7 +15,11 @@
             <#list dialogs as dialog>
               <tr>
                 <td>
-                  <a class="nav-link" href="/messages/${dialog.dialogId}"> ${dialog.username} </a>
+                  <#if dialog.haveNewMessages>
+                  <b id="${dialog.username}-new"><a class="nav-link" href="/messages/${dialog.dialogId}">${dialog.firstname} ${dialog.username} ${dialog.lastname}</a></b>
+                  <#else>
+                  <a id="${dialog.username}" class="nav-link" href="/messages/${dialog.dialogId}">${dialog.firstname} ${dialog.username} ${dialog.lastname}</a>
+                  </#if>
                 </td>
               </tr>
             </#list>
