@@ -10,13 +10,10 @@ import com.mvcproject.mvcproject.repositories.DialogRepo;
 import com.mvcproject.mvcproject.repositories.MessageRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.security.Principal;
 import java.util.*;
 
 @Service

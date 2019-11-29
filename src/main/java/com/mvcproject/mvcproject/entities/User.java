@@ -44,4 +44,7 @@ public class User implements UserDetails {
     private Set<Dialog> dialogs = new LinkedHashSet<>();
     @NotNull
     private Float deposit;
+    @ToString.Exclude
+    @OneToMany(mappedBy = "bet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Bet> bets = new LinkedHashSet<>();
 }

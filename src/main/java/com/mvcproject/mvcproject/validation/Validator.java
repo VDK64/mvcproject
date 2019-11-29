@@ -6,8 +6,6 @@ import freemarker.template.utility.StringUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.rmi.ServerException;
-
 @Component
 public class Validator {
     private final String regexName = "^(?!\\s*$)[а-яА-Яa-zA-z]*$";
