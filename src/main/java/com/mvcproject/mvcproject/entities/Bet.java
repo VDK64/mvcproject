@@ -20,9 +20,14 @@ public class Bet {
     private Long id;
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "usr_id")
+    @JoinColumn(name= "usr_id")
     private User user;
     @NotNull
     private Float value;
-
+    @ToString.Exclude
+    @ManyToOne
+    @JoinColumn(name= "opponent_id")
+    private User opponent;
+    @NotNull
+    Boolean isConfirm;
 }

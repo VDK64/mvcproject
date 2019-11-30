@@ -1,9 +1,7 @@
 package com.mvcproject.mvcproject.data;
 
-import com.mvcproject.mvcproject.entities.Dialog;
-import com.mvcproject.mvcproject.entities.Message;
-import com.mvcproject.mvcproject.entities.Role;
-import com.mvcproject.mvcproject.entities.User;
+import com.mvcproject.mvcproject.entities.*;
+import com.mvcproject.mvcproject.repositories.BetRepository;
 import com.mvcproject.mvcproject.repositories.DialogRepo;
 import com.mvcproject.mvcproject.repositories.MessageRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
@@ -24,8 +22,10 @@ public class DataBaseCreate {
     private DialogRepo dialogRepo;
     @Autowired
     private MessageRepo messageRepo;
+    @Autowired
+    private BetRepository betRepo;
 
-    public void formUsersInDataBase() {
+    public void createUsersInDataBase() {
         userRepo.save(User.builder()
                 .username("vdk64")
                 .firstname("Дмитрий")
@@ -47,11 +47,11 @@ public class DataBaseCreate {
                 .firstname("Ivan")
                 .lastname("Petrov")
                 .password(new BCryptPasswordEncoder().encode("a"))
-            .email("user@mail.ru")
+                .email("user@mail.ru")
                 .activationCode(null)
                 .avatar("default")
                 .authorities(Stream.of(Role.USER).collect(Collectors.toSet()))
-            .accountNonExpired(true)
+                .accountNonExpired(true)
                 .accountNonLocked(true)
                 .credentialsNonExpired(true)
                 .enabled(true)
@@ -123,7 +123,7 @@ public class DataBaseCreate {
                 .build());
     }
 
-    public void formDialogsInDataBase() {
+    public void createDialogsInDataBase() {
         User user1 = userRepo.findByUsername("vdk64").orElseThrow();
         User user2 = userRepo.findByUsername("kasha111").orElseThrow();
         User user3 = userRepo.findByUsername("petro123").orElseThrow();
@@ -134,7 +134,7 @@ public class DataBaseCreate {
         dialogRepo.save(dialog1);
         dialogRepo.save(dialog2);
         Message message1 = new Message(null, "Hey, Kasha!", new Date(), user1.getId(), user2.getId(), dialog1
-                ,false);
+                , false);
         Message message2 = new Message(null, "Hello, vkd64!", new Date(), user2.getId(), user1.getId(), dialog1
                 , false);
         Message message3 = new Message(null, "How are you?", new Date(), user1.getId(), user2.getId(), dialog1,
@@ -148,5 +148,17 @@ public class DataBaseCreate {
         messageRepo.save(message3);
         messageRepo.save(message4);
         messageRepo.save(message5);
+    }
+
+    public void createBetsInDataBase() {
+        User vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
+        User kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
+        User petro123 = userRepo.findByUsername("petro123").orElseThrow();
+        betRepo.saveAll(new ArrayList<>(){{
+            add(new Bet(null, vdk64, 500f, kasha111, false));
+            add(new Bet(null, vdk64, 450f, kasha111, true));
+            add(new Bet(null, petro123, 730f, vdk64, false));
+            add(new Bet(null, kasha111, 200f, vdk64, true));
+        }});
     }
 }

@@ -9,6 +9,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -37,5 +39,22 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         return "bets";
+    }
+
+    @GetMapping("/bets/createBet")
+    public String createBet(@AuthenticationPrincipal User user, Model model) {
+        UserService.ifAdmin(model, user);
+        model.addAttribute("user", user);
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        return "createBet";
+    }
+
+    @PostMapping("/bets/createBet")
+    public String createBet(@AuthenticationPrincipal User user, Model model, @RequestParam String game,
+                            @RequestParam String gamemode, @RequestParam String value) {
+        UserService.ifAdmin(model, user);
+        model.addAttribute("user", user);
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        return "createBet";
     }
 }

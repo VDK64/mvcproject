@@ -1,9 +1,11 @@
 package com.mvcproject.mvcproject;
 
+import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.Dialog;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.CustomServerException;
+import com.mvcproject.mvcproject.repositories.BetRepository;
 import com.mvcproject.mvcproject.repositories.DialogRepo;
 import com.mvcproject.mvcproject.repositories.MessageRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
@@ -30,9 +32,12 @@ public class MvcprojectApplicationTests {
     private DialogRepo dialogRepo;
     @Autowired
     private MessageRepo messageRepo;
+    @Autowired
+    private BetRepository betRepo;
 
     @Test
     public void contextLoads1() {
+
     }
 
 }

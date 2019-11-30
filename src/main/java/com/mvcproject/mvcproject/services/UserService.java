@@ -40,8 +40,9 @@ public class UserService implements UserDetailsService {
 
     @PostConstruct
     public void init() {
-        dbCreate.formUsersInDataBase();
-        dbCreate.formDialogsInDataBase();
+        dbCreate.createUsersInDataBase();
+        dbCreate.createDialogsInDataBase();
+        dbCreate.createBetsInDataBase();
     }
 
     private void checkUserExsist(User user, ModelAndView model) {

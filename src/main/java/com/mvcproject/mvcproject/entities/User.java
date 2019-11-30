@@ -9,7 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Data
-@EqualsAndHashCode(exclude = { "dialogs", "bets" })
+@EqualsAndHashCode(exclude = { "dialogs", "bets", "betsOpponent" })
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,6 +45,9 @@ public class User implements UserDetails {
     @NotNull
     private Float deposit;
     @ToString.Exclude
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Bet> bets = new LinkedHashSet<>();
+    @ToString.Exclude
+    @OneToMany(mappedBy = "opponent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Bet> betsOpponent = new LinkedHashSet<>();
 }
