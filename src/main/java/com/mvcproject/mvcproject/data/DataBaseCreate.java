@@ -39,6 +39,7 @@ public class DataBaseCreate {
                 .credentialsNonExpired(true)
                 .enabled(true)
                 .deposit(0f)
+                .isOnline(false)
                 .build());
 
         userRepo.save(User.builder()
@@ -55,6 +56,7 @@ public class DataBaseCreate {
                 .credentialsNonExpired(true)
                 .enabled(true)
                 .deposit(0f)
+                .isOnline(false)
                 .build());
 
         userRepo.save(User.builder()
@@ -71,6 +73,7 @@ public class DataBaseCreate {
                 .credentialsNonExpired(true)
                 .enabled(true)
                 .deposit(0f)
+                .isOnline(false)
                 .build());
 
         userRepo.save(User.builder()
@@ -87,6 +90,7 @@ public class DataBaseCreate {
                 .credentialsNonExpired(true)
                 .enabled(true)
                 .deposit(0f)
+                .isOnline(false)
                 .build());
 
         userRepo.save(User.builder()
@@ -103,6 +107,7 @@ public class DataBaseCreate {
                 .credentialsNonExpired(true)
                 .enabled(true)
                 .deposit(0f)
+                .isOnline(false)
                 .build());
 
         userRepo.save(User.builder()
@@ -119,6 +124,7 @@ public class DataBaseCreate {
                 .credentialsNonExpired(true)
                 .enabled(true)
                 .deposit(0f)
+                .isOnline(false)
                 .build());
     }
 

@@ -50,4 +50,6 @@ public class User implements UserDetails {
     @ToString.Exclude
     @OneToMany(mappedBy = "opponent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Bet> betsOpponent = new LinkedHashSet<>();
+    @NotNull
+    private Boolean isOnline;
 }

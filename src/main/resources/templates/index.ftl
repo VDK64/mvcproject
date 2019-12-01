@@ -16,33 +16,6 @@
           </div>
         </div>
       </div>
-
-      <table class="table">
-        <thead align="center">
-          <tr>
-            <th scope="col">Users</th>
-          </tr>
-        </thead>
-        <tbody align="center">
-          <#if users??>
-            <#list users as user>
-              <tr>
-                <td>
-                  ${user}
-                </td>
-              </tr>
-            </#list>
-            <#else>
-              <tr>
-                <td>
-                  Sorry, no Users
-                </td>
-              </tr>
-          </#if>
-        </tbody>
-      </table>
-
-
     </div>
 
     <@s.scripter class="container-fluid" />

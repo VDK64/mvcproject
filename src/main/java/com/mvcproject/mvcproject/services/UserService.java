@@ -9,6 +9,7 @@ import com.mvcproject.mvcproject.exceptions.CustomServerException;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import com.mvcproject.mvcproject.repositories.OnlineUserRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
+import com.mvcproject.mvcproject.session.LoggedUser;
 import com.mvcproject.mvcproject.validation.Validator;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.*;
 
 @Service
@@ -51,9 +53,9 @@ public class UserService implements UserDetailsService {
 
     private void checkUserExsist(User user, ModelAndView model) {
         userRepo.findByUsername(user.getUsername()).
-                ifPresent( user1 -> {
+                ifPresent(user1 -> {
                     if (!user1.getId().equals(user.getId()))
-                    throw new CustomServerException(ServerErrors.ALREADY_EXIST, model);
+                        throw new CustomServerException(ServerErrors.ALREADY_EXIST, model);
                 });
     }
 
@@ -81,13 +83,19 @@ public class UserService implements UserDetailsService {
     }
 
     public static void ifAdmin(Model model, User user) {
-        if (user.getAuthorities().contains(Role.ADMIN)) { model.addAttribute("admin", true); }
-        else { model.addAttribute("admin", false); }
+        if (user.getAuthorities().contains(Role.ADMIN)) {
+            model.addAttribute("admin", true);
+        } else {
+            model.addAttribute("admin", false);
+        }
     }
 
     public static void ifAdmin(ModelAndView model, User user) {
-        if (user.getAuthorities().contains(Role.ADMIN)) { model.addObject("admin", true); }
-        else { model.addObject("admin", false); }
+        if (user.getAuthorities().contains(Role.ADMIN)) {
+            model.addObject("admin", true);
+        } else {
+            model.addObject("admin", false);
+        }
     }
 
     private void sendMail(User user) {
@@ -102,7 +110,9 @@ public class UserService implements UserDetailsService {
         model.addObject("authorities", Role.values());
         Set<Role> roles = new LinkedHashSet<>();
         authorities.forEach((s1, s2) -> {
-            if (s1.contains("authority")) { roles.add(Role.valueOf(s2)); }
+            if (s1.contains("authority")) {
+                roles.add(Role.valueOf(s2));
+            }
         });
         user.setFirstname(map.get("firstname"));
         user.setLastname(map.get("lastname"));
@@ -117,16 +127,24 @@ public class UserService implements UserDetailsService {
         Map<String, String> res = new LinkedHashMap<>();
         if (firstname == null || firstname.equals("")) {
             res.put("firstname", user.getFirstname());
-        } else { res.put("firstname", firstname); }
+        } else {
+            res.put("firstname", firstname);
+        }
         if (lastname == null || lastname.equals("")) {
             res.put("lastname", user.getLastname());
-        } else { res.put("lastname", lastname); }
+        } else {
+            res.put("lastname", lastname);
+        }
         if (username == null || username.equals("")) {
             res.put("username", user.getUsername());
-        } else { res.put("username", username); }
+        } else {
+            res.put("username", username);
+        }
         if (password == null || password.equals("")) {
             res.put("password", user.getPassword());
-        } else { res.put("password", new BCryptPasswordEncoder().encode(password)); }
+        } else {
+            res.put("password", new BCryptPasswordEncoder().encode(password));
+        }
         return res;
     }
 
@@ -136,8 +154,9 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(@NonNull String username) {
-        return userRepo.findByUsername(username).orElseThrow( () -> {
-            throw new UsernameNotFoundException("user " + username + " was not found!");} );
+        return userRepo.findByUsername(username).orElseThrow(() -> {
+            throw new UsernameNotFoundException("user " + username + " was not found!");
+        });
     }
 
     public boolean confirmEmail(String code, Model model) {
@@ -161,17 +180,23 @@ public class UserService implements UserDetailsService {
         List<User> friendsList = new ArrayList<>();
         User userFromDB = userRepo.findById(user.getId()).orElseThrow();
         userFromDB.getDialogs().forEach(dialog -> dialog.getUsers().forEach(user1 -> {
-                if (!user1.getUsername().equals(user.getUsername())) {
-                    friendsList.add(user1);
-                }
-            }));
+            if (!user1.getUsername().equals(user.getUsername())) {
+                friendsList.add(user1);
+            }
+        }));
         return friendsList;
     }
 
-    public List<OnlineUser> getAllSessions() { return (List<OnlineUser>) onlineUserRepo.findAll(); }
-
-    public void createSessionInfo(String username) { onlineUserRepo.save(new OnlineUser(null, username)); }
+    public void createSessionInfo(Object user) {
+        User user1 = (User) ((LoggedUser) user).getUser();
+        user1.setIsOnline(true);
+        userRepo.save(user1);
+    }
 
     @Transactional
-    public void deleteSessionInfo(String username) { onlineUserRepo.deleteByUsername(username); }
+    public void deleteSessionInfo(Object user) {
+        User user1 = (User) ((LoggedUser) user).getUser();
+        user1.setIsOnline(false);
+        userRepo.save(user1);
+    }
 }

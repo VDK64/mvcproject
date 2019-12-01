@@ -15,8 +15,6 @@ import java.io.IOException;
 @Component("myAuthenticationSuccessHandler")
 public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     @Autowired
-    private OnlineUserRepo onlineUserRepo;
-    @Autowired
     private UserService userService;
 
     @Override
@@ -25,7 +23,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
             throws IOException {
         HttpSession session = request.getSession(false);
         if (session != null) {
-            session.setAttribute("user", new LoggedUser(authentication.getName(), onlineUserRepo, userService));
+            session.setAttribute("user", new LoggedUser(authentication.getPrincipal(), userService));
         }
         response.sendRedirect("/");
     }

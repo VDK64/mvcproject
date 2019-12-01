@@ -24,7 +24,6 @@ public class MainController {
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("users", userService.getAllSessions());
         return "index";
     }
 
