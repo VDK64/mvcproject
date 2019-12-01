@@ -32,7 +32,6 @@ public class MainController {
     public String getLogin(@RequestParam(value = "error", required = false) String error,
                            Model model) {
         model.addAttribute("error", error != null);
-//        model.addAttribute("logout", logout != null);
         return "login";
     }
 

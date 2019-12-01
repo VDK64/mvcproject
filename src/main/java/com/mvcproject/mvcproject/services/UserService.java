@@ -9,14 +9,10 @@ import com.mvcproject.mvcproject.exceptions.CustomServerException;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import com.mvcproject.mvcproject.repositories.OnlineUserRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
-import com.mvcproject.mvcproject.session.LoggedUser;
 import com.mvcproject.mvcproject.validation.Validator;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,10 +22,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpSessionBindingEvent;
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -166,13 +160,11 @@ public class UserService implements UserDetailsService {
     public List<User> getFriends(User user) {
         List<User> friendsList = new ArrayList<>();
         User userFromDB = userRepo.findById(user.getId()).orElseThrow();
-        userFromDB.getDialogs().forEach(dialog -> {
-            dialog.getUsers().forEach(user1 -> {
+        userFromDB.getDialogs().forEach(dialog -> dialog.getUsers().forEach(user1 -> {
                 if (!user1.getUsername().equals(user.getUsername())) {
                     friendsList.add(user1);
                 }
-            });
-        });
+            }));
         return friendsList;
     }
 

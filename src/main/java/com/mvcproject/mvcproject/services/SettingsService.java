@@ -30,6 +30,7 @@ public class SettingsService {
         if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
             File uploadDir = new File(uploadPath + "/" + user.getId());
             if (!uploadDir.exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 uploadDir.mkdirs();
             }
             if (user.getAvatar().equals("default")) {
@@ -46,7 +47,9 @@ public class SettingsService {
         if (StringUtil.emptyToNull(user.getAvatar()) == null) {
             throw new CustomServerException(ServerErrors.DEFAULT_AVATAR, model);
         }
+        //noinspection ResultOfMethodCallIgnored
         new File(uploadPath + "/" + user.getId(), user.getAvatar()).delete();
+        //noinspection ResultOfMethodCallIgnored
         new File(uploadPath + "/" + user.getId()).delete();
         user.setAvatar("default");
         userRepo.save(user);
