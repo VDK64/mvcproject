@@ -16,6 +16,19 @@
                 <option>Dota2</option>
               </select>
             </div>
+
+            <label>Create a lobby name</label>
+            <div class="input-group mb-3">
+              <input type="text" name="lobbyName" class="form-control">
+            </div>
+
+            <label>Create a password</label>
+            <div class="input-group mb-3">
+              <input type="password" name="password" class="form-control">
+            </div>
+
+
+
             <div class="form-group">
               <label for="gamemode">Chose a gamemode</label>
               <select name="gamemode" class="form-control" id="gamemode">
@@ -33,11 +46,31 @@
                 <span class="input-group-text">.00</span>
               </div>
             </div>
-            <button type="submit" class="btn btn-success" name="button">Create bet</button>
+
+            <div class="form-group">
+              <label for="gamemode">Chose an opponent</label>
+              <select name="opponent" class="form-control" id="opponent">
+                <#if friends?size == 0>
+                <option id="option">Sorry, but you have not friends yet. For bets you may have a friends.</option>
+                <#else>
+                <#list friends as friend>
+                  <option>${friend.firstname} ${friend.username} ${friend.lastname}</option>
+                </#list>
+                </#if>
+              </select>
+            </div>
+
+            <button id="submit" type="submit" class="btn btn-success" name="button">Create bet</button>
           </form>
         </div>
       </div>
 
       <@s.scripter class="container-fluid" />
+      <script type="text/javascript">
+        let elem = document.getElementById('option');
+        if (elem !== null) {
+          document.getElementById('submit').remove();
+        }
+      </script>
 
     </@h.header>

@@ -1,6 +1,7 @@
 package com.mvcproject.mvcproject.controllers;
 
 import com.mvcproject.mvcproject.entities.Bet;
+import com.mvcproject.mvcproject.entities.Game;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.services.BetService;
@@ -29,8 +30,7 @@ public class UserController {
 
     @GetMapping("/friends")
     public String friends(@AuthenticationPrincipal User user, Model model) {
-        List<User> friends = userService.getFriends(user);
-        model.addAttribute("friends", friends);
+        model.addAttribute("friends", userService.getFriends(user));
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
@@ -52,13 +52,16 @@ public class UserController {
     public String createBet(@AuthenticationPrincipal User user, Model model) {
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
+        model.addAttribute("friends", userService.getFriends(user));
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         return "createBet";
     }
 
     @PostMapping("/bets/createBet")
     public String createBet(@AuthenticationPrincipal User user, Model model, @RequestParam String game,
-                            @RequestParam String gamemode, @RequestParam String value) {
+                            @RequestParam String gamemode, @RequestParam String value, @RequestParam String opponent,
+                            @RequestParam String lobbyName, @RequestParam String password) {
+        Bet betAndGame = betService.createBetAndGame(user, game, gamemode, value, opponent, lobbyName, password);
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));

@@ -1,14 +1,14 @@
 package com.mvcproject.mvcproject.entities;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(exclude = {"game", "user", "opponent"})
 @Entity
 @Table(name = "bet")
 @SequenceGenerator(name = "seqBet", allocationSize = 1)
@@ -29,8 +29,9 @@ public class Bet {
     @NotNull
     Boolean isConfirm;
     private String whoWin;
-    @OneToOne(mappedBy = "bet", cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER/*, optional = false*/)
+    @ToString.Exclude
+    @OneToOne
+    @JoinColumn(name = "game_id")
     private Game game;
 
     public Bet(Long id, User user, @NotNull Float value, User opponent, @NotNull Boolean isConfirm, String whoWin) {

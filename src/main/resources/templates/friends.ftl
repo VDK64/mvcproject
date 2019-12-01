@@ -4,6 +4,11 @@
     <link rel="stylesheet" href="../static/css/style.css">
 
     <div id="container-fluid" class="container-fluid" style="margin-left:10px; margin-top:10px">
+      <#if friends?size == 0>
+      <div class="row">
+        Sorry, you have not friends yet.
+      </div>
+      <#else>
       <#list friends as friend>
        <div class="row">
          <#if friend.avatar=="default">
@@ -19,6 +24,7 @@
          </#if>
        </div>
       </#list>
+      </#if>
     </div>
 
     <@s.scripter class="container-fluid" />
