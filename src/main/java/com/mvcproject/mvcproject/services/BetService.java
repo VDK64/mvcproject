@@ -30,7 +30,7 @@ public class BetService {
     private Validator validator;
 
     public Page<Bet> getBetInfo(User user, String who) {
-        if (who.equalsIgnoreCase("user"))
+        if (who.equalsIgnoreCase("owner"))
             return betRepo.findByUser(user, PageRequest.of(0, 10));
         if (who.equalsIgnoreCase("opponent"))
             return betRepo.findByOpponent(user, PageRequest.of(0, 10));

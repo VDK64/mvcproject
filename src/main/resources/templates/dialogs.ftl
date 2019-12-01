@@ -3,7 +3,7 @@
   <@h.header admin=admin user=user position="messagesD">
   <link rel="stylesheet" href="../static/css/style.css">
 
-    <div id="container col-sm-6" class="container col-sm-6">
+    <div id="container col-sm-6" class="container col-sm-6" style="margin-bottom: 30px">
       <table class="table">
         <thead align="center">
           <tr>
@@ -35,4 +35,13 @@
     </div>
 
     <@s.scripter class="container col-sm-6" />
+
+    <script type="text/javascript">
+      document.body.style.overflow = "auto"
+
+      function createBet() {
+        document.location.href = "/bets/createBet";
+      }
+    </script>
+
     </@h.header>

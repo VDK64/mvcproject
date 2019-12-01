@@ -40,44 +40,46 @@ public class UserController {
 
     @GetMapping("/bets")
     public String bets(@AuthenticationPrincipal User user, Model model) {
-        Page<Bet> byUser = betService.getBetInfo(user, "user");
-        Page<Bet> byOpponent = betService.getBetInfo(user, "opponent");
-        int totalPagesUser = byUser.getTotalPages();
-        int totalPagesOpponent = byOpponent.getTotalPages();
-        List<Bet> betsUser = betService.listFromPage(byUser);
-        List<Bet> betsOpponent = betService.listFromPage(byOpponent);
+        Page<Bet> response = betService.getBetInfo(user, "owner");
+        int totalPages = response.getTotalPages();
+        List<Bet> items = betService.listFromPage(response);
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("owners", betsUser);
-        model.addAttribute("opponents", betsOpponent);
-        model.addAttribute("totalUser", totalPagesUser);
-        model.addAttribute("totalOpponent", totalPagesOpponent);
+        model.addAttribute("items", items);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("tableName", "Owner");
         return "bets";
     }
 
-    @PostMapping("/bets")
-    public String betsTable(@AuthenticationPrincipal User user, Model model,
-                            @RequestParam(required = false) String tableOwner,
-                            @RequestParam(required = false) String tableOpponent,
-                            @RequestParam(required = false) List<Bet> owners) {
-        if (tableOwner != null) {
-            Page<Bet> byUser = betService.getBetInfo(user, "user");
-            int totalPagesUser = byUser.getTotalPages();
-            List<Bet> betsUser = betService.listFromPage(byUser);
-            model.addAttribute("owners", betsUser);
-            model.addAttribute("totalUser", totalPagesUser);
-        }
-        if (tableOpponent != null) {
-            Page<Bet> byOpponent = betService.getBetInfo(user, "opponent");
-            int totalPagesOpponent = byOpponent.getTotalPages();
-            List<Bet> betsOpponent = betService.listFromPage(byOpponent);
-            model.addAttribute("opponents", betsOpponent);
-            model.addAttribute("totalOpponent", totalPagesOpponent);
-        }
+    @PostMapping(value = "/bets", params = "chooseTable")
+    public String getTable(@AuthenticationPrincipal User user, Model model,
+                           @RequestParam String table) {
+        Page<Bet> response = betService.getBetInfo(user, table);
+        int totalPages = response.getTotalPages();
+        List<Bet> items = betService.listFromPage(response);
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("items", items);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("tableName", table);
+        return "bets";
+    }
+
+    @PostMapping(value = "/bets", params = "tablePage")
+    public String betsTable(@AuthenticationPrincipal User user, Model model,
+                            @RequestParam(required = false) String tableName,
+                            @RequestParam(required = false) int page) {
+        Page<Bet> response = betService.getBetInfo(user, tableName);
+        int totalPages = response.getTotalPages();
+        List<Bet> items = betService.listFromPage(response);
+        UserService.ifAdmin(model, user);
+        model.addAttribute("user", user);
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("items", items);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("tableName", tableName);
         return "bets";
     }
 

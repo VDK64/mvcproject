@@ -8,20 +8,32 @@
 
         <button type="button" class="btn btn-success" onclick="createBet();" name="button" style="margin-top: 10px">Create bet</button>
 
-        <h1 align="center">Bets info.</h1>
+        <h1 align="center">Bets info</h1>
 
-        <h2 align="center"> Owner</h2>
+        <form method="post">
+          <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+          <div class="form-group">
+            <label for="table">Choose a table</label>
+            <select name="table" class="form-control" id="table">
+              <option>Owner</option>
+              <option>Opponent</option>
+            </select>
+          </div>
+          <button name="chooseTable" type="submit">Submit</button>
+        </form>
+        <h2 align="center">${tableName}</h2>
+        <#if items??>
         <table class="table">
           <thead class="thead-dark">
             <tr>
               <th scope="col">#</th>
-              <th scope="col"> Owner firstname </th>
-              <th scope="col"> Owner username </th>
-              <th scope="col">Owner lastname</th>
-              <th scope="col"> Opponent firstname </th>
-              <th scope="col"> Opponent username </th>
-              <th scope="col"> Opponent lastname </th>
-              <th scope="col"> Bet value </th>
+              <th scope="col"> ${tableName} firstname </th>
+              <th scope="col"> ${tableName} username </th>
+              <th scope="col">${tableName} lastname</th>
+              <th scope="col"> ${tableName} firstname </th>
+              <th scope="col"> ${tableName} username </th>
+              <th scope="col"> ${tableName} lastname </th>
+              <th scope="col"> ${tableName} value </th>
               <th scope="col"> Is confirmed </th>
               <th scope="col"> Win </th>
               <th scope="col"> Details </th>
@@ -29,89 +41,38 @@
           </thead>
           <tbody>
             <#assign i=0>
-              <#list owners as owner>
+              <#list items as item>
                 <#assign i++>
                   <tr>
                     <th scope="row"> ${i} </th>
-                    <td> ${owner.user.firstname} </td>
-                    <td> ${owner.user.username} </td>
-                    <td> ${owner.user.lastname} </td>
-                    <td> ${owner.opponent.firstname} </td>
-                    <td> ${owner.opponent.username} </td>
-                    <td> ${owner.opponent.lastname} </td>
-                    <td> ${owner.value} </td>
-                    <td> ${owner.isConfirm?c} </td>
-                    <#if owner.whoWin??>
-                      <td> ${owner.whoWin} </td>
+                    <td> ${item.user.firstname} </td>
+                    <td> ${item.user.username} </td>
+                    <td> ${item.user.lastname} </td>
+                    <td> ${item.opponent.firstname} </td>
+                    <td> ${item.opponent.username} </td>
+                    <td> ${item.opponent.lastname} </td>
+                    <td> ${item.value} </td>
+                    <td> ${item.isConfirm?c} </td>
+                    <#if item.whoWin??>
+                      <td> ${item.whoWin} </td>
                       <#else>
                         <td> undefined </td>
                     </#if>
-                    <#if owner.whoWin??>
+                    <#if item.whoWin??>
                       <#else>
-                        <td> <a class="nav-link" href="/bets/${owner.id}"> See details</a> </td>
+                        <td> <a class="nav-link" href="/bets/${item.id}"> See details</a> </td>
                     </#if>
                   </tr>
               </#list>
           </tbody>
         </table>
-        <form method="post">
+        <form method="post" style="margin-bottom: 30px">
           <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
-          <input type="number" size="3" name="tableOwner" min="1" max="${totalUser}" value="1" step="1">
-          <button type="submit">Browse</button>
+          <input type="number" size="3" name="page" min="1" max="${totalPages}" value="1" step="1">
+          <input name="tableName" value="${tableName}" type="hidden">
+          <button name="tablePage" type="submit">Browse</button>
         </form>
-
-        <h2 align="center"> Opponent</h2><br>
-
-        <table class="table">
-          <thead class="thead-custom" style="background-color: #b5b1b1;">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col"> Owner firstname </th>
-              <th scope="col"> Owner username </th>
-              <th scope="col">Owner lastname</th>
-              <th scope="col"> Opponent firstname </th>
-              <th scope="col"> Opponent username </th>
-              <th scope="col"> Opponent lastname </th>
-              <th scope="col"> Bet value </th>
-              <th scope="col"> Is confirmed </th>
-              <th scope="col"> Win </th>
-              <th scope="col"> Details </th>
-            </tr>
-          </thead>
-          <tbody>
-            <#assign i=0>
-              <#list opponents as opponent>
-                <#assign i++>
-                  <tr>
-                    <th scope="row"> ${i} </th>
-                    <td> ${opponent.user.firstname} </td>
-                    <td> ${opponent.user.username} </td>
-                    <td> ${opponent.user.lastname} </td>
-                    <td> ${opponent.opponent.firstname} </td>
-                    <td> ${opponent.opponent.username} </td>
-                    <td> ${opponent.opponent.lastname} </td>
-                    <td> ${opponent.value} </td>
-                    <td> ${opponent.isConfirm?c} </td>
-                    <#if opponent.whoWin??>
-                      <td> ${opponent.whoWin} </td>
-                      <#else>
-                        <td> undefined </td>
-                    </#if>
-                    <#if opponent.whoWin??>
-                      <#else>
-                        <td> <a class="nav-link" href="/bets/${opponent.id}"> See details</a> </td>
-                    </#if>
-                  </tr>
-              </#list>
-          </tbody>
-        </table>
-        <form method="post">
-          <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
-          <input type="number" size="3" name="tableOpponent" min="1" max="${totalOpponent}" value="1" step="1">
-          <button type="submit">Browse</button>
-        </form>
-
-
+        </#if>
       </div>
 
       <@s.scripter class="container" />
