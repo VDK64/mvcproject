@@ -3,8 +3,6 @@
   <@h.header admin=admin user=user position="messagesD">
   <link rel="stylesheet" href="../static/css/style.css">
 
-
-
     <div id="container col-sm-6" class="container col-sm-6">
       <table class="table">
         <thead align="center">

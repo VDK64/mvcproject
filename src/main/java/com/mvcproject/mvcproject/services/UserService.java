@@ -199,4 +199,8 @@ public class UserService implements UserDetailsService {
         user1.setIsOnline(false);
         userRepo.save(user1);
     }
+
+    public User getUserById(Long id) {
+        return userRepo.findById(id).orElseThrow();
+    }
 }

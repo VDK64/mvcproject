@@ -13,7 +13,10 @@
          </#if>
        </div>
        <div class="row">
-         <a href="#">${friend.firstname} ${friend.username} ${friend.lastname}</a>
+         <a href="/${friend.id}">${friend.firstname} ${friend.username} ${friend.lastname} </a>
+         <#if friend.isOnline>
+         <p>&nbsp&nbsp Online</p>
+         </#if>
        </div>
       </#list>
     </div>

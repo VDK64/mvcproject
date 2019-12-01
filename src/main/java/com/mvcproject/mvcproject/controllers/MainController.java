@@ -27,6 +27,14 @@ public class MainController {
         return "index";
     }
 
+    @RequestMapping("/{id}")
+    public String getGuestPage(@AuthenticationPrincipal User user, Model model, @PathVariable String id) {
+        UserService.ifAdmin(model, user);
+        model.addAttribute("user", userService.getUserById(Long.valueOf(id)));
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        return "guestPage";
+    }
+
     @RequestMapping("/login")
     public String getLogin(@RequestParam(value = "error", required = false) String error,
                            Model model) {
