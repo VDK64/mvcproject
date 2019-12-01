@@ -18,4 +18,5 @@ public class ServerErrors {
     public static final String DEFAULT_AVATAR = "This is default avatar. You can not delete it!";
     public static final String NOT_ENOUGH_DEPOSIT = "Sorry, but your deposit is lower than the transaction value!";
     public static final String WRONG_VALUE = "Please, write a correct value!";
+    public static final String WRONG_QUERY = "Wrong query!";
 }

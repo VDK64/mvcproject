@@ -54,6 +54,11 @@
               </#list>
           </tbody>
         </table>
+        <form method="post">
+          <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+          <input type="number" size="3" name="tableOwner" min="1" max="${totalUser}" value="1" step="1">
+          <button type="submit">Browse</button>
+        </form>
 
         <h2 align="center"> Opponent</h2><br>
 
@@ -100,6 +105,12 @@
               </#list>
           </tbody>
         </table>
+        <form method="post">
+          <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+          <input type="number" size="3" name="tableOpponent" min="1" max="${totalOpponent}" value="1" step="1">
+          <button type="submit">Browse</button>
+        </form>
+
 
       </div>
 

@@ -16,19 +16,14 @@
                 <option>Dota2</option>
               </select>
             </div>
-
             <label>Create a lobby name</label>
             <div class="input-group mb-3">
               <input type="text" name="lobbyName" class="form-control">
             </div>
-
             <label>Create a password</label>
             <div class="input-group mb-3">
               <input type="password" name="password" class="form-control">
             </div>
-
-
-
             <div class="form-group">
               <label for="gamemode">Chose a gamemode</label>
               <select name="gamemode" class="form-control" id="gamemode">

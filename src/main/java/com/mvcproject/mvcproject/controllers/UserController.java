@@ -8,6 +8,7 @@ import com.mvcproject.mvcproject.services.BetService;
 import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,12 +40,44 @@ public class UserController {
 
     @GetMapping("/bets")
     public String bets(@AuthenticationPrincipal User user, Model model) {
-        List<List<Bet>> betInfo = betService.getBetInfo(user);
+        Page<Bet> byUser = betService.getBetInfo(user, "user");
+        Page<Bet> byOpponent = betService.getBetInfo(user, "opponent");
+        int totalPagesUser = byUser.getTotalPages();
+        int totalPagesOpponent = byOpponent.getTotalPages();
+        List<Bet> betsUser = betService.listFromPage(byUser);
+        List<Bet> betsOpponent = betService.listFromPage(byOpponent);
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("owners", betInfo.get(0));
-        model.addAttribute("opponents", betInfo.get(1));
+        model.addAttribute("owners", betsUser);
+        model.addAttribute("opponents", betsOpponent);
+        model.addAttribute("totalUser", totalPagesUser);
+        model.addAttribute("totalOpponent", totalPagesOpponent);
+        return "bets";
+    }
+
+    @PostMapping("/bets")
+    public String betsTable(@AuthenticationPrincipal User user, Model model,
+                            @RequestParam(required = false) String tableOwner,
+                            @RequestParam(required = false) String tableOpponent,
+                            @RequestParam(required = false) List<Bet> owners) {
+        if (tableOwner != null) {
+            Page<Bet> byUser = betService.getBetInfo(user, "user");
+            int totalPagesUser = byUser.getTotalPages();
+            List<Bet> betsUser = betService.listFromPage(byUser);
+            model.addAttribute("owners", betsUser);
+            model.addAttribute("totalUser", totalPagesUser);
+        }
+        if (tableOpponent != null) {
+            Page<Bet> byOpponent = betService.getBetInfo(user, "opponent");
+            int totalPagesOpponent = byOpponent.getTotalPages();
+            List<Bet> betsOpponent = betService.listFromPage(byOpponent);
+            model.addAttribute("opponents", betsOpponent);
+            model.addAttribute("totalOpponent", totalPagesOpponent);
+        }
+        UserService.ifAdmin(model, user);
+        model.addAttribute("user", user);
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
         return "bets";
     }
 
