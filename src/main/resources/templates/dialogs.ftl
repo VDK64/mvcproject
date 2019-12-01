@@ -2,7 +2,7 @@
 <#import "/scripter.ftl" as s>
   <@h.header admin=admin user=user position="messagesD">
   <link rel="stylesheet" href="../static/css/style.css">
-  
+
 
 
     <div id="container col-sm-6" class="container col-sm-6">
@@ -17,7 +17,7 @@
             <#list dialogs as dialog>
               <tr>
                 <td>
-                  <#if dialog.haveNewMessages>
+                  <#if dialog.haveNewMessages && newMessages>
                   <b id="${dialog.username}-new"><a id="${dialog.username}" class="nav-link" href="/messages/${dialog.dialogId}">${dialog.firstname} ${dialog.username} ${dialog.lastname}</a></b>
                   <#else>
                   <a id="${dialog.username}" class="nav-link" href="/messages/${dialog.dialogId}">${dialog.firstname} ${dialog.username} ${dialog.lastname}</a>

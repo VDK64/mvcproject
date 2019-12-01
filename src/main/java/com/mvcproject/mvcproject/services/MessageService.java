@@ -85,9 +85,11 @@ public class MessageService {
         User userFromDB = userRepo.findByUsername(user.getUsername()).orElseThrow();
         Set<Dialog> dialogs = userFromDB.getDialogs();
         for (Dialog dialog : dialogs) {
-           if (dialog.getHaveNewMessages()) {
-               return true;
-           }
+            for (Message message : messageRepo.findByNewMessageAndDialog(true, dialog)) {
+                if (message.getToId().equals(user.getId())) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -106,7 +108,7 @@ public class MessageService {
     @Transactional
     public boolean accessRouter(Long id, Long dialogId) {
         User userFromDB = userRepo.findById(id).orElseThrow();
-        for(Dialog dialog : userFromDB.getDialogs()) {
+        for (Dialog dialog : userFromDB.getDialogs()) {
             if (dialog.getId().equals(dialogId))
                 return true;
         }
