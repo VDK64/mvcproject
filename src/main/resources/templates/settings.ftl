@@ -1,6 +1,8 @@
 <#import "/header.ftl" as h>
 <#import "/scripter.ftl" as s>
   <@h.header admin=admin user=user position="settings">
+  <link rel="stylesheet" href="../static/css/style.css">
+  
 
     <div id="container-fluid" class="container-fluid">
       <div class="row">

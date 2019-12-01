@@ -7,7 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface BetRepository extends PagingAndSortingRepository<Bet, Long> {
+public interface BetRepo extends PagingAndSortingRepository<Bet, Long> {
     List<Bet> findByUser(User user);
     List<Bet> findByOpponent(User opponent);
     List<Bet> findByUserAndIsConfirm(User user, Boolean isConfirm);

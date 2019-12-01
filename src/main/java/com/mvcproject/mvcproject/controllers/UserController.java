@@ -1,7 +1,9 @@
 package com.mvcproject.mvcproject.controllers;
 
+import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.UserRepo;
+import com.mvcproject.mvcproject.services.BetService;
 import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSessionBindingListener;
 import java.util.List;
 
 @Controller
@@ -22,6 +25,8 @@ public class UserController {
     private MessageService messageService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private BetService betService;
 
     @GetMapping("/friends")
     public String friends(@AuthenticationPrincipal User user, Model model) {
@@ -35,9 +40,12 @@ public class UserController {
 
     @GetMapping("/bets")
     public String bets(@AuthenticationPrincipal User user, Model model) {
+        List<List<Bet>> betInfo = betService.getBetInfo(user);
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("owners", betInfo.get(0));
+        model.addAttribute("opponents", betInfo.get(1));
         return "bets";
     }
 

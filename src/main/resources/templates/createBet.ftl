@@ -1,11 +1,11 @@
 <#import "/header.ftl" as h>
   <#import "/scripter.ftl" as s>
     <@h.header admin=admin user=user position="bets">
-      <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/style.css">
 
       <div id="container-fluid" class="container-fluid" style="margin-left:10px; margin-top:10px">
         <div class="row">
-          <p>It's a page, where you can make a bets with your friends. Please, choose a game and set a requered parameters, marking by *.</p>
+          <p>It's a page, where you can create bets with your friends. Please, choose a game and set a requered parameters, marking by *.</p>
         </div>
         <div class="row">
           <form method="post">
@@ -20,7 +20,7 @@
               <label for="gamemode">Chose a gamemode</label>
               <select name="gamemode" class="form-control" id="gamemode">
                 <option>1x1</option>
-                <option>who win next match</option>
+                <option>who win next game</option>
               </select>
             </div>
             <label>Bet value</label>

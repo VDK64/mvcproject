@@ -9,7 +9,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "bet")
@@ -30,4 +29,17 @@ public class Bet {
     private User opponent;
     @NotNull
     Boolean isConfirm;
+    private String whoWin;
+    @OneToOne(mappedBy = "bet", cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER/*, optional = false*/)
+    private Game game;
+
+    public Bet(Long id, User user, @NotNull Float value, User opponent, @NotNull Boolean isConfirm, String whoWin) {
+        this.id = id;
+        this.user = user;
+        this.value = value;
+        this.opponent = opponent;
+        this.isConfirm = isConfirm;
+        this.whoWin = whoWin;
+    }
 }

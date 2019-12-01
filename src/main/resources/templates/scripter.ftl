@@ -34,7 +34,7 @@
     let div = document.getElementById('${class}');
     notification.className = "alert alert-info notification";
     notification.setAttribute('role', 'alert');
-    notification.setAttribute('style', 'margin-top:10px; right:10px')
+    notification.setAttribute('style', 'margin-top:10px; right:20px')
     notification.innerHTML = html;
     div.prepend(notification);
 

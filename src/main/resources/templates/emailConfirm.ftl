@@ -1,5 +1,6 @@
 <#import "/header.ftl" as h>
   <@h.header admin=admin user=user position="email">
+  <link rel="stylesheet" href="../static/css/style.css">
   
 
     <div class="container">

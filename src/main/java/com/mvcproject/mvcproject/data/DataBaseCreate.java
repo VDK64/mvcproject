@@ -1,10 +1,7 @@
 package com.mvcproject.mvcproject.data;
 
 import com.mvcproject.mvcproject.entities.*;
-import com.mvcproject.mvcproject.repositories.BetRepository;
-import com.mvcproject.mvcproject.repositories.DialogRepo;
-import com.mvcproject.mvcproject.repositories.MessageRepo;
-import com.mvcproject.mvcproject.repositories.UserRepo;
+import com.mvcproject.mvcproject.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -23,7 +20,9 @@ public class DataBaseCreate {
     @Autowired
     private MessageRepo messageRepo;
     @Autowired
-    private BetRepository betRepo;
+    private BetRepo betRepo;
+    @Autowired
+    private GameRepo gameRepo;
 
     public void createUsersInDataBase() {
         userRepo.save(User.builder()
@@ -154,11 +153,16 @@ public class DataBaseCreate {
         User vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
         User kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
         User petro123 = userRepo.findByUsername("petro123").orElseThrow();
-        betRepo.saveAll(new ArrayList<>(){{
-            add(new Bet(null, vdk64, 500f, kasha111, false));
-            add(new Bet(null, vdk64, 450f, kasha111, true));
-            add(new Bet(null, petro123, 730f, vdk64, false));
-            add(new Bet(null, kasha111, 200f, vdk64, true));
+        User tony64 = userRepo.findByUsername("tony64").orElseThrow();
+        User user = userRepo.findByUsername("user").orElseThrow();
+
+        Iterable<Bet> bets = betRepo.saveAll(new ArrayList<>() {{
+            add(new Bet(null, vdk64, 500f, kasha111, false, null));
+            add(new Bet(null, vdk64, 450f, kasha111, true, null));
+            add(new Bet(null, petro123, 730f, vdk64, false, vdk64.getUsername()));
+            add(new Bet(null, kasha111, 200f, vdk64, true, kasha111.getUsername()));
+            add(new Bet(null, vdk64, 150f, tony64, false, null));
+            add(new Bet(null, user, 200f, vdk64, false, vdk64.getUsername()));
         }});
     }
 }
