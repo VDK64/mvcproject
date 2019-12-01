@@ -1,6 +1,5 @@
 package com.mvcproject.mvcproject.session;
 
-import com.mvcproject.mvcproject.repositories.OnlineUserRepo;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

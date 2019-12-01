@@ -27,6 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MySimpleUrlAuthenticationSuccessHandler mySimpleUrlAuthenticationSuccessHandler;
 
+    //Handlers are disabled because app working with dev tools and save last sessions.
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -36,10 +38,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                     .formLogin().loginPage("/login").permitAll()
-                    .successHandler(mySimpleUrlAuthenticationSuccessHandler)
+//                    .successHandler(mySimpleUrlAuthenticationSuccessHandler)
                 .and()
                     .logout()
-                    .logoutSuccessHandler(myLogoutSuccessHandler)
+//                    .logoutSuccessHandler(myLogoutSuccessHandler)
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()
                 .and()
                     .logout().deleteCookies("JSESSIONID")

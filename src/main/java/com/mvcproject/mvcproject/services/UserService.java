@@ -2,12 +2,10 @@ package com.mvcproject.mvcproject.services;
 
 import com.mvcproject.mvcproject.data.DataBaseCreate;
 import com.mvcproject.mvcproject.email.EmailService;
-import com.mvcproject.mvcproject.entities.OnlineUser;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.CustomServerException;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
-import com.mvcproject.mvcproject.repositories.OnlineUserRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.session.LoggedUser;
 import com.mvcproject.mvcproject.validation.Validator;
@@ -24,7 +22,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
-import java.security.Principal;
 import java.util.*;
 
 @Service
@@ -41,8 +38,6 @@ public class UserService implements UserDetailsService {
     private DataBaseCreate dbCreate;
     @Autowired
     private Validator validator;
-    @Autowired
-    private OnlineUserRepo onlineUserRepo;
 
     @PostConstruct
     public void init() {
