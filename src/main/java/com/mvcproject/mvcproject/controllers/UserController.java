@@ -63,6 +63,7 @@ public class UserController {
                             @RequestParam String lobbyName, @RequestParam String password) {
         Bet betAndGame = betService.createBetAndGame(user, game, gamemode, value, opponent, lobbyName, password);
         UserService.ifAdmin(model, user);
+        model.addAttribute("friends", userService.getFriends(user));
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         return "createBet";

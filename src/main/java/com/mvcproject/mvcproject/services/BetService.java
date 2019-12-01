@@ -34,7 +34,6 @@ public class BetService {
         return response;
     }
 
-    @Transactional
     public Bet createBetAndGame(User user, String game, String gamemode, String value, String opponent,
                                  String lobbyName, String password) {
         Game katka = new Game(null, lobbyName, password, gamemode);
