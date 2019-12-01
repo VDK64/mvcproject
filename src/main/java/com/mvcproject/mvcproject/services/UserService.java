@@ -2,11 +2,14 @@ package com.mvcproject.mvcproject.services;
 
 import com.mvcproject.mvcproject.data.DataBaseCreate;
 import com.mvcproject.mvcproject.email.EmailService;
+import com.mvcproject.mvcproject.entities.OnlineUser;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.CustomServerException;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
+import com.mvcproject.mvcproject.repositories.OnlineUserRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
+import com.mvcproject.mvcproject.session.LoggedUser;
 import com.mvcproject.mvcproject.validation.Validator;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSessionBindingEvent;
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,6 +45,8 @@ public class UserService implements UserDetailsService {
     private DataBaseCreate dbCreate;
     @Autowired
     private Validator validator;
+    @Autowired
+    private OnlineUserRepo onlineUserRepo;
 
     @PostConstruct
     public void init() {
@@ -169,4 +175,11 @@ public class UserService implements UserDetailsService {
         });
         return friendsList;
     }
+
+    public List<OnlineUser> getAllSessions() { return (List<OnlineUser>) onlineUserRepo.findAll(); }
+
+    public void createSessionInfo(String username) { onlineUserRepo.save(new OnlineUser(null, username)); }
+
+    @Transactional
+    public void deleteSessionInfo(String username) { onlineUserRepo.deleteByUsername(username); }
 }

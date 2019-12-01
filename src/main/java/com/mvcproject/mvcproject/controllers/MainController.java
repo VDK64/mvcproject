@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-
 @Controller
 public class MainController {
     @Autowired
@@ -26,14 +24,15 @@ public class MainController {
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("users", userService.getAllSessions());
         return "index";
     }
 
     @RequestMapping("/login")
     public String getLogin(@RequestParam(value = "error", required = false) String error,
-                           @RequestParam(value = "logout", required = false) String logout, Model model) {
+                           Model model) {
         model.addAttribute("error", error != null);
-        model.addAttribute("logout", logout != null);
+//        model.addAttribute("logout", logout != null);
         return "login";
     }
 

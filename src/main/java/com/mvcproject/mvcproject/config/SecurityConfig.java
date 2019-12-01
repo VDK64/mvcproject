@@ -1,6 +1,8 @@
 package com.mvcproject.mvcproject.config;
 
 import com.mvcproject.mvcproject.services.UserService;
+import com.mvcproject.mvcproject.session.MyLogoutSuccessHandler;
+import com.mvcproject.mvcproject.session.MySimpleUrlAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
+    @Autowired
+    private MyLogoutSuccessHandler myLogoutSuccessHandler;
+    @Autowired
+    private MySimpleUrlAuthenticationSuccessHandler mySimpleUrlAuthenticationSuccessHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -33,8 +39,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                     .formLogin().loginPage("/login").permitAll()
+                    .successHandler(mySimpleUrlAuthenticationSuccessHandler)
                 .and()
-                    .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()
+                    .logout()
+                    .logoutSuccessHandler(myLogoutSuccessHandler)
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()
                 .and()
                     .logout().deleteCookies("JSESSIONID")
                 .and()
