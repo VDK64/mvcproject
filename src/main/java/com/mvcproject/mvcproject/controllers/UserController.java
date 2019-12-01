@@ -1,7 +1,6 @@
 package com.mvcproject.mvcproject.controllers;
 
 import com.mvcproject.mvcproject.entities.Bet;
-import com.mvcproject.mvcproject.entities.Game;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.services.BetService;
@@ -101,6 +100,6 @@ public class UserController {
         model.addAttribute("friends", userService.getFriends(user));
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        return "createBet";
+        return "redirect:/bets";
     }
 }
