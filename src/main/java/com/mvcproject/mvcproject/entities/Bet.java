@@ -27,12 +27,14 @@ public class Bet {
     @JoinColumn(name= "opponent_id")
     private User opponent;
     @NotNull
-    Boolean isConfirm;
+    private Boolean isConfirm;
     private String whoWin;
     @ToString.Exclude
     @OneToOne
     @JoinColumn(name = "game_id")
     private Game game;
+    //must be not null. must do it later
+    private Boolean isNew;
 
     public Bet(Long id, User user, @NotNull Float value, User opponent, @NotNull Boolean isConfirm, String whoWin) {
         this.id = id;

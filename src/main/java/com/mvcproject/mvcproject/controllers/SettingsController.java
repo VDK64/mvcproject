@@ -2,6 +2,7 @@ package com.mvcproject.mvcproject.controllers;
 
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.UserRepo;
+import com.mvcproject.mvcproject.services.BetService;
 import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.SettingsService;
 import com.mvcproject.mvcproject.services.UserService;
@@ -27,10 +28,13 @@ public class SettingsController {
     private UserRepo userrepo;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private BetService betService;
 
     @GetMapping
     public String getSettings(@AuthenticationPrincipal User user, Model model) {
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("user", user);
         UserService.ifAdmin(model, user);
         return "settings";
@@ -41,6 +45,7 @@ public class SettingsController {
                             @RequestParam("file") MultipartFile file) throws IOException {
         settingsService.saveFile(file, user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("user", user);
         UserService.ifAdmin(model, user);
         return "settings";
@@ -50,6 +55,7 @@ public class SettingsController {
     public String setSettings(@AuthenticationPrincipal User user, Model model, @RequestParam String firstname,
                               @RequestParam String lastname, @RequestParam String username) {
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         User updateUser = settingsService.setSettings(user, firstname, lastname, username, new ModelAndView("settings"));
         UserService.ifAdmin(model, updateUser);
         model.addAttribute("user", updateUser);
@@ -60,6 +66,7 @@ public class SettingsController {
     @PostMapping(params = "button")
     public ModelAndView deleteAvatar(@AuthenticationPrincipal User user, ModelAndView model) {
         model.addObject("newMessages", messageService.haveNewMessages(user));
+        model.addObject("newBets", betService.haveNewBets(user));
         UserService.ifAdmin(model, user);
         model.addObject("user", user);
         settingsService.deleteAvatar(user, model);
@@ -72,6 +79,7 @@ public class SettingsController {
         UserService.ifAdmin(model, user);
         model.addObject("user", user);
         model.addObject("newMessages", messageService.haveNewMessages(user));
+        model.addObject("newBets", betService.haveNewBets(user));
         settingsService.deposit(user, value, model);
         model.addObject("ok", "Your deposit was successfully replenished!");
         return model;
@@ -83,6 +91,7 @@ public class SettingsController {
         UserService.ifAdmin(model, user);
         model.addObject("user", user);
         model.addObject("newMessages", messageService.haveNewMessages(user));
+        model.addObject("newBets", betService.haveNewBets(user));
         settingsService.withdraw(user, value, model);
         model.addObject("ok", "Withdraw was successfully!");
         return model;

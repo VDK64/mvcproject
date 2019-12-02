@@ -39,11 +39,11 @@
               </li>
           </#if>
           <#if position=="bets">
-            <li class="nav-item active">
+            <li id="betsId" class="nav-item active">
               <a class="nav-link" href="/bets">Bets</a>
             </li>
             <#else>
-              <li class="nav-item">
+              <li id="betsId" class="nav-item">
                 <a class="nav-link" href="/bets">Bets</a>
               </li>
           </#if>

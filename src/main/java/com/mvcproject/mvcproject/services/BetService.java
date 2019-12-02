@@ -1,5 +1,6 @@
 package com.mvcproject.mvcproject.services;
 
+import com.mvcproject.mvcproject.dto.BetDto;
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.Game;
 import com.mvcproject.mvcproject.entities.User;
@@ -12,8 +13,10 @@ import com.mvcproject.mvcproject.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +30,8 @@ public class BetService {
     private GameRepo gameRepo;
     @Autowired
     private Validator validator;
+    @Autowired
+    private SimpMessagingTemplate template;
 
     public Page<Bet> getBetInfo(User user, String who) {
         if (who.equalsIgnoreCase("owner"))
@@ -46,11 +51,14 @@ public class BetService {
 
     public Bet createBetAndGame(User user, String game, String gamemode, String value, String opponent,
                                 String lobbyName, String password) {
+        String opponentUsername = opponent.split(" ")[1];
         Game katka = new Game(null, lobbyName, password, gamemode);
         Game save = gameRepo.save(katka);
         Bet bet = new Bet(null, user, Float.valueOf(value),
-                userRepo.findByUsername(opponent.split(" ")[1]).orElseThrow(), false, null,
-                katka);
+                userRepo.findByUsername(opponentUsername).orElseThrow(), false, null,
+                katka, true);
+        template.convertAndSendToUser(opponentUsername, "/queue/events", new BetDto(user.getUsername(),
+                opponentUsername, game));
         return betRepo.save(bet);
     }
 
@@ -68,5 +76,20 @@ public class BetService {
                  return 1;
              else return 0;
          });
+    }
+
+    @Transactional
+    public boolean haveNewBets(User user) {
+        User userFromDB = userRepo.findById(user.getId()).orElseThrow();
+        for (Bet bet : userFromDB.getBets()) {
+            if (bet.getOpponent().getUsername().equals(user.getUsername()) && bet.getIsNew()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void betNotification(User user, BetDto bet) {
+
     }
 }

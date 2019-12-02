@@ -1,6 +1,7 @@
 package com.mvcproject.mvcproject.controllers;
 
 import com.mvcproject.mvcproject.entities.User;
+import com.mvcproject.mvcproject.services.BetService;
 import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,15 @@ public class MainController {
     private UserService userService;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    BetService betService;
 
     @RequestMapping("/")
     public String getMainPage(@AuthenticationPrincipal User user, Model model) {
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         return "index";
     }
 
@@ -32,6 +36,7 @@ public class MainController {
         UserService.ifAdmin(model, user);
         model.addAttribute("user", userService.getUserById(Long.valueOf(id)));
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         return "guestPage";
     }
 

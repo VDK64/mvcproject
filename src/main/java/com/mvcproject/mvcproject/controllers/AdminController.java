@@ -2,6 +2,7 @@ package com.mvcproject.mvcproject.controllers;
 
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
+import com.mvcproject.mvcproject.services.BetService;
 import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,14 @@ public class AdminController {
     private UserService userService;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    BetService betService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/userList")
     public String getList(@AuthenticationPrincipal User user, Model model) {
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         Iterable<User> allUsers = userService.getAllUsers();
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
@@ -39,6 +43,7 @@ public class AdminController {
     public String getEditUser(@PathVariable User user, Model model) {
         UserService.ifAdmin(model, user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("user", user);
         model.addAttribute("authorities", Role.values());
         model.addAttribute("username", user.getUsername());
@@ -53,6 +58,7 @@ public class AdminController {
         userService.changeUser(user, firstname, lastname, username, password, authorities, new ModelAndView("editUser"));
         Iterable<User> allUsers = userService.getAllUsers();
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("users", allUsers);
         model.addAttribute("user", user);
         model.addAttribute("username", user.getUsername());

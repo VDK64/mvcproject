@@ -3,6 +3,7 @@ package com.mvcproject.mvcproject.controllers;
 import com.mvcproject.mvcproject.dto.DialogDtoResponse;
 import com.mvcproject.mvcproject.dto.MessageDto;
 import com.mvcproject.mvcproject.entities.User;
+import com.mvcproject.mvcproject.services.BetService;
 import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,13 @@ public class MessageController {
     private MessageService messageService;
     @Autowired
     private SimpMessagingTemplate template;
+    @Autowired
+    BetService betService;
 
     @RequestMapping("/dialogs")
     public String getDialogs(@AuthenticationPrincipal User user, Model model) {
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         Set<DialogDtoResponse> response = messageService.getDialogs(user.getId());
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
@@ -44,6 +48,7 @@ public class MessageController {
         if (!messageService.accessRouter(user.getId(), dialogId)) { return "errorPage"; }
         messageService.readNewMessage(dialogId);
         List<MessageDto> response = messageService.loadMessages(user, dialogId);
+        model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("interlocutor", messageService.getInterlocutor(dialogId, user.getId()));
         model.addAttribute("messages", response);
         model.addAttribute("dialogId", dialogId);

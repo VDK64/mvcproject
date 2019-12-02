@@ -1,5 +1,7 @@
 package com.mvcproject.mvcproject.controllers;
 
+import com.mvcproject.mvcproject.dto.BetDto;
+import com.mvcproject.mvcproject.dto.MessageDto;
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.UserRepo;
@@ -8,6 +10,8 @@ import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +38,7 @@ public class UserController {
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         return "friends";
     }
 
@@ -45,6 +50,7 @@ public class UserController {
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("items", items);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("tableName", "Owner");
@@ -60,6 +66,7 @@ public class UserController {
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("items", items);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("tableName", table);
@@ -76,6 +83,7 @@ public class UserController {
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("items", items);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("tableName", tableName);
@@ -88,6 +96,7 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("friends", userService.getFriends(user));
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         return "createBet";
     }
 
@@ -100,6 +109,12 @@ public class UserController {
         model.addAttribute("friends", userService.getFriends(user));
         model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
         return "redirect:/bets";
+    }
+
+    @MessageMapping("/bet")
+    public void betNotification(@AuthenticationPrincipal User user, @Payload BetDto betDto) {
+        betService.betNotification(user, betDto);
     }
 }
