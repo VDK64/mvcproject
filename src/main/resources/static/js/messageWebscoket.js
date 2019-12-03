@@ -1,6 +1,6 @@
 'use strict';
 var stompClient = Stomp.over(new SockJS('/room'));
-// stompClient.debug = null;
+stompClient.debug = null;
 var username = null;
 var headerName = document.getElementById('csrfHeaderName').value;
 var token = document.getElementById('csrfToken').value;
@@ -20,6 +20,7 @@ function showNotification(html) {
   let notification = document.createElement('div');
   notification.setAttribute('id', 'notification');
   let div = document.getElementById('mainDiv');
+  console.log(div);
   notification.className = "alert alert-info notification";
   notification.setAttribute('role', 'alert');
   notification.setAttribute('style', 'margin-top:10px; right:20px')

@@ -1,6 +1,6 @@
 'use strict';
 var stompClient2 = Stomp.over(new SockJS('/bet'));
-// stompClient2.debug = null;
+stompClient2.debug = null;
 var username = null;
 var headerName = document.getElementById('csrfHeaderName').value;
 var token = document.getElementById('csrfToken').value;
@@ -27,11 +27,12 @@ function showNotification(html) {
   let notification = document.createElement('div');
   notification.setAttribute('id', 'notification');
   let divMessages = document.getElementById('chat-page');
+  console.log(divMessages);
   let div;
   if (divMessages !== null) {
     div = divMessages;
   } else {
-    let div = document.getElementById('mainDiv');
+    div = document.getElementById('mainDiv');
   }
   notification.className = "alert alert-info notification";
   notification.setAttribute('role', 'alert');
