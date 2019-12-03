@@ -1,9 +1,13 @@
 <#import "/header.ftl" as h>
-<#import "/scripter.ftl" as s>
   <@h.header admin=admin user=user position="home">
     <link rel="stylesheet" href="../static/css/style.css">
 
-    <div id="container-fluid" class="container-fluid" style="margin-left:10px">
+    <input id="csrfHeaderName" value="${_csrf.headerName}" type="hidden">
+    <input id="csrfToken" value="${_csrf.token}" type="hidden">
+    <input id="newMessages" value="${newMessages?c}" type="hidden">
+    <input id="newBets" value="${newBets?c}" type="hidden">
+
+    <div id="mainDiv" class="container-fluid" style="margin-left:10px">
       <div class="row">
         <div class="col-md-12" style="margin-top: 10px">
           <#if user.avatar=="default">
@@ -21,6 +25,9 @@
       </div>
     </div>
 
-    <@s.scripter class="container-fluid" />
+    <script src="/static/js/sock.js"></script>
+    <script src="/static/js/stomp.js"></script>
+    <script src="/static/js/messageWebscoket.js"></script>
+    <script src="/static/js/betWebscoket.js"></script>
 
   </@h.header>

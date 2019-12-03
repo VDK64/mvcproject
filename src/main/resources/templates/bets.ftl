@@ -1,10 +1,13 @@
 <#import "/header.ftl" as h>
-  <#import "/scripter.ftl" as s>
     <@h.header admin=admin user=user position="bets">
       <link rel="stylesheet" href="../static/css/style.css">
 
+      <input id="csrfHeaderName" value="${_csrf.headerName}" type="hidden">
+      <input id="csrfToken" value="${_csrf.token}" type="hidden">
+      <input id="newMessages" value="${newMessages?c}" type="hidden">
+      <input id="newBets" value="${newBets?c}" type="hidden">
 
-      <div id="container" class="container">
+      <div id="mainDiv" class="container">
 
         <button type="button" class="btn btn-success" onclick="createBet();" name="button" style="margin-top: 10px">Create bet</button>
 
@@ -95,7 +98,10 @@
         </#if>
       </div>
 
-      <@s.scripter class="container" />
+      <script src="/static/js/sock.js"></script>
+      <script src="/static/js/stomp.js"></script>
+      <script src="/static/js/messageWebscoket.js"></script>
+      <script src="/static/js/betWebscoket.js"></script>
 
       <script type="text/javascript">
         document.body.style.overflow = "auto"

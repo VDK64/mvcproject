@@ -1,9 +1,14 @@
 <#import "/header.ftl" as h>
-<#import "/scripter.ftl" as s>
+
   <@h.header admin=admin user=user position="messagesD">
   <link rel="stylesheet" href="../static/css/style.css">
 
-    <div id="container col-sm-6" class="container col-sm-6" style="margin-bottom: 30px">
+  <input id="csrfHeaderName" value="${_csrf.headerName}" type="hidden">
+  <input id="csrfToken" value="${_csrf.token}" type="hidden">
+  <input id="newMessages" value="${newMessages?c}" type="hidden">
+  <input id="newBets" value="${newBets?c}" type="hidden">
+
+    <div id="mainDiv" class="container col-sm-6" style="margin-bottom: 30px">
       <table class="table">
         <thead align="center">
           <tr>
@@ -34,7 +39,10 @@
       </table>
     </div>
 
-    <@s.scripter class="container col-sm-6" />
+    <script src="/static/js/sock.js"></script>
+    <script src="/static/js/stomp.js"></script>
+    <script src="/static/js/messageWebscoket.js"></script>
+    <script src="/static/js/betWebscoket.js"></script>
 
     <script type="text/javascript">
       document.body.style.overflow = "auto"
