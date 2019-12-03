@@ -38,10 +38,6 @@
 
     <script type="text/javascript">
       document.body.style.overflow = "auto"
-
-      function createBet() {
-        document.location.href = "/bets/createBet";
-      }
     </script>
 
     </@h.header>

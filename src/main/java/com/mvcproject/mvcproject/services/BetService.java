@@ -57,17 +57,16 @@ public class BetService {
         Bet bet = new Bet(null, user, Float.valueOf(value),
                 userRepo.findByUsername(opponentUsername).orElseThrow(), false, null,
                 katka, true);
+        Bet saveData = betRepo.save(bet);
         template.convertAndSendToUser(opponentUsername, "/queue/events", new BetDto(user.getUsername(),
-                opponentUsername, game));
-        return betRepo.save(bet);
+                opponentUsername, game, null));
+        return saveData;
     }
 
-    public void readNewBet(User user) {
-        List<Bet> byOpponentAndIsNew = betRepo.findByOpponentAndIsNew(user, true);
-        byOpponentAndIsNew.forEach(bet -> {
-            bet.setIsNew(true);
-            betRepo.save(bet);
-        });
+    public void readNewBet(Long id) {
+        Bet betFromDB = betRepo.findById(id).orElseThrow();
+        betFromDB.setIsNew(false);
+        betRepo.save(betFromDB);
     }
 
     public List<Bet> listFromPage(Page<Bet> data) {
@@ -89,7 +88,15 @@ public class BetService {
     @Transactional
     public boolean haveNewBets(User user) { return !betRepo.findByOpponentAndIsNew(user, true).isEmpty(); }
 
-    public void betNotification(User user, BetDto bet) {
-
+    public void betNotification(User user, BetDto betDto) {
+        template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
     }
+
+    private String detectDestinationUsername(User user, BetDto betDto) {
+        if (betDto.getUser().equals(user.getUsername()))
+            return user.getUsername();
+        else return betDto.getOpponent();
+    }
+
+    public Bet getBet(Long id) { return betRepo.findById(id).orElseThrow(); }
 }

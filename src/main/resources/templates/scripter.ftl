@@ -6,8 +6,8 @@
   'use strict';
   var stompClient = Stomp.over(new SockJS('/room'));
   var stompClient2 = Stomp.over(new SockJS('/bet'));
-  stompClient.debug = null;
-  stompClient2.debug = null;
+  // stompClient.debug = null;
+  // stompClient2.debug = null;
   var username = null;
   var headerName = "${_csrf.headerName}";
   var token = "${_csrf.token}";
@@ -18,6 +18,7 @@
   var onceMessage = false;
   var onceBet = false;
   var url = window.location.href.toString();
+  var urlBet = window.location.href.toString();
 
   // console.log(url);
 
@@ -37,15 +38,14 @@
 
   document.addEventListener("bet", function(event) {
     onBet('true', event.detail);
-    // onNewBet();
+    onNewBet();
   });
 
-  // function onNewBet() {
-  //   if (window.location.href.toString().includes('/bets')) {
-  //   document.location.href = "/bets";
-  //   console.log('newbet is work');
-  //   }
-  // }
+  function onNewBet(callback) {
+    if (urlBet.includes('/bets')) {
+       document.location.href = "/bets";
+     }
+  }
 
   function showNotification(html) {
     let notification = document.createElement('div');
@@ -76,15 +76,28 @@
 
   stompClient2.connect(headers, function(frame) {
     stompClient2.subscribe('/user/queue/events', function(msgOut) {
-      newBets = true;
       let message = JSON.parse(msgOut.body);
+      if (message.info !== null) {
+        betInfo(message.info);
+      } else {
+      newBets = true;
+      if (!urlBet.includes('/bets')) {
       showNotification('Your friend call your to play!');
+      }
       let event = new CustomEvent("bet", {'detail':message.user});
-      // console.log(event);
       document.dispatchEvent(event);
+      }
     });
     username = frame.headers['user-name'];
   });
+
+  function betInfo(info) {
+    switch (info) {
+      case 'launchLobby':
+      deleteButton();
+      break;
+    }
+  }
 
   function onMessage(arg, username) {
     if (arg === 'true' || newMessages == 'true') {
@@ -116,7 +129,6 @@
     let elem = document.getElementById(username + '-new');
     if (!elem && username !== undefined) {
       let a = document.getElementById(username);
-      console.log(a);
       let td = a.parentElement;
       let tr = td.parentElement;
       let tbody = tr.parentElement;

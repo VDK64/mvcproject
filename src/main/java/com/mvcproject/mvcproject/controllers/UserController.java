@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -115,5 +116,16 @@ public class UserController {
     @MessageMapping("/bet")
     public void betNotification(@AuthenticationPrincipal User user, @Payload BetDto betDto) {
         betService.betNotification(user, betDto);
+    }
+
+    @GetMapping("/bets/{id}")
+    public String getDetails(@AuthenticationPrincipal User user, Model model, @PathVariable Long id) {
+        betService.readNewBet(id);
+        UserService.ifAdmin(model, user);
+        model.addAttribute("user", user);
+        model.addAttribute("bet", betService.getBet(id));
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
+        return "details";
     }
 }
