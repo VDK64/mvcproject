@@ -26,7 +26,13 @@ function onNewBet(callback) {
 function showNotification(html) {
   let notification = document.createElement('div');
   notification.setAttribute('id', 'notification');
-  let div = document.getElementById('mainDiv');
+  let divMessages = document.getElementById('chat-page');
+  let div;
+  if (divMessages !== null) {
+    div = divMessages;
+  } else {
+    let div = document.getElementById('mainDiv');
+  }
   notification.className = "alert alert-info notification";
   notification.setAttribute('role', 'alert');
   notification.setAttribute('style', 'margin-top:10px; right:20px')

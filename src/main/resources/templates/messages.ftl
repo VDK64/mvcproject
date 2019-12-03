@@ -2,7 +2,11 @@
   <@h.header admin=admin user=user position="messages">
     <link rel="stylesheet" href="../static/css/style.css">
 
-    <div id="chat-page" class="">
+    <input id="newBets" value="${newBets?c}" type="hidden">
+    <input id="csrfHeaderName" value="${_csrf.headerName}" type="hidden">
+    <input id="csrfToken" value="${_csrf.token}" type="hidden">
+
+    <div id="chat-page" class="chat-page">
       <div id="chat-container" class="chat-container">
         <div class="chat-header">
           <h2>Chat with ${interlocutor.username}</h2>
@@ -47,17 +51,19 @@
 
     <script src="/static/js/sock.js"></script>
     <script src="/static/js/stomp.js"></script>
+    <script src="/static/js/betWebscoket.js"></script>
+
     <script type="text/javascript">
       'use strict';
       var block = document.querySelector('#messageArea');
       block.scrollTop = block.scrollHeight;
       var usernamePage = document.querySelector('#username-page');
-      var chatPage = document.querySelector('#chat-page');
+      var chatPage = document.querySelector('#mainDiv');
       var messageForm = document.querySelector('#messageForm');
       var messageInput = document.querySelector('#message');
       var messageArea = document.querySelector('#messageArea');
       var stompClient = Stomp.over(new SockJS('/room'));
-      var stompClient2 = Stomp.over(new SockJS('/newMessage'));
+      var stompClientM = Stomp.over(new SockJS('/newMessage'));
       // stompClient.debug = null;
       var username = null;
       var headerName = "${_csrf.headerName}";
@@ -83,7 +89,7 @@
           date: message.date,
           dialogId: '${dialogId}'
         };
-          stompClient2.send("/app/newMessage", {}, JSON.stringify(chatMessage))
+          stompClientM.send("/app/newMessage", {}, JSON.stringify(chatMessage))
       }
 
       function sendMessage(event) {
