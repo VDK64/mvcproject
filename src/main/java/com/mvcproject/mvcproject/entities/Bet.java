@@ -34,14 +34,17 @@ public class Bet {
     @JoinColumn(name = "game_id")
     private Game game;
     //must be not null. must do it later
+    @NotNull
     private Boolean isNew;
 
-    public Bet(Long id, User user, @NotNull Float value, User opponent, @NotNull Boolean isConfirm, String whoWin) {
+    public Bet(Long id, User user, @NotNull Float value, User opponent, @NotNull Boolean isConfirm, String whoWin,
+               Boolean isNew) {
         this.id = id;
         this.user = user;
         this.value = value;
         this.opponent = opponent;
         this.isConfirm = isConfirm;
         this.whoWin = whoWin;
+        this.isNew = isNew;
     }
 }

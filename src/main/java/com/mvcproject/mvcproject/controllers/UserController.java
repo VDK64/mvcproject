@@ -1,7 +1,6 @@
 package com.mvcproject.mvcproject.controllers;
 
 import com.mvcproject.mvcproject.dto.BetDto;
-import com.mvcproject.mvcproject.dto.MessageDto;
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.UserRepo;
@@ -44,22 +43,16 @@ public class UserController {
 
     @GetMapping("/bets")
     public String bets(@AuthenticationPrincipal User user, Model model) {
-        Page<Bet> response = betService.getBetInfo(user, "owner");
-        int totalPages = response.getTotalPages();
-        List<Bet> items = betService.listFromPage(response);
-        UserService.ifAdmin(model, user);
-        model.addAttribute("user", user);
-        model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("newBets", betService.haveNewBets(user));
-        model.addAttribute("items", items);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("tableName", "Owner");
+        boolean haveNewBets = betService.haveNewBets(user);
+        if (haveNewBets) {
+            formModelForBets(model, user, "Opponent");
+            return "bets";
+        }
+        formModelForBets(model, user, "Owner");
         return "bets";
     }
 
-    @PostMapping(value = "/bets", params = "chooseTable")
-    public String getTable(@AuthenticationPrincipal User user, Model model,
-                           @RequestParam String table) {
+    private void formModelForBets(Model model, User user, String table) {
         Page<Bet> response = betService.getBetInfo(user, table);
         int totalPages = response.getTotalPages();
         List<Bet> items = betService.listFromPage(response);
@@ -70,6 +63,12 @@ public class UserController {
         model.addAttribute("items", items);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("tableName", table);
+    }
+
+    @PostMapping(value = "/bets", params = "chooseTable")
+    public String getTable(@AuthenticationPrincipal User user, Model model,
+                           @RequestParam String table) {
+        formModelForBets(model, user, table);
         return "bets";
     }
 

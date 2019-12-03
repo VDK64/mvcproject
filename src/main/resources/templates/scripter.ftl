@@ -6,8 +6,8 @@
   'use strict';
   var stompClient = Stomp.over(new SockJS('/room'));
   var stompClient2 = Stomp.over(new SockJS('/bet'));
-  // stompClient.debug = null;
-  // stompClient2.debug = null;
+  stompClient.debug = null;
+  stompClient2.debug = null;
   var username = null;
   var headerName = "${_csrf.headerName}";
   var token = "${_csrf.token}";
@@ -37,7 +37,15 @@
 
   document.addEventListener("bet", function(event) {
     onBet('true', event.detail);
+    // onNewBet();
   });
+
+  // function onNewBet() {
+  //   if (window.location.href.toString().includes('/bets')) {
+  //   document.location.href = "/bets";
+  //   console.log('newbet is work');
+  //   }
+  // }
 
   function showNotification(html) {
     let notification = document.createElement('div');

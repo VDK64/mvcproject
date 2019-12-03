@@ -163,12 +163,12 @@ public class DataBaseCreate {
         User user = userRepo.findByUsername("user").orElseThrow();
 
         Iterable<Bet> bets = betRepo.saveAll(new ArrayList<>() {{
-            add(new Bet(null, vdk64, 500f, kasha111, false, vdk64.getUsername()));
-            add(new Bet(null, vdk64, 450f, kasha111, true, null));
-            add(new Bet(null, petro123, 730f, vdk64, false, vdk64.getUsername()));
-            add(new Bet(null, kasha111, 200f, vdk64, true, null));
-            add(new Bet(null, vdk64, 150f, tony64, false, null));
-            add(new Bet(null, user, 200f, vdk64, false, vdk64.getUsername()));
+            add(new Bet(null, vdk64, 500f, kasha111, false, vdk64.getUsername(), false));
+            add(new Bet(null, vdk64, 450f, kasha111, true, null, false));
+            add(new Bet(null, petro123, 730f, vdk64, false, vdk64.getUsername(), false));
+            add(new Bet(null, kasha111, 200f, vdk64, true, null, false));
+            add(new Bet(null, vdk64, 150f, tony64, false, null, false));
+            add(new Bet(null, user, 200f, vdk64, false, vdk64.getUsername(), false));
         }});
     }
 }

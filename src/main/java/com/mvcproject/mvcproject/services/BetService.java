@@ -62,6 +62,14 @@ public class BetService {
         return betRepo.save(bet);
     }
 
+    public void readNewBet(User user) {
+        List<Bet> byOpponentAndIsNew = betRepo.findByOpponentAndIsNew(user, true);
+        byOpponentAndIsNew.forEach(bet -> {
+            bet.setIsNew(true);
+            betRepo.save(bet);
+        });
+    }
+
     public List<Bet> listFromPage(Page<Bet> data) {
         List<Bet> response = data.get().collect(Collectors.toList());
         sortBets(response);
