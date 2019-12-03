@@ -11,4 +11,5 @@ import java.util.List;
 public interface MessageRepo extends PagingAndSortingRepository<Message, Long> {
     List<Message> findByFromIdAndToId(Long fromId, Long toId);
     List<Message> findByNewMessageAndDialog(Boolean newMessage, Dialog dialog);
+    List<Message> findByNewMessageAndToId(Boolean newMessage, Long toId);
 }

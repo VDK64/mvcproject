@@ -17,4 +17,5 @@ public interface BetRepo extends PagingAndSortingRepository<Bet, Long> {
     List<Bet> findByOpponentAndIsConfirm(User opponent, Boolean isConfirm);
     Page<Bet> findByUser(User user, Pageable pageable);
     Page<Bet> findByOpponent(User opponent, Pageable pageable);
+    List<Bet> findByOpponentAndIsNew(User Opponent, Boolean isNew);
 }

@@ -82,16 +82,7 @@ public class MessageService {
 
     @Transactional
     public boolean haveNewMessages(User user) {
-        User userFromDB = userRepo.findByUsername(user.getUsername()).orElseThrow();
-        Set<Dialog> dialogs = userFromDB.getDialogs();
-        for (Dialog dialog : dialogs) {
-            for (Message message : messageRepo.findByNewMessageAndDialog(true, dialog)) {
-                if (message.getToId().equals(user.getId())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return !messageRepo.findByNewMessageAndToId(true, user.getId()).isEmpty();
     }
 
     @Transactional

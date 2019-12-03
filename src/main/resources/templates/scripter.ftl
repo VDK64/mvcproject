@@ -7,6 +7,7 @@
   var stompClient = Stomp.over(new SockJS('/room'));
   var stompClient2 = Stomp.over(new SockJS('/bet'));
   // stompClient.debug = null;
+  // stompClient2.debug = null;
   var username = null;
   var headerName = "${_csrf.headerName}";
   var token = "${_csrf.token}";
@@ -40,12 +41,16 @@
 
   function showNotification(html) {
     let notification = document.createElement('div');
+    notification.setAttribute('id', 'notification');
     let div = document.getElementById('${class}');
     notification.className = "alert alert-info notification";
     notification.setAttribute('role', 'alert');
     notification.setAttribute('style', 'margin-top:10px; right:20px')
     notification.innerHTML = html;
-    div.prepend(notification);
+    let preNot = document.getElementById('notification');
+    if (preNot !== null) {
+      preNot.append(notification);
+    } else { div.prepend(notification); }
     setTimeout(() => notification.remove(), 5000);
   }
 
@@ -63,7 +68,7 @@
 
   stompClient2.connect(headers, function(frame) {
     stompClient2.subscribe('/user/queue/events', function(msgOut) {
-      newMessages = true;
+      newBets = true;
       let message = JSON.parse(msgOut.body);
       showNotification('Your friend call your to play!');
       let event = new CustomEvent("bet", {'detail':message.user});

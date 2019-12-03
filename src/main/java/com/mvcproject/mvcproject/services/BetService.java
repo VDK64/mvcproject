@@ -79,15 +79,7 @@ public class BetService {
     }
 
     @Transactional
-    public boolean haveNewBets(User user) {
-        User userFromDB = userRepo.findById(user.getId()).orElseThrow();
-        for (Bet bet : userFromDB.getBets()) {
-            if (bet.getOpponent().getUsername().equals(user.getUsername()) && bet.getIsNew()) {
-                return true;
-            }
-        }
-        return false;
-    }
+    public boolean haveNewBets(User user) { return !betRepo.findByOpponentAndIsNew(user, true).isEmpty(); }
 
     public void betNotification(User user, BetDto bet) {
 
