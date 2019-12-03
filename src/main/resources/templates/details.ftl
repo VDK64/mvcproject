@@ -8,12 +8,16 @@
           <div class="col-6">
             <h1>Owner</h1>
               <p>${bet.user.firstname} ${bet.user.username} ${bet.user.lastname}</p>
+              <#if bet.user.username == user.username>
               <p><button id="button1" onclick="deleteButtonOnClick();" type="button" class="btn btn-success">Start server</button></p>
+              </#if>
           </div>
           <div class="col-6">
             <h1>Opponent</h1>
               <p>${bet.opponent.firstname} ${bet.opponent.username} ${bet.opponent.lastname}</p>
+              <#if bet.opponent.username == user.username>
               <p><button id="button2" onclick="deleteButtonOnClick();" type="button" class="btn btn-success">Start server</button></p>
+              </#if>
           </div>
         </div>
       </div>
@@ -26,14 +30,16 @@
         let but2 = document.getElementById('button2');
 
         function deleteButtonOnClick(event) {
-          but1.remove();
-          but2.remove();
+          deleteButton();
           sendMessageAboutBet('launchLobby')
         }
 
         function deleteButton() {
-          but1.remove();
-          but2.remove();
+          if (but1 !== null) {
+            but1.remove();
+          } else {
+            but2.remove();
+          }
         }
 
         function sendMessageAboutBet(message) {
