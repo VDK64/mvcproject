@@ -47,8 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .logout().deleteCookies("JSESSIONID")
                 .and()
                     .csrf()
-                    .ignoringAntMatchers("/room")
-                    .ignoringAntMatchers("/newMessage")
+                    .ignoringAntMatchers("/room/**")
+                    .ignoringAntMatchers("/newMessage/**")
                 .and()
                     .headers().frameOptions().sameOrigin();
     }

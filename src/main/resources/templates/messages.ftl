@@ -89,7 +89,7 @@
           date: message.date,
           dialogId: '${dialogId}'
         };
-          stompClientM.send("/app/newMessage", {}, JSON.stringify(chatMessage))
+          stompClientM.send("/app/newMessage", headers, JSON.stringify(chatMessage))
       }
 
       function sendMessage(event) {
@@ -102,7 +102,7 @@
             date: null,
             dialogId: ${dialogId}
           };
-          stompClient.send("/app/room", {}, JSON.stringify(chatMessage));
+          stompClient.send("/app/room", headers, JSON.stringify(chatMessage));
           messageInput.value = '';
           var messageElement = document.createElement('li');
           messageElement.classList.add('chat-message');
