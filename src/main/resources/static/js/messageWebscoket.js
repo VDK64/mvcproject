@@ -1,6 +1,6 @@
 'use strict';
 var stompClient = Stomp.over(new SockJS('/room'));
-stompClient.debug = null;
+// stompClient.debug = null;
 var username = null;
 var headerName = document.getElementById('csrfHeaderName').value;
 var token = document.getElementById('csrfToken').value;

@@ -94,8 +94,8 @@ public class BetService {
 
     private String detectDestinationUsername(User user, BetDto betDto) {
         if (betDto.getUser().equals(user.getUsername()))
-            return user.getUsername();
-        else return betDto.getOpponent();
+            return betDto.getOpponent();
+        else return user.getUsername();
     }
 
     public Bet getBet(Long id) { return betRepo.findById(id).orElseThrow(); }

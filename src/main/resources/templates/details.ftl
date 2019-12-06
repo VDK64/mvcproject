@@ -9,18 +9,27 @@
 
       <div id="mainDiv" class="container" style="margin-top:10px">
         <div class="row">
+          <p style="color: #CE5C5C;">
+            <b>
+          Attention! You must open dota2 and will be ready to find a lobby,
+          that created after pushing the button "Ready!". You have only 30 sec. to
+          enter the lobby. If you or your opponent are late to come into the lobby - all repeates.
+            </b>
+          </p>
+        </div>
+        <div class="row">
           <div class="col-6">
             <h1>Owner</h1>
               <p>${bet.user.firstname} ${bet.user.username} ${bet.user.lastname}</p>
               <#if bet.user.username == user.username>
-              <p><button id="button1" onclick="deleteButtonOnClick();" type="button" class="btn btn-success">Start server</button></p>
+              <p><button id="button1" onclick="deleteButtonOnClick();" type="button" class="btn btn-success">Ready!</button></p>
               </#if>
           </div>
           <div class="col-6">
             <h1>Opponent</h1>
               <p>${bet.opponent.firstname} ${bet.opponent.username} ${bet.opponent.lastname}</p>
               <#if bet.opponent.username == user.username>
-              <p><button id="button2" onclick="deleteButtonOnClick();" type="button" class="btn btn-success">Start server</button></p>
+              <p><button id="button2" onclick="deleteButtonOnClick();" type="button" class="btn btn-success">Ready!</button></p>
               </#if>
           </div>
         </div>

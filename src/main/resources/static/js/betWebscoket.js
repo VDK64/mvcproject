@@ -1,6 +1,6 @@
 'use strict';
 var stompClient2 = Stomp.over(new SockJS('/bet'));
-stompClient2.debug = null;
+// stompClient2.debug = null;
 var username = null;
 var headerName = document.getElementById('csrfHeaderName').value;
 var token = document.getElementById('csrfToken').value;
