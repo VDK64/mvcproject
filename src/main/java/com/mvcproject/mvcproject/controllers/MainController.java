@@ -73,12 +73,4 @@ public class MainController {
         model.addAttribute("user", new User());
         return "emailConfirm";
     }
-
-    @GetMapping("/steam/login")
-    public String getSteam(HttpServletRequest request, Model model) {
-        String identity = request.getParameter("openid.identity");
-        model.addAttribute("auth", identity);
-        return "steam";
-    }
-
 }

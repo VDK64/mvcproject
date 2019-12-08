@@ -7,11 +7,6 @@
     <input id="newMessages" value="${newMessages?c}" type="hidden">
     <input id="newBets" value="${newBets?c}" type="hidden">
 
-    <#if !user.steamId??>
-    <div align="center" style="color:#CDA31A">
-      <b>Please, go to the settings and add your steamId.</b>
-    </div>
-    </#if>
     <div id="mainDiv" class="container-fluid" style="margin-left:10px">
       <div class="row">
         <div class="col-md-12" style="margin-top: 10px">

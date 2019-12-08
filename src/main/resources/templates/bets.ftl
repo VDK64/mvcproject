@@ -9,7 +9,11 @@
 
       <div id="mainDiv" class="container">
 
+        <#if user.steamId??>
         <button type="button" class="btn btn-success" onclick="createBet();" name="button" style="margin-top: 10px">Create bet</button>
+        <#else>
+          <b style="color:#CDA31A">Please, go to the settings and add your steamId.</b>
+        </#if>
 
         <h1 align="center">Bets info</h1>
 

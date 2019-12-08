@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RequestMapping("/settings")
@@ -33,7 +34,11 @@ public class SettingsController {
     private BetService betService;
 
     @GetMapping
-    public String getSettings(@AuthenticationPrincipal User user, Model model) {
+    public String getSettings(@AuthenticationPrincipal User user, Model model, HttpServletRequest request) {
+        String identity = request.getParameter("openid.identity");
+        if (identity != null && user.getSteamId() == null) {
+            settingsService.setSteamId(user, identity);
+        }
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("user", user);
@@ -93,7 +98,7 @@ public class SettingsController {
 
     @PostMapping(params = "withdraw")
     public ModelAndView withdraw(@AuthenticationPrincipal User user, ModelAndView model,
-                                @RequestParam String value) {
+                                 @RequestParam String value) {
         UserService.ifAdmin(model, user);
         model.addObject("user", user);
         model.addObject("newMessages", messageService.haveNewMessages(user));

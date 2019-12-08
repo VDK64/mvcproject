@@ -57,15 +57,17 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <div class="col-md-12" style="margin-top: 10px">
-            <div class="form-group">
-              Add your SteamId by pushing this:
-            <a href="${auth}"><img src="/img/sign.png" class="img-thumbnail"></a>
+        <#if !user.steamId??>
+          <div class="form-group">
+            <div class="col-md-12" style="margin-top: 10px">
+              <div class="form-group">
+                Add your SteamId by pushing this:
+                <a href="${auth}"><img src="/img/sign.png" class="img-thumbnail"></a>
+              </div>
             </div>
           </div>
+        </#if>
         </div>
-      </div>
 
       <div class="row">
         <div class="form-group">

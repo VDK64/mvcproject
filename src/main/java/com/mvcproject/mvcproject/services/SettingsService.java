@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
@@ -87,6 +88,11 @@ public class SettingsService {
         Float value = validator.validValueAndConvertToFlat(deposit, modelAndView);
         if (user.getDeposit() < value) { throw new CustomServerException(ServerErrors.NOT_ENOUGH_DEPOSIT, modelAndView); }
         else { user.setDeposit(user.getDeposit() - value); }
+        userRepo.save(user);
+    }
+
+    public void setSteamId(User user, String identity) {
+        user.setSteamId(identity);
         userRepo.save(user);
     }
 }
