@@ -58,10 +58,16 @@
                 </#if>
               </select>
             </div>
-
             <button id="submit" type="submit" class="btn btn-success" name="button">Create bet</button>
           </form>
         </div>
+        <#if error??>
+          <div class="row" style="margin-top:10px">
+            <div class="alert alert-danger" role="alert">
+              ${error}
+            </div>
+          </div>
+        </#if>
       </div>
 
       <script src="/static/js/sock.js"></script>

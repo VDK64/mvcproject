@@ -8,6 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BetRepo extends PagingAndSortingRepository<Bet, Long> {
@@ -18,4 +19,5 @@ public interface BetRepo extends PagingAndSortingRepository<Bet, Long> {
     Page<Bet> findByUser(User user, Pageable pageable);
     Page<Bet> findByOpponent(User opponent, Pageable pageable);
     List<Bet> findByOpponentAndIsNew(User Opponent, Boolean isNew);
+    Optional<Bet> findByUserAndOpponentAndWhoWin(User user, User opponent, String whoWin);
 }

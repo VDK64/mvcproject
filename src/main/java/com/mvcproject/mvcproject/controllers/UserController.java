@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -104,12 +105,19 @@ public class UserController {
     public String createBet(@AuthenticationPrincipal User user, Model model, @RequestParam String game,
                             @RequestParam String gamemode, @RequestParam String value, @RequestParam String opponent,
                             @RequestParam String lobbyName, @RequestParam String password) {
-        Bet betAndGame = betService.createBetAndGame(user, game, gamemode, value, opponent, lobbyName, password);
-        UserService.ifAdmin(model, user);
-        model.addAttribute("friends", userService.getFriends(user));
-        model.addAttribute("user", user);
-        model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("newBets", betService.haveNewBets(user));
+        ModelAndView modelAndView = new ModelAndView("createBet");
+        modelAndView.addObject("friends", userService.getFriends(user));
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("newMessages", messageService.haveNewMessages(user));
+        modelAndView.addObject("newBets", betService.haveNewBets(user));
+        UserService.ifAdmin(modelAndView, user);
+        betService.createBetAndGame(user, game, gamemode, value, opponent, lobbyName, password,
+                modelAndView);
+//        UserService.ifAdmin(model, user);
+//        model.addAttribute("friends", userService.getFriends(user));
+//        model.addAttribute("user", user);
+//        model.addAttribute("newMessages", messageService.haveNewMessages(user));
+//        model.addAttribute("newBets", betService.haveNewBets(user));
         return "redirect:/bets";
     }
 

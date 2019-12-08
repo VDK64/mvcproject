@@ -19,4 +19,8 @@ public class ServerErrors {
     public static final String NOT_ENOUGH_DEPOSIT = "Sorry, but your deposit is lower than the transaction value!";
     public static final String WRONG_VALUE = "Please, write a correct value!";
     public static final String WRONG_QUERY = "Wrong query!";
+    public static final String WRONG_BET_VALUE = "Please, choose lower bet value.";
+    public static final String BET_EXIST = "This bet is already exist.";
+    public static final String LOBBYNAME_NULL = "Lobby name can not be null or empty";
+    public static final String LOBBYPASSWORD_NULL = "Lobby password can not be null";
 }

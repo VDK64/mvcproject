@@ -10,11 +10,13 @@ import com.mvcproject.mvcproject.repositories.BetRepo;
 import com.mvcproject.mvcproject.repositories.GameRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.validation.Validator;
+import freemarker.template.utility.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -43,24 +45,50 @@ public class BetService {
 
     public Page<Bet> getBetInfo(User user, String who, int offset) {
         if (who.equalsIgnoreCase("user"))
-            return betRepo.findByUser(user, PageRequest.of(offset-1, 10));
+            return betRepo.findByUser(user, PageRequest.of(offset - 1, 10));
         if (who.equalsIgnoreCase("opponent"))
-            return betRepo.findByOpponent(user, PageRequest.of(offset-1, 10));
+            return betRepo.findByOpponent(user, PageRequest.of(offset - 1, 10));
         else throw new CustomServerException(ServerErrors.WRONG_QUERY, null);
     }
 
-    public Bet createBetAndGame(User user, String game, String gamemode, String value, String opponent,
-                                String lobbyName, String password) {
+    public void createBetAndGame(User user, String game, String gamemode, String value, String opponent,
+                                 String lobbyName, String password, ModelAndView modelAndView) {
         String opponentUsername = opponent.split(" ")[1];
+        User opponentFromDB = userRepo.findByUsername(opponentUsername).orElseThrow();
+        Float floatValue = validateDateToCreateBetAndGame(user, value, modelAndView, opponentFromDB, lobbyName
+                , password);
         Game katka = new Game(null, lobbyName, password, gamemode);
-        Game save = gameRepo.save(katka);
-        Bet bet = new Bet(null, user, Float.valueOf(value),
-                userRepo.findByUsername(opponentUsername).orElseThrow(), false, null,
+        gameRepo.save(katka);
+        Bet bet = new Bet(null, user, floatValue,
+                opponentFromDB, false, null,
                 katka, true);
-        Bet saveData = betRepo.save(bet);
+        betRepo.save(bet);
         template.convertAndSendToUser(opponentUsername, "/queue/events", new BetDto(user.getUsername(),
                 opponentUsername, game, null));
-        return saveData;
+    }
+
+    private Float validateDateToCreateBetAndGame(User user, String value, ModelAndView modelAndView,
+                                                 User opponentFromDB, String lobbyName, String password) {
+        if (StringUtil.emptyToNull(lobbyName) == null) {
+            throw new CustomServerException(ServerErrors.LOBBYNAME_NULL, modelAndView);
+        }
+        if (StringUtil.emptyToNull(password) == null) {
+            throw new CustomServerException(ServerErrors.LOBBYPASSWORD_NULL, modelAndView);
+        }
+        betRepo.findByUserAndOpponentAndWhoWin(user, opponentFromDB, null).ifPresent(bet -> {
+            throw new CustomServerException(ServerErrors.BET_EXIST, modelAndView);
+        });
+        betRepo.findByUserAndOpponentAndWhoWin(opponentFromDB, user, null).ifPresent(bet -> {
+            throw new CustomServerException(ServerErrors.BET_EXIST, modelAndView);
+        });
+        Float floatValue = validator.validValueAndConvertToFlat(value, modelAndView);
+        if (floatValue > user.getDeposit() || floatValue > opponentFromDB.getDeposit()) {
+            throw new CustomServerException(ServerErrors.WRONG_BET_VALUE, modelAndView);
+        }
+        if (floatValue == 0f) {
+            throw new CustomServerException(ServerErrors.WRONG_VALUE, modelAndView);
+        }
+        return floatValue;
     }
 
     public void readNewBet(Long id) {
@@ -76,17 +104,19 @@ public class BetService {
     }
 
     private void sortBets(List<Bet> data) {
-         data.sort((o1, o2) -> {
-             if (o1.getWhoWin() == null)
-                 return -1;
-             else if (o2.getWhoWin() == null)
-                 return 1;
-             else return 0;
-         });
+        data.sort((o1, o2) -> {
+            if (o1.getWhoWin() == null)
+                return -1;
+            else if (o2.getWhoWin() == null)
+                return 1;
+            else return 0;
+        });
     }
 
     @Transactional
-    public boolean haveNewBets(User user) { return !betRepo.findByOpponentAndIsNew(user, true).isEmpty(); }
+    public boolean haveNewBets(User user) {
+        return !betRepo.findByOpponentAndIsNew(user, true).isEmpty();
+    }
 
     public void betNotification(User user, BetDto betDto) {
         template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
@@ -98,5 +128,7 @@ public class BetService {
         else return user.getUsername();
     }
 
-    public Bet getBet(Long id) { return betRepo.findById(id).orElseThrow(); }
+    public Bet getBet(Long id) {
+        return betRepo.findById(id).orElseThrow();
+    }
 }
