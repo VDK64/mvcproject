@@ -1,6 +1,6 @@
 'use strict';
 var stompClient2 = Stomp.over(new SockJS('/bet'));
-// stompClient2.debug = null;
+stompClient2.debug = null;
 var username = null;
 var headerName = document.getElementById('csrfHeaderName').value;
 var token = document.getElementById('csrfToken').value;
@@ -11,6 +11,8 @@ var onceBet = false;
 var urlBet = window.location.href.toString();
 
 onBet('');
+
+console.log(newBets);
 
 document.addEventListener("bet", function(event) {
   onBet('true');
@@ -67,8 +69,16 @@ stompClient2.connect(headers, function(frame) {
 function betInfo(info) {
   switch (info) {
     case 'ready':
-      showNotification('Your friend is ready to play');
-      if (urlBet.includes('/bets')) { ready(); }
+      if (urlBet.includes('/bets/')) {
+         ready();
+       } else {
+         if (!urlBet.includes('/bets')) {
+           showNotification('Your friend is ready to play');
+         }
+         newBets = true;
+         let event = new CustomEvent("bet");
+         document.dispatchEvent(event);
+       }
       break;
   }
 }

@@ -120,6 +120,7 @@ public class BetService {
 
     public void betReady(User user, BetDto betDto) {
         Bet betFromDB = betRepo.findById(betDto.getId()).orElseThrow();
+        betFromDB.setIsNew(true);
         Game game = betFromDB.getGame();
         if (betDto.getUser().equals(user.getUsername())) {
             game.setIsUserReady(true);
@@ -127,6 +128,7 @@ public class BetService {
             game.setIsOpponentReady(true);
         }
         gameRepo.save(game);
+        betRepo.save(betFromDB);
         template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
     }
 
