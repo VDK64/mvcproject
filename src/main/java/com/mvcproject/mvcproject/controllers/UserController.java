@@ -113,27 +113,24 @@ public class UserController {
         UserService.ifAdmin(modelAndView, user);
         betService.createBetAndGame(user, game, gamemode, value, opponent, lobbyName, password,
                 modelAndView);
-//        UserService.ifAdmin(model, user);
-//        model.addAttribute("friends", userService.getFriends(user));
-//        model.addAttribute("user", user);
-//        model.addAttribute("newMessages", messageService.haveNewMessages(user));
-//        model.addAttribute("newBets", betService.haveNewBets(user));
         return "redirect:/bets";
     }
 
     @MessageMapping("/bet")
     public void betNotification(@AuthenticationPrincipal User user, @Payload BetDto betDto) {
-        betService.betNotification(user, betDto);
+        betService.betReady(user, betDto);
     }
 
     @GetMapping("/bets/{id}")
     public String getDetails(@AuthenticationPrincipal User user, Model model, @PathVariable Long id) {
-        betService.readNewBet(id);
+        Bet bet = betService.getBet(id);
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
-        model.addAttribute("bet", betService.getBet(id));
+        model.addAttribute("bet", bet);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
+        if (!betService.isAccess(bet, user)) { return "errorPage"; }
+        betService.readNewBet(id);
         return "details";
     }
 }

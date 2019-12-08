@@ -19,4 +19,6 @@ public class Game {
     private String lobbyName;
     private String password;
     private String gameMode;
+    private Boolean isUserReady;
+    private  Boolean isOpponentReady;
 }

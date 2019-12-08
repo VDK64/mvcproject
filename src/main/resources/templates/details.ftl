@@ -18,18 +18,26 @@
           </p>
         </div>
         <div class="row">
-          <div class="col-6">
+          <div id="userButton" class="col-6">
             <h1>Owner</h1>
               <p>${bet.user.firstname} ${bet.user.username} ${bet.user.lastname}</p>
+              <#if bet.game.isUserReady>
+                <p>Ready!!!</p>
+                <#else>
               <#if bet.user.username == user.username>
               <p><button id="button1" onclick="deleteButtonOnClick();" type="button" class="btn btn-success">Ready!</button></p>
               </#if>
+              </#if>
           </div>
-          <div class="col-6">
+          <div id="opponentButton" class="col-6">
             <h1>Opponent</h1>
               <p>${bet.opponent.firstname} ${bet.opponent.username} ${bet.opponent.lastname}</p>
+              <#if bet.game.isOpponentReady>
+              <p>Ready!!!</p>
+              <#else>
               <#if bet.opponent.username == user.username>
               <p><button id="button2" onclick="deleteButtonOnClick();" type="button" class="btn btn-success">Ready!</button></p>
+              </#if>
               </#if>
           </div>
         </div>
@@ -47,14 +55,36 @@
 
         function deleteButtonOnClick(event) {
           deleteButton();
-          sendMessageAboutBet('launchLobby')
+          sendMessageAboutBet('ready')
+        }
+
+        function ready() {
+          if (but1 === null) {
+            let div = document.getElementById('userButton');
+            let p = document.createElement('p');
+            p.innerHTML = 'Ready!!!';
+            div.append(p);
+          } else {
+            let div = document.getElementById('opponentButton');
+            let p = document.createElement('p');
+            p.innerHTML = 'Ready!!!';
+            div.append(p);
+          }
         }
 
         function deleteButton() {
           if (but1 !== null) {
+            let elem = but1.parentElement;
             but1.remove();
+            let p = document.createElement('p');
+            p.innerHTML = 'Ready!!!';
+            elem.append(p);
           } else {
+            let elem = but2.parentElement;
             but2.remove();
+            let p = document.createElement('p');
+            p.innerHTML = 'Ready!!!';
+            elem.append(p);
           }
         }
 

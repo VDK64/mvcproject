@@ -57,7 +57,7 @@ public class BetService {
         User opponentFromDB = userRepo.findByUsername(opponentUsername).orElseThrow();
         Float floatValue = validateDateToCreateBetAndGame(user, value, modelAndView, opponentFromDB, lobbyName
                 , password);
-        Game katka = new Game(null, lobbyName, password, gamemode);
+        Game katka = new Game(null, lobbyName, password, gamemode, false, false);
         gameRepo.save(katka);
         Bet bet = new Bet(null, user, floatValue,
                 opponentFromDB, false, null,
@@ -118,17 +118,30 @@ public class BetService {
         return !betRepo.findByOpponentAndIsNew(user, true).isEmpty();
     }
 
-    public void betNotification(User user, BetDto betDto) {
+    public void betReady(User user, BetDto betDto) {
+        Bet betFromDB = betRepo.findById(betDto.getId()).orElseThrow();
+        Game game = betFromDB.getGame();
+        if (betDto.getUser().equals(user.getUsername())) {
+            game.setIsUserReady(true);
+        } else {
+            game.setIsOpponentReady(true);
+        }
+        gameRepo.save(game);
         template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
     }
 
     private String detectDestinationUsername(User user, BetDto betDto) {
         if (betDto.getUser().equals(user.getUsername()))
             return betDto.getOpponent();
-        else return user.getUsername();
+        else return betDto.getUser();
     }
 
     public Bet getBet(Long id) {
         return betRepo.findById(id).orElseThrow();
+    }
+
+    public boolean isAccess(Bet bet, User user) {
+        return bet.getUser().getUsername().equals(user.getUsername())
+                || bet.getOpponent().getUsername().equals(user.getUsername());
     }
 }

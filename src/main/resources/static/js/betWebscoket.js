@@ -66,8 +66,9 @@ stompClient2.connect(headers, function(frame) {
 
 function betInfo(info) {
   switch (info) {
-    case 'launchLobby':
-      deleteButton();
+    case 'ready':
+      showNotification('Your friend is ready to play');
+      if (urlBet.includes('/bets')) { ready(); }
       break;
   }
 }
