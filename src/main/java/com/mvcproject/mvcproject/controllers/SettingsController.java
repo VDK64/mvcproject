@@ -1,5 +1,6 @@
 package com.mvcproject.mvcproject.controllers;
 
+import com.mvcproject.mvcproject.config.JOpenId;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.services.BetService;
@@ -36,6 +37,7 @@ public class SettingsController {
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("user", user);
+        model.addAttribute("auth", JOpenId.getUrl());
         UserService.ifAdmin(model, user);
         return "settings";
     }
@@ -47,6 +49,7 @@ public class SettingsController {
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("user", user);
+        model.addAttribute("auth", JOpenId.getUrl());
         UserService.ifAdmin(model, user);
         return "settings";
     }
@@ -60,6 +63,7 @@ public class SettingsController {
         UserService.ifAdmin(model, updateUser);
         model.addAttribute("user", updateUser);
         model.addAttribute("ok", "Please, relogin to update changes!");
+        model.addAttribute("auth", JOpenId.getUrl());
         return "settings";
     }
 
@@ -69,6 +73,7 @@ public class SettingsController {
         model.addObject("newBets", betService.haveNewBets(user));
         UserService.ifAdmin(model, user);
         model.addObject("user", user);
+        model.addObject("auth", JOpenId.getUrl());
         settingsService.deleteAvatar(user, model);
         return model;
     }
@@ -80,6 +85,7 @@ public class SettingsController {
         model.addObject("user", user);
         model.addObject("newMessages", messageService.haveNewMessages(user));
         model.addObject("newBets", betService.haveNewBets(user));
+        model.addObject("auth", JOpenId.getUrl());
         settingsService.deposit(user, value, model);
         model.addObject("ok", "Your deposit was successfully replenished!");
         return model;
@@ -92,6 +98,7 @@ public class SettingsController {
         model.addObject("user", user);
         model.addObject("newMessages", messageService.haveNewMessages(user));
         model.addObject("newBets", betService.haveNewBets(user));
+        model.addObject("auth", JOpenId.getUrl());
         settingsService.withdraw(user, value, model);
         model.addObject("ok", "Withdraw was successfully!");
         return model;

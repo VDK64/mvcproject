@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class MainController {
     @Autowired
@@ -20,7 +22,7 @@ public class MainController {
     @Autowired
     private MessageService messageService;
     @Autowired
-    BetService betService;
+    private BetService betService;
 
     @RequestMapping("/")
     public String getMainPage(@AuthenticationPrincipal User user, Model model) {
@@ -70,6 +72,13 @@ public class MainController {
         model.addAttribute("admin", false);
         model.addAttribute("user", new User());
         return "emailConfirm";
+    }
+
+    @GetMapping("/steam/login")
+    public String getSteam(HttpServletRequest request, Model model) {
+        String identity = request.getParameter("openid.identity");
+        model.addAttribute("auth", identity);
+        return "steam";
     }
 
 }

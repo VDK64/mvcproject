@@ -52,4 +52,5 @@ public class User implements UserDetails {
     private Set<Bet> betsOpponent = new LinkedHashSet<>();
     @NotNull
     private Boolean isOnline;
+    private String steamId;
 }

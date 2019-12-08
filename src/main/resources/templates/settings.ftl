@@ -43,8 +43,6 @@
           </div>
         </div>
 
-
-
         <div class="form-group">
           <div class="col-md-12" style="margin-top: 10px">
             <div class="form-group">
@@ -55,6 +53,15 @@
                 <button type="submit" name="deposit" class="btn btn-success" style="margin-top: 5px">Deposit</button>
                 <button type="submit" name="withdraw" class="btn btn-secondary" style="margin-top: 5px">Withdraw</button>
               </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-md-12" style="margin-top: 10px">
+            <div class="form-group">
+              Add your SteamId by pushing this:
+            <a href="${auth}"><img src="/img/sign.png" class="img-thumbnail"></a>
             </div>
           </div>
         </div>

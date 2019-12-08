@@ -71,6 +71,7 @@ public class UserService implements UserDetailsService {
                 .credentialsNonExpired(true)
                 .enabled(true)
                 .deposit(0f)
+                .steamId(null)
                 .build());
         checkUserExsist(user, model);
         userRepo.save(user);

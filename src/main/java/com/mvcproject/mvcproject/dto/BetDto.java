@@ -1,7 +1,5 @@
 package com.mvcproject.mvcproject.dto;
 
-import com.mvcproject.mvcproject.entities.Game;
-import com.mvcproject.mvcproject.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
