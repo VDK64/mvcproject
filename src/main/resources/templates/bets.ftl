@@ -86,7 +86,10 @@
                           </#if>
                           <#if item.whoWin??>
                             <#else>
+                              <#if user.steamId??>
                               <td> <a class="nav-link" href="/bets/${item.id}"> See details</a> </td>
+                              <#else>
+                          </#if>
                           </#if>
                       </#if>
                     </tr>

@@ -27,7 +27,7 @@ public class SettingsController {
     @Autowired
     private SettingsService settingsService;
     @Autowired
-    private UserRepo userrepo;
+    private UserRepo userRepo;
     @Autowired
     private MessageService messageService;
     @Autowired

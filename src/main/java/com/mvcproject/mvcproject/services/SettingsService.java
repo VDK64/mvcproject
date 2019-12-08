@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
@@ -92,7 +91,11 @@ public class SettingsService {
     }
 
     public void setSteamId(User user, String identity) {
-        user.setSteamId(identity);
+        user.setSteamId(getSteamIdFromIdentity(identity));
         userRepo.save(user);
+    }
+
+    private String getSteamIdFromIdentity(String identity) {
+        return identity.split("/")[5];
     }
 }

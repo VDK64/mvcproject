@@ -40,7 +40,7 @@ public class DataBaseCreate {
                 .enabled(true)
                 .deposit(0f)
                 .isOnline(false)
-                .steamId(null)
+                .steamId("76561198799034987")
                 .build());
 
         userRepo.save(User.builder()
@@ -75,6 +75,7 @@ public class DataBaseCreate {
                 .enabled(true)
                 .deposit(0f)
                 .isOnline(false)
+                .steamId("76561199004382586")
                 .build());
 
         userRepo.save(User.builder()
