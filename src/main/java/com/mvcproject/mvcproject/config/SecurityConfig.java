@@ -34,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                     .authorizeRequests()
                     .antMatchers("/readme.txt", "/css/*", "/register", "/login?ok", "/email/**",
-                            "/static/**", "/favicon.ico").permitAll()
+                            "/static/**", "/favicon.ico", "/dota2/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                     .formLogin().loginPage("/login").permitAll()
@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .csrf()
                     .ignoringAntMatchers("/room/**")
+                    .ignoringAntMatchers("/dota2/**")
                     .ignoringAntMatchers("/newMessage/**")
                 .and()
                     .headers().frameOptions().sameOrigin();

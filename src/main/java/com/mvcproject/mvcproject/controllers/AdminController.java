@@ -1,5 +1,6 @@
 package com.mvcproject.mvcproject.controllers;
 
+import com.mvcproject.mvcproject.dota2.Dota2BotService;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.services.BetService;
@@ -63,6 +64,20 @@ public class AdminController {
         model.addAttribute("user", user);
         model.addAttribute("username", user.getUsername());
         UserService.ifAdmin(model, user);
+        return "userList";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping(value = "/userList", params = "getToken")
+    public String getToken(@AuthenticationPrincipal User user, Model model) {
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
+        Iterable<User> allUsers = userService.getAllUsers();
+        UserService.ifAdmin(model, user);
+        model.addAttribute("user", user);
+        model.addAttribute("token", Dota2Controller.token);
+        model.addAttribute("users", allUsers);
+        model.addAttribute("username", user.getUsername());
         return "userList";
     }
 }

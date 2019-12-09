@@ -42,9 +42,29 @@
             </#list>
           </tbody>
       </table>
+
+      <div class="row" style="margin-top: 20px">
+        <form method="post">
+          <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+          <button type="submit" name="getToken">Get Token</button>
+        </form>
+      </div>
+      <div id="secretToken" class="row" style="margin-top:20px">
+      <#if token??>
+        Token: ${token}
+      </#if>
+    </div>
     </div>
     <script src="/static/js/sock.js"></script>
     <script src="/static/js/stomp.js"></script>
     <script src="/static/js/messageWebscoket.js"></script>
     <script src="/static/js/betWebscoket.js"></script>
+    <script type="text/javascript">
+      let elem = document.getElementById('secretToken');
+      if (elem !== null) {
+        setTimeout(() => {
+          elem.remove();
+        }, 5000);
+      }
+    </script>
   </@h.header>

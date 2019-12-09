@@ -63,6 +63,8 @@ public class BetService {
                 opponentFromDB, false, null,
                 katka, true);
         betRepo.save(bet);
+        user.setDeposit(user.getDeposit() - floatValue);
+        userRepo.save(user);
         template.convertAndSendToUser(opponentUsername, "/queue/events", new BetDto(user.getUsername(),
                 opponentUsername, game, null));
     }
