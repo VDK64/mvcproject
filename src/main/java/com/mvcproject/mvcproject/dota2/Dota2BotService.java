@@ -53,5 +53,4 @@ public class Dota2BotService {
         bet.getGame().setStatus(gameStatus);
         return bet;
     }
-
 }

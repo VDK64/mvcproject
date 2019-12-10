@@ -12,9 +12,8 @@ public class Dota2Controller {
     @Autowired
     private Dota2BotService botService;
     public static final String token = "123"; /*UUID.randomUUID().toString()  while debug*/;
-    private String okStatus = "-------------------------------------done-------------------------------------";
-    private String accessDenied = "-------------------------------------access denied-------------------------------------";
-    private String serverError = "-------------------------------------server error-------------------------------------";
+    private final String okStatus = "----------------------done----------------------";
+    private final String accessDenied = "----------------------access denied----------------------";
 
     @PostMapping("/dota2/bot/start")
     public ResponseEntity<String> startLobby(@RequestBody ResponseData responseData) {
