@@ -1,6 +1,5 @@
 package com.mvcproject.mvcproject.controllers;
 
-import com.mvcproject.mvcproject.dota2.Dota2BotService;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.services.BetService;
