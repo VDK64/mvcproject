@@ -6,6 +6,7 @@ import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.BetRepo;
 import com.mvcproject.mvcproject.repositories.GameRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
+import com.mvcproject.mvcproject.validation.Validator;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class Dota2BotService {
     private UserRepo userRepo;
     @Autowired
     private GameRepo gameRepo;
+    @Autowired
+    private Validator validator;
 
     public void startLobby(String user, String opponent) {
         Bet bet = getBetAndSetStatus(user, opponent, GameStatus.STARTED);
@@ -46,6 +49,7 @@ public class Dota2BotService {
         User opponentFromDB = userRepo.findBySteamId(opponent).orElseThrow();
         Bet bet = betRepo.findByUserAndOpponentAndWhoWin(userFromDB,
                 opponentFromDB, null).orElseThrow();
+        validator.validateStatus(bet.getGame(), gameStatus);
         bet.getGame().setStatus(gameStatus);
         return bet;
     }

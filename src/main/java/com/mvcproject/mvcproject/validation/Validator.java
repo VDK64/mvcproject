@@ -1,6 +1,9 @@
 package com.mvcproject.mvcproject.validation;
 
+import com.mvcproject.mvcproject.entities.Game;
+import com.mvcproject.mvcproject.entities.GameStatus;
 import com.mvcproject.mvcproject.exceptions.CustomServerException;
+import com.mvcproject.mvcproject.exceptions.InternalServerExceptions;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import freemarker.template.utility.StringUtil;
 import org.springframework.stereotype.Component;
@@ -142,5 +145,11 @@ public class Validator {
 
     public Float validValueAndConvertToFlat(String deposit, ModelAndView modelAndView) {
         return checkCorrectlyValueOfDeposit(deposit, modelAndView);
+    }
+
+    public void validateStatus(Game game, GameStatus gameStatus) {
+        if (game.getStatus() == null && (gameStatus == GameStatus.LEAVE || gameStatus == GameStatus.TIMEOUT)) {
+            throw new InternalServerExceptions(ServerErrors.WRONG_CHANGE_STATUS);
+        }
     }
 }

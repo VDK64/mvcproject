@@ -23,4 +23,5 @@ public class ServerErrors {
     public static final String BET_EXIST = "This bet is already exist.";
     public static final String LOBBYNAME_NULL = "Lobby name can not be null or empty";
     public static final String LOBBYPASSWORD_NULL = "Lobby password can not be null";
+    public static final String WRONG_CHANGE_STATUS = "Wrong change status in lobby. Bot api is out of sync";
 }
