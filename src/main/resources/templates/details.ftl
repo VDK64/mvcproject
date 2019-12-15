@@ -6,23 +6,31 @@
       <input id="csrfToken" value="${_csrf.token}" type="hidden">
       <input id="newMessages" value="${newMessages?c}" type="hidden">
       <input id="newBets" value="${newBets?c}" type="hidden">
+      <input id="betUser" value="${bet.user.username}" type="hidden">
+      <input id="betOpponent" value="${bet.opponent.username}" type="hidden">
+      <input id="username" value="${user.username}" type="hidden">
+
+
 
       <div id="mainDiv" class="container" style="margin-top:10px">
         <div class="row">
           <p style="color: #CE5C5C;">
             <b>
           Attention! You must open dota2 and will be ready to find a lobby,
-          that created after pushing the button "Ready!". You have only 30 sec. to
-          enter the lobby. If you or your opponent are late to come into the lobby - all repeates.
+          that created after pushing the button "Ready!". When you and your opponent would be ready, you have only 30 sec. to
+          enter the lobby. If you or your opponent are late to come into the lobby - all repeats.
             </b>
           </p>
+        </div>
+        <div class="row">
+          <h1>Lobby name is <b><u>${bet.game.lobbyName}</u></b> Password of the lobby is <b><u>${bet.game.password}</u></b></h1>
         </div>
         <div class="row">
           <div id="userButton" class="col-6">
             <h1>Owner</h1>
               <p>${bet.user.firstname} ${bet.user.username} ${bet.user.lastname}</p>
               <#if bet.game.isUserReady>
-                <p>Ready!!!</p>
+                <p id="readyInfo-user">Ready!!!</p>
                 <#else>
               <#if bet.user.username == user.username>
               <p><button id="button1" onclick="deleteButtonOnClick();" type="button" class="btn btn-success">Ready!</button></p>
@@ -33,13 +41,20 @@
             <h1>Opponent</h1>
               <p>${bet.opponent.firstname} ${bet.opponent.username} ${bet.opponent.lastname}</p>
               <#if bet.game.isOpponentReady>
-              <p>Ready!!!</p>
+              <p id="readyInfo-opponent">Ready!!!</p>
               <#else>
               <#if bet.opponent.username == user.username>
               <p><button id="button2" onclick="deleteButtonOnClick();" type="button" class="btn btn-success">Ready!</button></p>
               </#if>
               </#if>
           </div>
+        </div>
+        <div id="mainRow" class="row">
+          <#if bet.game.isUserReady?? && bet.game.isOpponentReady??>
+            <#if bet.game.isUserReady && bet.game.isOpponentReady>
+              <p>Lobby is created! Go to the dota 2</p>
+            </#if>
+          </#if>
         </div>
       </div>
 
@@ -55,18 +70,20 @@
 
         function deleteButtonOnClick(event) {
           deleteButton();
-          sendMessageAboutBet('ready')
+          sendMessageAboutBet('ready');
         }
 
         function ready() {
           if (but1 === null) {
             let div = document.getElementById('userButton');
             let p = document.createElement('p');
+            p.setAttribute('id', 'readyInfo-user');
             p.innerHTML = 'Ready!!!';
             div.append(p);
           } else {
             let div = document.getElementById('opponentButton');
             let p = document.createElement('p');
+            p.setAttribute('id', 'readyInfo-opponent');
             p.innerHTML = 'Ready!!!';
             div.append(p);
           }
@@ -77,12 +94,14 @@
             let elem = but1.parentElement;
             but1.remove();
             let p = document.createElement('p');
+            p.setAttribute('id', 'readyInfo-user');
             p.innerHTML = 'Ready!!!';
             elem.append(p);
           } else {
             let elem = but2.parentElement;
             but2.remove();
             let p = document.createElement('p');
+            p.setAttribute('id', 'readyInfo-opponent');
             p.innerHTML = 'Ready!!!';
             elem.append(p);
           }
@@ -98,8 +117,29 @@
               info: message
             };
           stompClient2.send("/app/bet", {}, JSON.stringify(BetDto));
+          let username = document.getElementById('username').value;
+          let betUser = document.getElementById('betUser').value;
+          let betOpponent = document.getElementById('betOpponent').value;
+          if (username !== betUser) {
+            let elem = document.getElementById('readyInfo-user');
+            if (elem !== null) {
+              let text = document.createElement('p');
+              text.innerHTML = 'Lobby is created! Go to the dota 2';
+              let row = document.getElementById('mainRow');
+              row.append(text);
+            }
+          }
+          if (username !== betOpponent) {
+            let elem = document.getElementById('readyInfo-opponent');
+            if (elem !== null) {
+              let text = document.createElement('p');
+              text.innerHTML = 'Lobby is created! Go to the dota 2';
+              let row = document.getElementById('mainRow');
+              row.append(text);
+          }
         }
       }
+    }
       </script>
 
     </@h.header>

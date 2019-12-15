@@ -131,6 +131,7 @@ public class BetService {
         }
         gameRepo.save(game);
         betRepo.save(betFromDB);
+        if (game.getIsUserReady() && game.getIsOpponentReady()) { betDto.setInfo("allReady"); }
         template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
     }
 

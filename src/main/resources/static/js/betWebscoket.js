@@ -12,8 +12,6 @@ var urlBet = window.location.href.toString();
 
 onBet('');
 
-console.log(newBets);
-
 document.addEventListener("bet", function(event) {
   onBet('true');
   onNewBet();
@@ -29,7 +27,6 @@ function showNotification(html) {
   let notification = document.createElement('div');
   notification.setAttribute('id', 'notification');
   let divMessages = document.getElementById('chat-page');
-  console.log(divMessages);
   let div;
   if (divMessages !== null) {
     div = divMessages;
@@ -66,19 +63,32 @@ stompClient2.connect(headers, function(frame) {
   username = frame.headers['user-name'];
 });
 
+function prepareToReady() {
+  if (urlBet.includes('/bets/')) {
+     ready();
+   } else {
+     if (!urlBet.includes('/bets')) {
+       showNotification('Your friend is ready to play');
+     }
+     newBets = true;
+     let event = new CustomEvent("bet");
+     document.dispatchEvent(event);
+   }
+}
+
 function betInfo(info) {
   switch (info) {
     case 'ready':
-      if (urlBet.includes('/bets/')) {
-         ready();
-       } else {
-         if (!urlBet.includes('/bets')) {
-           showNotification('Your friend is ready to play');
-         }
-         newBets = true;
-         let event = new CustomEvent("bet");
-         document.dispatchEvent(event);
-       }
+      prepareToReady();
+      break;
+    case 'allReady':
+      let text = document.createElement('p');
+      text.innerHTML = 'Lobby is created! Go to the dota 2';
+      let allReady = document.getElementById('mainRow');
+      if (allReady !== null) {
+        allReady.append(text);
+      }
+      prepareToReady();
       break;
   }
 }
