@@ -26,7 +26,7 @@ public class Dota2BotService {
     @Autowired
     private Validator validator;
 
-    public void startLobby(String user, String opponent) {
+    public synchronized void startLobby(String user, String opponent) {
         Bet bet = getBetAndSetStatus(user, opponent, GameStatus.STARTED);
         gameRepo.save(bet.getGame());
         isFree = false;
