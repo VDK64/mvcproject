@@ -164,7 +164,7 @@ public class DataBaseCreate {
         User tony64 = userRepo.findByUsername("tony64").orElseThrow();
         User user = userRepo.findByUsername("user").orElseThrow();
         Game game = new Game(null, "MyLobby", "app", "1x1",
-                false, false);
+                false, false, "76561198799034987", "76561199004382586");
         gameRepo.save(game);
 
         Iterable<Bet> bets = betRepo.saveAll(new ArrayList<>() {{

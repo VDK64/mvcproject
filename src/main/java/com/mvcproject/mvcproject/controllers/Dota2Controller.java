@@ -1,6 +1,6 @@
 package com.mvcproject.mvcproject.controllers;
 
-import com.mvcproject.mvcproject.dota2.Dota2BotService;
+import com.mvcproject.mvcproject.Dota2.Dota2API;
 import com.mvcproject.mvcproject.dto.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class Dota2Controller {
     @Autowired
-    private Dota2BotService botService;
+    private Dota2API botService;
     public static final String token = "123"; /*UUID.randomUUID().toString()  while debug*/;
     private final String okStatus = "----------------------done----------------------";
     private final String accessDenied = "----------------------access denied----------------------";

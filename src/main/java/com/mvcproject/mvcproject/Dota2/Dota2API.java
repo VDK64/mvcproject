@@ -1,4 +1,4 @@
-package com.mvcproject.mvcproject.dota2;
+package com.mvcproject.mvcproject.Dota2;
 
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.GameStatus;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Getter
 @Setter
-public class Dota2BotService {
+public class Dota2API {
     private boolean isFree = true;
     @Autowired
     private BetRepo betRepo;

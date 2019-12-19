@@ -1,5 +1,6 @@
 package com.mvcproject.mvcproject.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mvcproject.mvcproject.dto.BetDto;
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.User;
@@ -117,7 +118,7 @@ public class UserController {
     }
 
     @MessageMapping("/bet")
-    public void betNotification(@AuthenticationPrincipal User user, @Payload BetDto betDto) {
+    public void betNotification(@AuthenticationPrincipal User user, @Payload BetDto betDto) throws JsonProcessingException {
         betService.betReady(user, betDto);
     }
 

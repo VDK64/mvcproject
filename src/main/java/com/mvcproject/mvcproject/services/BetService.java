@@ -1,5 +1,7 @@
 package com.mvcproject.mvcproject.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mvcproject.mvcproject.Dota2.Dota2API;
 import com.mvcproject.mvcproject.dto.BetDto;
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.Game;
@@ -22,8 +24,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.lang.Thread.sleep;
-
 @Service
 public class BetService {
     @Autowired
@@ -36,6 +36,8 @@ public class BetService {
     private Validator validator;
     @Autowired
     private SimpMessagingTemplate template;
+    @Autowired
+    private Dota2Service dota2Service;
 
     public Page<Bet> getBetInfo(User user, String who) {
         if (who.equalsIgnoreCase("owner"))
@@ -59,7 +61,8 @@ public class BetService {
         User opponentFromDB = userRepo.findByUsername(opponentUsername).orElseThrow();
         Float floatValue = validateDateToCreateBetAndGame(user, value, modelAndView, opponentFromDB, lobbyName
                 , password);
-        Game katka = new Game(null, lobbyName, password, gamemode, false, false);
+        Game katka = new Game(null, lobbyName, password, gamemode, false, false,
+                user.getSteamId(), opponentFromDB.getSteamId());
         gameRepo.save(katka);
         Bet bet = new Bet(null, user, floatValue,
                 opponentFromDB, false, null,
@@ -122,7 +125,7 @@ public class BetService {
         return !betRepo.findByOpponentAndIsNew(user, true).isEmpty();
     }
 
-    public void betReady(User user, BetDto betDto) {
+    public void betReady(User user, BetDto betDto) throws JsonProcessingException {
         Bet betFromDB = betRepo.findById(betDto.getId()).orElseThrow();
         betFromDB.setIsNew(true);
         Game game = betFromDB.getGame();
@@ -131,22 +134,23 @@ public class BetService {
         } else {
             game.setIsOpponentReady(true);
         }
-        gameRepo.save(game);
-        betRepo.save(betFromDB);
         if (game.getIsUserReady() && game.getIsOpponentReady()) {
             betDto.setInfo("allReady");
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
-            try {
-                sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            dota2Service.createLobby(betFromDB);
+//            try {
+//                sleep(3000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
             betDto.setInfo("startLobby");
             template.convertAndSendToUser(betDto.getUser(), "/queue/events", betDto);
             template.convertAndSendToUser(betDto.getOpponent(), "/queue/events", betDto);
         } else {
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
         }
+        gameRepo.save(game);
+        betRepo.save(betFromDB);
     }
 
     private String detectDestinationUsername(User user, BetDto betDto) {
