@@ -3,7 +3,6 @@ package com.mvcproject.mvcproject.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mvcproject.mvcproject.dto.LobbyDto;
-import com.mvcproject.mvcproject.dto.ResponseData;
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.Game;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,29 +20,48 @@ import java.util.Map;
 
 @Service
 public class Dota2Service {
-    @Value("${address.createLobby}")
-    private String createUrl;
+    @Value("${1347.createLobby}")
+    private String localhost1347;
     @Autowired
     private ObjectMapper objectMapper;
     private RestTemplate restTemplate;
     private Map<String, Boolean> bots;
+    private boolean created;
 
     @PostConstruct
     private void init() {
         bots = new LinkedHashMap<>() {{
-            put("FriendsBets", true);
+            put(localhost1347, true);
         }};
         restTemplate = new RestTemplate();
     }
 
     public void createLobby(Bet bet) throws JsonProcessingException {
-        Game game = bet.getGame();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        String uri = createUrl + "?lobbyName=" + game.getLobbyName();
-        LobbyDto lobbyDto = new LobbyDto(game.getPassword(), game.getPlayer1(), game.getPlayer2());
-        String request = objectMapper.writeValueAsString(lobbyDto);
-        HttpEntity<String> requestBody = new HttpEntity<>(request, headers);
-        ResponseEntity<String> response = restTemplate.postForEntity(uri, requestBody, String.class);
+        created = false;
+        do {
+            for (Map.Entry<String, Boolean> bot : bots.entrySet()) {
+                if (bot.getValue()) {
+                    Game game = bet.getGame();
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+                    String uri = bot.getKey() + "?lobbyName=" + game.getLobbyName();
+                    LobbyDto lobbyDto = new LobbyDto(game.getPassword(), game.getPlayer1(), game.getPlayer2());
+                    String request = objectMapper.writeValueAsString(lobbyDto);
+                    HttpEntity<String> requestBody = new HttpEntity<>(request, headers);
+                    ResponseEntity<String> response = restTemplate.postForEntity(uri, requestBody, String.class);
+                    bot.setValue(false);
+                    created = true;
+                    break;
+                }
+            }
+        } while (!created);
+    }
+
+    public Map<String, Boolean> getBots() {
+        return bots;
+    }
+
+    public void setBots(Map<String, Boolean> bots) {
+        this.bots = bots;
     }
 }

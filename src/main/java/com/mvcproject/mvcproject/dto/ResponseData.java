@@ -10,4 +10,5 @@ public class ResponseData {
     private String user;
     private String opponent;
     private String errorCode;
+    private String port;
 }
