@@ -138,11 +138,6 @@ public class BetService {
             betDto.setInfo("allReady");
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
             dota2Service.createLobby(betFromDB);
-//            try {
-//                sleep(3000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
             betDto.setInfo("startLobby");
             template.convertAndSendToUser(betDto.getUser(), "/queue/events", betDto);
             template.convertAndSendToUser(betDto.getOpponent(), "/queue/events", betDto);
