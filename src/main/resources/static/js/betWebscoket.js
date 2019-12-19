@@ -82,12 +82,7 @@ function betInfo(info) {
       prepareToReady();
       break;
     case 'allReady':
-      let text = document.createElement('p');
-      text.innerHTML = 'Creating Lobby';
-      let allReady = document.getElementById('mainRow');
-      if (allReady !== null) {
-        allReady.append(text);
-      }
+      formLoading();
       prepareToReady();
       break;
   }
