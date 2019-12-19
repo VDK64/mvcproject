@@ -136,13 +136,14 @@ public class BetService {
         if (game.getIsUserReady() && game.getIsOpponentReady()) {
             betDto.setInfo("allReady");
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
-//            try {
-//                sleep(10000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            betDto.setInfo("started");
-//            template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
+            try {
+                sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            betDto.setInfo("startLobby");
+            template.convertAndSendToUser(betDto.getUser(), "/queue/events", betDto);
+            template.convertAndSendToUser(betDto.getOpponent(), "/queue/events", betDto);
         } else {
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
         }

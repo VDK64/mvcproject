@@ -85,6 +85,9 @@ function betInfo(info) {
       formLoading();
       prepareToReady();
       break;
+    case 'startLobby':
+      deleteAndPrintStartInfo();
+      break;
   }
 }
 
@@ -98,4 +101,17 @@ function onBet(arg) {
       onceBet = true;
     }
   }
+}
+
+function deleteAndPrintStartInfo() {
+  let p = document.createElement('p');
+  p.innerHTML = 'Lobby was created. Go into the Dota2 to find and join to lobby.';
+  let row = document.getElementById('mainRow');
+  let text = document.getElementById('loadingP');
+  let div = document.getElementById('loadingDiv');
+  let span = document.getElementById('loadingSpan');
+  text.remove();
+  div.remove();
+  span.remove();
+  row.append(p);
 }

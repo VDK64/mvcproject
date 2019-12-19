@@ -52,9 +52,9 @@
         <div id="mainRow" class="row">
           <#if bet.game.isUserReady?? && bet.game.isOpponentReady??>
             <#if bet.game.isUserReady && bet.game.isOpponentReady>
-            <p>Creating lobby.</p>
-              <div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
+            <p id="loadingP">Creating lobby.</p>
+              <div id="loadingDiv" class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
+                <span id="loadingSpan" class="sr-only">Loading...</span>
               </div>
             </#if>
           </#if>
@@ -145,12 +145,15 @@
 
     function formLoading() {
       let text = document.createElement('p');
-      text.innerHTML = 'Creating Lobby';
+      text.setAttribute('id', 'loadingP');
+      text.innerHTML = 'Creating lobby';
       let div = document.createElement('div');
+      div.setAttribute('id', 'loadingDiv');
       div.setAttribute('class', 'spinner-grow');
       div.setAttribute('style', 'width: 3rem; height: 3rem;');
       div.setAttribute('role', 'status');
       let span = document.createElement('span');
+      span.setAttribute('id', 'loadingSpan');
       span.setAttribute('class', 'sr-only');
       span.innerHTML = 'Loading...';
       let row = document.getElementById('mainRow');
