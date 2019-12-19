@@ -52,6 +52,14 @@
         <div id="mainRow" class="row">
           <#if bet.game.isUserReady?? && bet.game.isOpponentReady??>
             <#if bet.game.isUserReady && bet.game.isOpponentReady>
+            <p>Creating lobby.</p>
+              <div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </#if>
+          </#if>
+          <#if bet.game.status??>
+            <#if bet.game.status == 'STARTED'>
               <p>Lobby is created! Go to the dota 2</p>
             </#if>
           </#if>
