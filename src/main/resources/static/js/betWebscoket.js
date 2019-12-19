@@ -1,6 +1,6 @@
 'use strict';
 var stompClient2 = Stomp.over(new SockJS('/bet'));
-stompClient2.debug = null;
+// stompClient2.debug = null;
 var username = null;
 var headerName = document.getElementById('csrfHeaderName').value;
 var token = document.getElementById('csrfToken').value;
@@ -83,7 +83,7 @@ function betInfo(info) {
       break;
     case 'allReady':
       let text = document.createElement('p');
-      text.innerHTML = 'Lobby is created! Go to the dota 2';
+      text.innerHTML = 'Creating Lobby';
       let allReady = document.getElementById('mainRow');
       if (allReady !== null) {
         allReady.append(text);

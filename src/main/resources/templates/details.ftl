@@ -131,22 +131,32 @@
           if (username !== betUser) {
             let elem = document.getElementById('readyInfo-user');
             if (elem !== null) {
-              let text = document.createElement('p');
-              text.innerHTML = 'Lobby is created! Go to the dota 2';
-              let row = document.getElementById('mainRow');
-              row.append(text);
+              formLoading()
             }
           }
           if (username !== betOpponent) {
             let elem = document.getElementById('readyInfo-opponent');
             if (elem !== null) {
-              let text = document.createElement('p');
-              text.innerHTML = 'Lobby is created! Go to the dota 2';
-              let row = document.getElementById('mainRow');
-              row.append(text);
+            formLoading()
           }
         }
       }
+    }
+
+    function formLoading() {
+      let text = document.createElement('p');
+      text.innerHTML = 'Creating Lobby';
+      let div = document.createElement('div');
+      div.setAttribute('class', 'spinner-grow');
+      div.setAttribute('style', 'width: 3rem; height: 3rem;');
+      div.setAttribute('role', 'status');
+      let span = document.createElement('span');
+      span.setAttribute('class', 'sr-only');
+      span.innerHTML = 'Loading...';
+      let row = document.getElementById('mainRow');
+      row.append(text);
+      row.append(div);
+      row.append(span);
     }
       </script>
 

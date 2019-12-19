@@ -22,6 +22,8 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.Thread.sleep;
+
 @Service
 public class BetService {
     @Autowired
@@ -133,8 +135,17 @@ public class BetService {
         betRepo.save(betFromDB);
         if (game.getIsUserReady() && game.getIsOpponentReady()) {
             betDto.setInfo("allReady");
+            template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
+//            try {
+//                sleep(10000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            betDto.setInfo("started");
+//            template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
+        } else {
+            template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
         }
-        template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
     }
 
     private String detectDestinationUsername(User user, BetDto betDto) {
