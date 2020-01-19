@@ -1,7 +1,6 @@
 package com.mvcproject.mvcproject.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mvcproject.mvcproject.Dota2.Dota2API;
 import com.mvcproject.mvcproject.dto.BetDto;
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.Game;
@@ -59,7 +58,7 @@ public class BetService {
                                  String lobbyName, String password, ModelAndView modelAndView) {
         String opponentUsername = opponent.split(" ")[1];
         User opponentFromDB = userRepo.findByUsername(opponentUsername).orElseThrow();
-        Float floatValue = validateDateToCreateBetAndGame(user, value, modelAndView, opponentFromDB, lobbyName
+        Float floatValue = validateDataToCreateBetAndGame(user, value, modelAndView, opponentFromDB, lobbyName
                 , password);
         Game katka = new Game(null, lobbyName, password, gamemode, false, false,
                 user.getSteamId(), opponentFromDB.getSteamId());
@@ -74,7 +73,7 @@ public class BetService {
                 opponentUsername, game, null));
     }
 
-    private Float validateDateToCreateBetAndGame(User user, String value, ModelAndView modelAndView,
+    private Float validateDataToCreateBetAndGame(User user, String value, ModelAndView modelAndView,
                                                  User opponentFromDB, String lobbyName, String password) {
         if (StringUtil.emptyToNull(lobbyName) == null) {
             throw new CustomServerException(ServerErrors.LOBBYNAME_NULL, modelAndView);
