@@ -2,6 +2,7 @@ package com.mvcproject.mvcproject.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mvcproject.mvcproject.dto.CreateLobbyDto;
 import com.mvcproject.mvcproject.dto.LobbyDto;
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.Game;
@@ -36,7 +37,7 @@ public class Dota2Service {
         restTemplate = new RestTemplate();
     }
 
-    public void createLobby(Bet bet) throws JsonProcessingException {
+    public synchronized void createLobby(Bet bet) throws JsonProcessingException {
         created = false;
         do {
             for (Map.Entry<String, Boolean> bot : bots.entrySet()) {
@@ -48,13 +49,18 @@ public class Dota2Service {
                     LobbyDto lobbyDto = new LobbyDto(game.getPassword(), game.getPlayer1(), game.getPlayer2());
                     String request = objectMapper.writeValueAsString(lobbyDto);
                     HttpEntity<String> requestBody = new HttpEntity<>(request, headers);
-                    ResponseEntity<String> response = restTemplate.postForEntity(uri, requestBody, String.class);
+                    ResponseEntity<CreateLobbyDto> response = restTemplate.postForEntity(uri, requestBody, CreateLobbyDto.class);
+                    parseResponse(response);
                     bot.setValue(false);
                     created = true;
                     break;
                 }
             }
         } while (!created);
+    }
+
+    private void parseResponse(ResponseEntity<CreateLobbyDto> response) {
+        System.out.println(response);
     }
 
     public Map<String, Boolean> getBots() {

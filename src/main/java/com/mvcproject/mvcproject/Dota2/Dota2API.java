@@ -1,6 +1,7 @@
 package com.mvcproject.mvcproject.Dota2;
 
 import com.mvcproject.mvcproject.entities.Bet;
+import com.mvcproject.mvcproject.entities.Game;
 import com.mvcproject.mvcproject.entities.GameStatus;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.BetRepo;
@@ -37,14 +38,17 @@ public class Dota2API {
         isFree = false;
     }
 
-    public void leaveLobby(String user, String opponent) {
+    public synchronized void leaveLobby(String user, String opponent) {
         Bet bet = getBetAndSetStatus(user, opponent, GameStatus.LEAVE);
         gameRepo.save(bet.getGame());
         isFree = true;
     }
 
-    public void timeout(String user, String opponent, String port) {
+    public synchronized void timeout(String user, String opponent, String port) {
         Bet bet = getBetAndSetStatus(user, opponent, GameStatus.TIMEOUT);
+        Game game = bet.getGame();
+        game.setIsUserReady(false);
+        game.setIsOpponentReady(false);
         gameRepo.save(bet.getGame());
         isFree = true;
         for (Map.Entry<String, Boolean> bot : dota2Service.getBots().entrySet()) {
