@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateLobbyDto {
-    private String errorCode;
+    private String responseCode;
 }
