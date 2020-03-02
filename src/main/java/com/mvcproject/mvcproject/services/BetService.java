@@ -12,6 +12,7 @@ import com.mvcproject.mvcproject.repositories.GameRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.validation.Validator;
 import freemarker.template.utility.StringUtil;
+import org.dom4j.rule.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -147,6 +148,10 @@ public class BetService {
         betRepo.save(betFromDB);
     }
 
+    public void betInfo(BetDto betDto) {
+        template.convertAndSendToUser(betDto.getUser(), "/queue/events", betDto);
+    }
+
     private String detectDestinationUsername(User user, BetDto betDto) {
         if (betDto.getUser().equals(user.getUsername()))
             return betDto.getOpponent();
@@ -154,11 +159,21 @@ public class BetService {
     }
 
     public Bet getBet(Long id) {
-        return betRepo.findById(id).orElseThrow();
+        return betRepo.findById(id).orElse(null);
     }
 
-    public boolean isAccess(Bet bet, User user) {
-        return bet.getUser().getUsername().equals(user.getUsername())
-                || bet.getOpponent().getUsername().equals(user.getUsername());
+    public boolean access(Bet bet, User user) {
+        return !bet.getUser().getUsername().equals(user.getUsername())
+                && !bet.getOpponent().getUsername().equals(user.getUsername());
+    }
+
+    public Bet setConfirm(Long id, User user, ModelAndView modelAndView) {
+        Bet betFromDB = betRepo.findById(id).orElseThrow();
+        validator.validateAndSetDepositAfterBetTaking(user, betFromDB.getValue(), modelAndView);
+        user.setDeposit(user.getDeposit() - betFromDB.getValue());
+        betFromDB.setIsConfirm(true);
+        betRepo.save(betFromDB);
+        userRepo.save(user);
+        return betFromDB;
     }
 }

@@ -6,8 +6,6 @@
       <input id="csrfToken" value="${_csrf.token}" type="hidden">
       <input id="newMessages" value="${newMessages?c}" type="hidden">
       <input id="newBets" value="${newBets?c}" type="hidden">
-      <input id="betUser" value="${bet.user.username}" type="hidden">
-      <input id="betOpponent" value="${bet.opponent.username}" type="hidden">
       <input id="username" value="${user.username}" type="hidden">
 
 
@@ -19,9 +17,32 @@
           Attention! You must open dota2 and will be ready to find a lobby,
           that created after pushing the button "Ready!". When you and your opponent would be ready, you have only 30 sec. to
           enter the lobby. If you or your opponent are late to come into the lobby - all repeats.
+          Also, if you are not owner of this bet - you must confitm this bet to start the game. Just push button "confirm"
+          if you see it (must be opponent).
             </b>
           </p>
         </div>
+        <#if error??>
+          <div class="alert alert-danger" role="alert">
+            ${error}
+          </div>
+        </#if>
+        <#if bet??>
+
+        <input id="betUser" value="${bet.user.username}" type="hidden">
+        <input id="betOpponent" value="${bet.opponent.username}" type="hidden">
+
+
+        <div class="row">
+          <#if bet.opponent.username == user.username && !bet.isConfirm>
+          <form method="post">
+            <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+            <button type="submit" onclick="sendOtherInfo()" name="confirmBet" class="btn btn-success">Confirm</button>
+          </form>
+          </#if>
+
+        </div>
+        <#if bet.isConfirm>
         <div class="row">
           <h1>Lobby name is <b><u>${bet.game.lobbyName}</u></b> Password of the lobby is <b><u>${bet.game.password}</u></b></h1>
         </div>
@@ -64,103 +85,127 @@
             </#if>
           </#if>
         </div>
+        <#else>
+          <p style="margin-top:30px">Opponent must confirm this bet at first!!!</p>
+            </#if>
+
+            <script src="/static/js/sock.js"></script>
+            <script src="/static/js/stomp.js"></script>
+            <script src="/static/js/messageWebscoket.js"></script>
+            <script src="/static/js/betWebscoket.js"></script>
+
+            <script type="text/javascript">
+              let but1 = document.getElementById('button1');
+              let but2 = document.getElementById('button2');
+
+              function deleteButtonOnClick(event) {
+                deleteButton();
+                sendMessageAboutBet('ready');
+              }
+
+              function ready() {
+                if (but1 === null) {
+                  let div = document.getElementById('userButton');
+                  let p = document.createElement('p');
+                  p.setAttribute('id', 'readyInfo-user');
+                  p.innerHTML = 'Ready!!!';
+                  div.append(p);
+                } else {
+                  let div = document.getElementById('opponentButton');
+                  let p = document.createElement('p');
+                  p.setAttribute('id', 'readyInfo-opponent');
+                  p.innerHTML = 'Ready!!!';
+                  div.append(p);
+                }
+              }
+
+              function deleteButton() {
+                if (but1 !== null) {
+                  let elem = but1.parentElement;
+                  but1.remove();
+                  let p = document.createElement('p');
+                  p.setAttribute('id', 'readyInfo-user');
+                  p.innerHTML = 'Ready!!!';
+                  elem.append(p);
+                } else {
+                  let elem = but2.parentElement;
+                  but2.remove();
+                  let p = document.createElement('p');
+                  p.setAttribute('id', 'readyInfo-opponent');
+                  p.innerHTML = 'Ready!!!';
+                  elem.append(p);
+                }
+              }
+
+              function sendOtherInfo(event) {
+                  sendOtherInfoMessage('showOtherInfo');
+              }
+
+            function sendOtherInfoMessage(message) {
+              if (message && stompClient2) {
+                let BetDto = {
+                  id: '${bet.id}',
+                  user: '${bet.user.username}',
+                  opponent: '${bet.opponent.username}',
+                  game: null,
+                  info: message
+                };
+              stompClient2.send("/app/betInfo", {}, JSON.stringify(BetDto));
+              }
+            }
+
+              function sendMessageAboutBet(message) {
+                if (message && stompClient2) {
+                  let BetDto = {
+                    id: '${bet.id}',
+                    user: '${bet.user.username}',
+                    opponent: '${bet.opponent.username}',
+                    game: null,
+                    info: message
+                  };
+                stompClient2.send("/app/bet", {}, JSON.stringify(BetDto));
+                let username = document.getElementById('username').value;
+                let betUser = document.getElementById('betUser').value;
+                let betOpponent = document.getElementById('betOpponent').value;
+                if (username !== betUser) {
+                  let elem = document.getElementById('readyInfo-user');
+                  if (elem !== null) {
+                    formLoading()
+                  }
+                }
+                if (username !== betOpponent) {
+                  let elem = document.getElementById('readyInfo-opponent');
+                  if (elem !== null) {
+                  formLoading()
+                }
+              }
+            }
+          }
+
+          function formLoading() {
+            let text = document.createElement('p');
+            text.setAttribute('id', 'loadingP');
+            text.innerHTML = 'Creating lobby';
+            let div = document.createElement('div');
+            div.setAttribute('id', 'loadingDiv');
+            div.setAttribute('class', 'spinner-grow');
+            div.setAttribute('style', 'width: 3rem; height: 3rem;');
+            div.setAttribute('role', 'status');
+            let span = document.createElement('span');
+            span.setAttribute('id', 'loadingSpan');
+            span.setAttribute('class', 'sr-only');
+            span.innerHTML = 'Loading...';
+            let row = document.getElementById('mainRow');
+            row.append(text);
+            row.append(div);
+            row.append(span);
+          }
+            </script>
+
+        </#if>
       </div>
 
 
-      <script src="/static/js/sock.js"></script>
-      <script src="/static/js/stomp.js"></script>
-      <script src="/static/js/messageWebscoket.js"></script>
-      <script src="/static/js/betWebscoket.js"></script>
 
-      <script type="text/javascript">
-        let but1 = document.getElementById('button1');
-        let but2 = document.getElementById('button2');
-
-        function deleteButtonOnClick(event) {
-          deleteButton();
-          sendMessageAboutBet('ready');
-        }
-
-        function ready() {
-          if (but1 === null) {
-            let div = document.getElementById('userButton');
-            let p = document.createElement('p');
-            p.setAttribute('id', 'readyInfo-user');
-            p.innerHTML = 'Ready!!!';
-            div.append(p);
-          } else {
-            let div = document.getElementById('opponentButton');
-            let p = document.createElement('p');
-            p.setAttribute('id', 'readyInfo-opponent');
-            p.innerHTML = 'Ready!!!';
-            div.append(p);
-          }
-        }
-
-        function deleteButton() {
-          if (but1 !== null) {
-            let elem = but1.parentElement;
-            but1.remove();
-            let p = document.createElement('p');
-            p.setAttribute('id', 'readyInfo-user');
-            p.innerHTML = 'Ready!!!';
-            elem.append(p);
-          } else {
-            let elem = but2.parentElement;
-            but2.remove();
-            let p = document.createElement('p');
-            p.setAttribute('id', 'readyInfo-opponent');
-            p.innerHTML = 'Ready!!!';
-            elem.append(p);
-          }
-        }
-
-        function sendMessageAboutBet(message) {
-          if (message && stompClient2) {
-            let BetDto = {
-              id: '${bet.id}',
-              user: '${bet.user.username}',
-              opponent: '${bet.opponent.username}',
-              game: null,
-              info: message
-            };
-          stompClient2.send("/app/bet", {}, JSON.stringify(BetDto));
-          let username = document.getElementById('username').value;
-          let betUser = document.getElementById('betUser').value;
-          let betOpponent = document.getElementById('betOpponent').value;
-          if (username !== betUser) {
-            let elem = document.getElementById('readyInfo-user');
-            if (elem !== null) {
-              formLoading()
-            }
-          }
-          if (username !== betOpponent) {
-            let elem = document.getElementById('readyInfo-opponent');
-            if (elem !== null) {
-            formLoading()
-          }
-        }
-      }
-    }
-
-    function formLoading() {
-      let text = document.createElement('p');
-      text.setAttribute('id', 'loadingP');
-      text.innerHTML = 'Creating lobby';
-      let div = document.createElement('div');
-      div.setAttribute('id', 'loadingDiv');
-      div.setAttribute('class', 'spinner-grow');
-      div.setAttribute('style', 'width: 3rem; height: 3rem;');
-      div.setAttribute('role', 'status');
-      let span = document.createElement('span');
-      span.setAttribute('id', 'loadingSpan');
-      span.setAttribute('class', 'sr-only');
-      span.innerHTML = 'Loading...';
-      let row = document.getElementById('mainRow');
-      row.append(text);
-      row.append(div);
-      row.append(span);
-    }
-      </script>
 
     </@h.header>

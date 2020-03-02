@@ -85,7 +85,7 @@ public class SettingsService {
 
     public void withdraw(User user, String deposit, ModelAndView modelAndView) {
         Float value = validator.validValueAndConvertToFlat(deposit, modelAndView);
-        if (user.getDeposit() < value) { throw new CustomServerException(ServerErrors.NOT_ENOUGH_DEPOSIT, modelAndView); }
+        if (user.getDeposit() < value) { throw new CustomServerException(ServerErrors.NOT_ENOUGH_DEPOSIT_TO_TRANSACTION, modelAndView); }
         else { user.setDeposit(user.getDeposit() - value); }
         userRepo.save(user);
     }

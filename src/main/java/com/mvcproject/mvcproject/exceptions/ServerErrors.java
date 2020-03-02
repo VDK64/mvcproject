@@ -16,7 +16,7 @@ public class ServerErrors {
     public static final String WRONG_USERNAME = "Username can consist from letters, numbers, '-', '_', '.', and have" +
             "a range %d - %d ";
     public static final String DEFAULT_AVATAR = "This is default avatar. You can not delete it!";
-    public static final String NOT_ENOUGH_DEPOSIT = "Sorry, but your deposit is lower than the transaction value!";
+    public static final String NOT_ENOUGH_DEPOSIT_TO_TRANSACTION = "Sorry, but your deposit is lower than the transaction value!";
     public static final String WRONG_VALUE = "Please, write a correct value!";
     public static final String WRONG_QUERY = "Wrong query!";
     public static final String WRONG_BET_VALUE = "Please, choose lower bet value.";
@@ -24,4 +24,5 @@ public class ServerErrors {
     public static final String LOBBYNAME_NULL = "Lobby name can not be null or empty";
     public static final String LOBBYPASSWORD_NULL = "Lobby password can not be null";
     public static final String WRONG_CHANGE_STATUS = "Wrong change status in lobby. Bot api is out of sync";
+    public static final String NOT_ENOUGH_MONEY = "Sorry, but your deposit is lower than the bet value!";
 }

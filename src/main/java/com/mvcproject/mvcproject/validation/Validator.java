@@ -2,6 +2,7 @@ package com.mvcproject.mvcproject.validation;
 
 import com.mvcproject.mvcproject.entities.Game;
 import com.mvcproject.mvcproject.entities.GameStatus;
+import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.CustomServerException;
 import com.mvcproject.mvcproject.exceptions.InternalServerExceptions;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
@@ -151,5 +152,10 @@ public class Validator {
         if (game.getStatus() == null && (gameStatus == GameStatus.LEAVE || gameStatus == GameStatus.TIMEOUT)) {
             throw new InternalServerExceptions(ServerErrors.WRONG_CHANGE_STATUS);
         }
+    }
+
+    public void validateAndSetDepositAfterBetTaking(User opponentFromDB, Float value, ModelAndView modelAndView) {
+        if (opponentFromDB.getDeposit() < value)
+            throw new CustomServerException(ServerErrors.NOT_ENOUGH_MONEY, modelAndView);
     }
 }

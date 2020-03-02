@@ -122,6 +122,12 @@ public class UserController {
         betService.betReady(user, betDto);
     }
 
+    @MessageMapping("/betInfo")
+    public void betInfo(@AuthenticationPrincipal User user, @Payload BetDto betDto) {
+        betService.betInfo(betDto);
+//        setConfirm(user, new ModelAndView("details"), betDto.getId());
+    }
+
     @GetMapping("/bets/{id}")
     public String getDetails(@AuthenticationPrincipal User user, Model model, @PathVariable Long id) {
         Bet bet = betService.getBet(id);
@@ -130,8 +136,22 @@ public class UserController {
         model.addAttribute("bet", bet);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
-        if (!betService.isAccess(bet, user)) { return "errorPage"; }
+        if (bet == null || betService.access(bet, user)) { return "errorPage"; }
         betService.readNewBet(id);
         return "details";
+    }
+
+    @PostMapping(value = "/bets/{id}", params = "confirmBet")
+    public ModelAndView setConfirm(@AuthenticationPrincipal User user, ModelAndView modelAndView,
+                                   @PathVariable Long id) {
+        modelAndView.setViewName("details");
+        UserService.ifAdmin(modelAndView, user);
+        modelAndView.addObject("newMessages", messageService.haveNewMessages(user));
+        modelAndView.addObject("newBets", betService.haveNewBets(user));
+        modelAndView.addObject("user", user);
+        Bet bet = betService.setConfirm(id, user, modelAndView);
+        if (bet == null || betService.access(bet, user)) { return new ModelAndView("errorPage"); }
+        modelAndView.addObject("bet", bet);
+        return modelAndView;
     }
 }
