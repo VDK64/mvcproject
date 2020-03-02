@@ -73,7 +73,7 @@ public class DataBaseCreate {
                 .accountNonLocked(true)
                 .credentialsNonExpired(true)
                 .enabled(true)
-                .deposit(100f)
+                .deposit(1000f)
                 .isOnline(false)
                 .steamId("76561199004382586")
                 .build());

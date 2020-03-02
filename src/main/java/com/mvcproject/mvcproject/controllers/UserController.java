@@ -123,9 +123,8 @@ public class UserController {
     }
 
     @MessageMapping("/betInfo")
-    public void betInfo(@AuthenticationPrincipal User user, @Payload BetDto betDto) {
+    public void betInfo(@Payload BetDto betDto) {
         betService.betInfo(betDto);
-//        setConfirm(user, new ModelAndView("details"), betDto.getId());
     }
 
     @GetMapping("/bets/{id}")
