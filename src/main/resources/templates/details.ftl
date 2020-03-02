@@ -35,10 +35,10 @@
 
         <div class="row">
           <#if bet.opponent.username == user.username && !bet.isConfirm>
-          <!-- <form method="post"> -->
-            <!-- <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden"> -->
-            <button type="button" onclick="sendOtherInfo()" class="btn btn-success">Confirm</button>
-          <!-- </form> -->
+          <form method="post">
+            <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+            <button type="submit" name="confirmBet" class="btn btn-success">Confirm</button>
+          </form>
           </#if>
 
         </div>
@@ -136,23 +136,6 @@
                   elem.append(p);
                 }
               }
-
-              function sendOtherInfo(event) {
-                  sendOtherInfoMessage('showOtherInfo');
-              }
-
-            function sendOtherInfoMessage(message) {
-              // if (message && stompClient2) {
-                let BetDto = {
-                  id: '${bet.id}',
-                  user: '${bet.user.username}',
-                  opponent: '${bet.opponent.username}',
-                  game: null,
-                  info: message
-                };
-              stompClient2.send("/app/betInfo", {}, JSON.stringify(BetDto));
-              // }
-            }
 
               function sendMessageAboutBet(message) {
                 if (message && stompClient2) {

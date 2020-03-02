@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -38,6 +39,10 @@ public class BetService {
     private SimpMessagingTemplate template;
     @Autowired
     private Dota2Service dota2Service;
+    @Autowired
+    private MessageService messageService;
+    @Autowired
+    private BetService betService;
 
     public Page<Bet> getBetInfo(User user, String who) {
         if (who.equalsIgnoreCase("owner"))
@@ -150,6 +155,7 @@ public class BetService {
 
     public void betInfo(BetDto betDto) {
         template.convertAndSendToUser(betDto.getUser(), "/queue/events", betDto);
+        template.convertAndSendToUser(betDto.getOpponent(), "/queue/events", betDto);
     }
 
     private String detectDestinationUsername(User user, BetDto betDto) {

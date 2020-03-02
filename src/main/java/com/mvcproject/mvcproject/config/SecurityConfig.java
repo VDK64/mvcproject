@@ -53,7 +53,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .ignoringAntMatchers("/dota2/**")
                     .ignoringAntMatchers("/newMessage/**")
                     .ignoringAntMatchers("/bet")
-                    .ignoringAntMatchers("/betInfo")
                 .and()
                     .headers().frameOptions().sameOrigin();
     }

@@ -122,11 +122,6 @@ public class UserController {
         betService.betReady(user, betDto);
     }
 
-    @MessageMapping("/betInfo")
-    public void betInfo(@Payload BetDto betDto) {
-        betService.betInfo(betDto);
-    }
-
     @GetMapping("/bets/{id}")
     public String getDetails(@AuthenticationPrincipal User user, Model model, @PathVariable Long id) {
         Bet bet = betService.getBet(id);
@@ -141,16 +136,17 @@ public class UserController {
     }
 
     @PostMapping(value = "/bets/{id}", params = "confirmBet")
-    public ModelAndView setConfirm(@AuthenticationPrincipal User user, ModelAndView modelAndView,
-                                   @PathVariable Long id) {
+    private ModelAndView setConfirm(@AuthenticationPrincipal User user, ModelAndView modelAndView,
+                                    @PathVariable Long id) {
         modelAndView.setViewName("details");
         UserService.ifAdmin(modelAndView, user);
         modelAndView.addObject("newMessages", messageService.haveNewMessages(user));
         modelAndView.addObject("newBets", betService.haveNewBets(user));
         modelAndView.addObject("user", user);
         Bet bet = betService.setConfirm(id, user, modelAndView);
-        if (bet == null || betService.access(bet, user)) { return new ModelAndView("errorPage"); }
         modelAndView.addObject("bet", bet);
+        betService.betInfo(new BetDto(bet.getId(), bet.getUser().getUsername(), bet.getOpponent().getUsername(),
+                null, "showOtherInfo"));
         return modelAndView;
     }
 }

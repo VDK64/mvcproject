@@ -96,7 +96,7 @@ function betInfo(info) {
 
 function showOtherInfo() {
   if (window.location.href.includes("/bets/")) {
-    // window.location = window.location.href;
+    window.location = window.location.href;
   }
   console.log(window.location.href);
 }
