@@ -149,7 +149,9 @@ public class Validator {
     }
 
     public void validateStatus(Game game, GameStatus gameStatus) {
-        if (game.getStatus() == null && (gameStatus == GameStatus.LEAVE || gameStatus == GameStatus.TIMEOUT)) {
+        if ((game.getStatus() == null && (gameStatus == GameStatus.LEAVE || gameStatus == GameStatus.TIMEOUT)) ||
+        ((game.getStatus() == GameStatus.LEAVE || game.getStatus() == GameStatus.TIMEOUT)
+                && gameStatus == GameStatus.POSITIVE_LEAVE)) {
             throw new InternalServerExceptions(ServerErrors.WRONG_CHANGE_STATUS);
         }
     }

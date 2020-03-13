@@ -4,5 +4,6 @@ public enum GameStatus {
     STARTED,
     LEAVE,
     TIMEOUT,
+    POSITIVE_LEAVE,
     DESTROYED;
 }

@@ -23,7 +23,7 @@
           </p>
         </div>
         <#if error??>
-          <div class="alert alert-danger" role="alert">
+          <div id="errorMessage" class="alert alert-danger" role="alert">
             ${error}
           </div>
         </#if>
@@ -72,7 +72,7 @@
         </div>
         <div id="mainRow" class="row">
           <#if bet.game.isUserReady?? && bet.game.isOpponentReady?? && bet.game.status??>
-            <#if bet.game.isUserReady && bet.game.isOpponentReady && bet.game.status != "STARTED">
+            <#if bet.game.isUserReady && bet.game.isOpponentReady && bet.game.status != "POSITIVE_LEAVE">
             <p id="loadingP">Creating lobby.</p>
               <div id="loadingDiv" class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
                 <span id="loadingSpan" class="sr-only">Loading...</span>
@@ -82,6 +82,14 @@
           <#if bet.game.status??>
             <#if bet.game.status == 'STARTED'>
               <p>Lobby is created! Go to the dota 2</p>
+            </#if>
+            <#if bet.game.status == 'POSITIVE_LEAVE'>
+                <p>Push this button when the battle will be ended.
+                  (Don't push for fun! It will be nothing while battle not over!)
+                </p>
+                  <p>
+                    <button type="button" class="btn btn-info">check battle status</button>
+                  </p>
             </#if>
           </#if>
         </div>

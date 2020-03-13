@@ -88,10 +88,21 @@ function betInfo(info) {
     case 'startLobby':
       deleteAndPrintStartInfo();
       break;
+    case 'startError':
+      printErrorMessage();
+      break;
     case 'showOtherInfo':
       showOtherInfo();
       break;
   }
+}
+
+function printErrorMessage(){
+  div = document.getElementById('errorMessage')
+  p = document.createElement('p')
+  p.innerHTML = 'Somthing wrong with creating new Lobby. Please, reload page' +
+   + 'and try again'
+  div.append(p)
 }
 
 function showOtherInfo() {

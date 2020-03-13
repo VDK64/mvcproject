@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mvcproject.mvcproject.dto.BetDto;
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.Game;
+import com.mvcproject.mvcproject.entities.GameStatus;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.CustomServerException;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
@@ -139,8 +140,9 @@ public class BetService {
         }
         if (game.getIsUserReady() && game.getIsOpponentReady()) {
             betDto.setInfo("allReady");
+            if (game.getStatus() != GameStatus.STARTED)
+                dota2Service.createLobby(betFromDB);
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
-            dota2Service.createLobby(betFromDB);
             betDto.setInfo("startLobby");
             template.convertAndSendToUser(betDto.getUser(), "/queue/events", betDto);
             template.convertAndSendToUser(betDto.getOpponent(), "/queue/events", betDto);
