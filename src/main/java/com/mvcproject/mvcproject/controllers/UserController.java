@@ -4,15 +4,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mvcproject.mvcproject.dto.BetDto;
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.User;
+import com.mvcproject.mvcproject.exceptions.InternalServerExceptions;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.services.BetService;
 import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.messaging.util.matcher.SimpDestinationMessageMatcher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +39,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private BetService betService;
+    @Autowired
+    private SimpMessagingTemplate template;
 
     @GetMapping("/friends")
     public String friends(@AuthenticationPrincipal User user, Model model) {
@@ -120,6 +128,15 @@ public class UserController {
     @MessageMapping("/bet")
     public void betNotification(@AuthenticationPrincipal User user, @Payload BetDto betDto) throws JsonProcessingException {
         betService.betReady(user, betDto);
+    }
+
+    @MessageExceptionHandler
+    @SendToUser(destinations="/queue/events")
+    public BetDto handleException(InternalServerExceptions exception) {
+        BetDto betDto = new BetDto(exception.getUser(), exception.getOpponent(), null, exception.getMessage());
+        template.convertAndSendToUser(betService.detectDestinationNotPrincipal(exception.getPrincipal(), betDto),
+                "/queue/events", betDto);
+        return betDto;
     }
 
     @GetMapping("/bets/{id}")

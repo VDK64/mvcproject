@@ -98,11 +98,16 @@ function betInfo(info) {
 }
 
 function printErrorMessage(){
-  div = document.getElementById('errorMessage')
-  p = document.createElement('p')
-  p.innerHTML = 'Somthing wrong with creating new Lobby. Please, reload page' +
-   + 'and try again'
-  div.append(p)
+  // <div id="errorMessage" class="alert alert-danger" role="alert">
+  // div = document.getElementById('errorMessage');
+  let mainDiv = document.getElementById('mainDiv');
+  let div = document.createElement('div');
+  div.setAttribute('class', 'alert alert-danger');
+  div.setAttribute('role', 'alert');
+  let p = document.createElement('p');
+  p.innerHTML = 'Somthing goes wrong with creating new Lobby. Please, reload page and if you are not ready - try again';
+  div.append(p);
+  mainDiv.append(div);
 }
 
 function showOtherInfo() {

@@ -40,7 +40,7 @@ public class Dota2Controller {
     @PostMapping("/dota2/bot/positiveLeave")
     public ResponseEntity<String> positiveLeave(@RequestBody ResponseData responseData) {
         if (responseData.getToken().equals(Dota2Controller.token)) {
-            dota2Service.positiveLeave(responseData.getUser(), responseData.getOpponent(), responseData.getPort());
+            dota2Service.positiveLeave(responseData.getUser(), responseData.getOpponent());
             return ResponseEntity.ok(okStatus);
         } else {
             return new ResponseEntity<>(accessDenied, HttpStatus.BAD_REQUEST);
@@ -50,7 +50,7 @@ public class Dota2Controller {
     @PostMapping("/dota2/bot/timeout")
         public ResponseEntity<String> lobbyTimeout(@RequestBody ResponseData responseData) {
             if (responseData.getToken().equals(Dota2Controller.token)) {
-                dota2Service.timeout(responseData.getUser(), responseData.getOpponent(), responseData.getPort());
+                dota2Service.timeout(responseData.getUser(), responseData.getOpponent());
                 return ResponseEntity.ok(okStatus);
             } else {
                 return new ResponseEntity<>(accessDenied, HttpStatus.BAD_REQUEST);

@@ -141,7 +141,7 @@ public class BetService {
         if (game.getIsUserReady() && game.getIsOpponentReady()) {
             betDto.setInfo("allReady");
             if (game.getStatus() != GameStatus.STARTED)
-                dota2Service.createLobby(betFromDB);
+                dota2Service.createLobby(betFromDB, user.getUsername());
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
             betDto.setInfo("startLobby");
             template.convertAndSendToUser(betDto.getUser(), "/queue/events", betDto);
@@ -162,6 +162,13 @@ public class BetService {
         if (betDto.getUser().equals(user.getUsername()))
             return betDto.getOpponent();
         else return betDto.getUser();
+    }
+
+    public String detectDestinationNotPrincipal(String principal, BetDto betDto) {
+        if (betDto.getUser().equals(principal))
+            return betDto.getOpponent();
+        else
+            return betDto.getUser();
     }
 
     public Bet getBet(Long id) {

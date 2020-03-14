@@ -57,7 +57,7 @@ public class Dota2Service {
         restTemplate = new RestTemplate();
     }
 
-    public synchronized void createLobby(Bet bet) throws JsonProcessingException {
+    public synchronized void createLobby(Bet bet, String principal) throws JsonProcessingException {
         boolean created = false;
         do {
             for (Map.Entry<String, Boolean> bot : bots.entrySet()) {
@@ -72,12 +72,9 @@ public class Dota2Service {
                     HttpEntity<String> requestBody = new HttpEntity<>(request, headers);
                     ResponseEntity<CreateLobbyDto> response = restTemplate.postForEntity(uri, requestBody, CreateLobbyDto.class);
                     if (Objects.requireNonNull(response.getBody()).getResponseCode().equals("100")) {
-                        template.convertAndSendToUser(bet.getUser().getUsername(), "/queue/events",
-                                new BetDto(bet.getUser().getUsername(), bet.getOpponent().getUsername(), null,
-                                        "startError"));
-                        template.convertAndSendToUser(bet.getOpponent().getUsername(), "/queue/events",
-                                new BetDto(bet.getUser().getUsername(), bet.getOpponent().getUsername(), null,
-                                        "startError"));
+                        bot.setValue(true);
+                        throw new InternalServerExceptions("startError", bet.getUser().getUsername(),
+                                bet.getOpponent().getUsername(), principal);
                     }
                     created = true;
                     break;
@@ -96,19 +93,19 @@ public class Dota2Service {
         gameRepo.save(bet.getGame());
     }
 
-    public synchronized void positiveLeave(String user, String opponent, String port) {
+    public synchronized void positiveLeave(String user, String opponent) {
         Bet bet = getBetAndSetStatus(user, opponent, GameStatus.POSITIVE_LEAVE);
         gameRepo.save(bet.getGame());
-        bots.replace(port, true);
+        bots.replace(localhost1347, true);
     }
 
-    public synchronized void timeout(String user, String opponent, String port) {
+    public synchronized void timeout(String user, String opponent) {
         Bet bet = getBetAndSetStatus(user, opponent, GameStatus.TIMEOUT);
         Game game = bet.getGame();
         game.setIsUserReady(false);
         game.setIsOpponentReady(false);
         gameRepo.save(bet.getGame());
-        bots.replace(port, true);
+        bots.replace(localhost1347, true);
     }
 
     private Bet getBetAndSetStatus(String user, String opponent, GameStatus gameStatus) {

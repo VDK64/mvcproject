@@ -22,11 +22,8 @@
             </b>
           </p>
         </div>
-        <#if error??>
-          <div id="errorMessage" class="alert alert-danger" role="alert">
-            ${error}
-          </div>
-        </#if>
+          <!-- <div id="errorMessage" class="alert alert-danger" role="alert">
+          </div> -->
         <#if bet??>
 
         <input id="betUser" value="${bet.user.username}" type="hidden">
@@ -72,7 +69,8 @@
         </div>
         <div id="mainRow" class="row">
           <#if bet.game.isUserReady?? && bet.game.isOpponentReady?? && bet.game.status??>
-            <#if bet.game.isUserReady && bet.game.isOpponentReady && bet.game.status != "POSITIVE_LEAVE">
+            <#if bet.game.isUserReady && bet.game.isOpponentReady && bet.game.status != "POSITIVE_LEAVE"
+             && bet.game.status != "STARTED">
             <p id="loadingP">Creating lobby.</p>
               <div id="loadingDiv" class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
                 <span id="loadingSpan" class="sr-only">Loading...</span>

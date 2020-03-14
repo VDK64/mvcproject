@@ -1,12 +1,23 @@
 package com.mvcproject.mvcproject.exceptions;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
-@Data
-public class InternalServerExceptions extends RuntimeException{
+@Getter
+@Setter
+public class InternalServerExceptions extends RuntimeException {
+    private String user;
+    private String opponent;
+    private String principal;
+
     public InternalServerExceptions(String message) {
         super(message);
+    }
+
+    public InternalServerExceptions(String message, String user, String opponent, String principal) {
+        super(message);
+        this.user = user;
+        this.opponent = opponent;
+        this.principal = principal;
     }
 }
