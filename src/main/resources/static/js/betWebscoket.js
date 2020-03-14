@@ -97,9 +97,15 @@ function betInfo(info) {
   }
 }
 
-function printErrorMessage(){
-  // <div id="errorMessage" class="alert alert-danger" role="alert">
-  // div = document.getElementById('errorMessage');
+function printErrorMessage() {
+  let lp = document.getElementById('loadingP');
+  let ld = document.getElementById('loadingDiv');
+  let ls = document.getElementById('loadingSpan');
+  if (lp != null && ld != null && ls != null) {
+    lp.remove();
+    ld.remove();
+    ls.remove();
+  }
   let mainDiv = document.getElementById('mainDiv');
   let div = document.createElement('div');
   div.setAttribute('class', 'alert alert-danger');
