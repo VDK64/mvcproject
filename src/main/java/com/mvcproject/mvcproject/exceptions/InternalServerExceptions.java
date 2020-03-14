@@ -1,6 +1,8 @@
 package com.mvcproject.mvcproject.exceptions;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @EqualsAndHashCode(callSuper = true)
 @Getter

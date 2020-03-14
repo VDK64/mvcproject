@@ -2,7 +2,6 @@ package com.mvcproject.mvcproject.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mvcproject.mvcproject.dto.BetDto;
 import com.mvcproject.mvcproject.dto.CreateLobbyDto;
 import com.mvcproject.mvcproject.dto.LobbyDto;
 import com.mvcproject.mvcproject.entities.Bet;
