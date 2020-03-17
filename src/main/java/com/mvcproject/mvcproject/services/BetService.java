@@ -144,12 +144,12 @@ public class BetService {
         } else {
             game.setIsOpponentReady(true);
         }
+        gameRepo.save(game);
+        betRepo.save(betFromDB);
         if (game.getIsUserReady() && game.getIsOpponentReady()) {
             betDto.setInfo("allReady");
-            if (game.getStatus() != GameStatus.STARTED) {
+            if (game.getStatus() != GameStatus.STARTED)
                 dota2Service.createLobby(betFromDB, user.getUsername());
-                game.setServerStartTime(Math.toIntExact(System.currentTimeMillis() / 1000));
-            }
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
             betDto.setInfo("startLobby");
             template.convertAndSendToUser(betDto.getUser(), "/queue/events", betDto);
@@ -157,8 +157,6 @@ public class BetService {
         } else {
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
         }
-        gameRepo.save(game);
-        betRepo.save(betFromDB);
     }
 
     public void betInfo(BetDto betDto) {

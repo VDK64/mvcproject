@@ -86,6 +86,7 @@ public class Dota2Service {
 
     public synchronized void startLobby(String user, String opponent) {
         Bet bet = getBetAndSetStatus(user, opponent, GameStatus.STARTED);
+        bet.getGame().setServerStartTime(Math.toIntExact(System.currentTimeMillis() / 1000));
         gameRepo.save(bet.getGame());
     }
 
