@@ -141,7 +141,7 @@ function deleteAndPrintStartInfo() {
   let text = document.getElementById('loadingP');
   let div = document.getElementById('loadingDiv');
   let span = document.getElementById('loadingSpan');
-  text.remove();
+  if (text != null) { text.remove(); }
   div.remove();
   span.remove();
   row.append(p);
