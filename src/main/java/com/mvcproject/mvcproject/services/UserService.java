@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
+import java.math.BigInteger;
 import java.util.*;
 
 @Service
@@ -200,5 +201,9 @@ public class UserService implements UserDetailsService {
 
     public User getUserById(Long id) {
         return userRepo.findById(id).orElseThrow();
+    }
+
+    public int convertSteamIdTo32(String steamId) {
+        return new BigInteger(steamId).subtract(new BigInteger("76561197960265728")).intValue();
     }
 }

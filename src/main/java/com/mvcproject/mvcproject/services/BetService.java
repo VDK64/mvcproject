@@ -17,11 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.transaction.Transactional;
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +46,8 @@ public class BetService {
     private MessageService messageService;
     @Autowired
     private BetService betService;
+    @Autowired
+    private UserService userService;
 
     public Page<Bet> getBetInfo(User user, String who) {
         if (who.equalsIgnoreCase("owner"))
@@ -140,8 +146,10 @@ public class BetService {
         }
         if (game.getIsUserReady() && game.getIsOpponentReady()) {
             betDto.setInfo("allReady");
-            if (game.getStatus() != GameStatus.STARTED)
+            if (game.getStatus() != GameStatus.STARTED) {
                 dota2Service.createLobby(betFromDB, user.getUsername());
+                game.setServerStartTime(Math.toIntExact(System.currentTimeMillis() / 1000));
+            }
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
             betDto.setInfo("startLobby");
             template.convertAndSendToUser(betDto.getUser(), "/queue/events", betDto);
@@ -189,4 +197,16 @@ public class BetService {
         userRepo.save(user);
         return betFromDB;
     }
+
+//    @Scheduled(cron = "0 0/5 * * * *")
+//    private void checkGames() {
+//        List<Game> result = gameRepo.findByStatus(GameStatus.POSITIVE_LEAVE);
+//        if (result.size() != 0) {
+//            result.forEach(game -> checkWhoWinInGame(game));
+//        }
+//    }
+//
+//    private void checkWhoWinInGame(Game game) {
+//        userService.convertSteamIdTo32(game.)
+//    }
 }

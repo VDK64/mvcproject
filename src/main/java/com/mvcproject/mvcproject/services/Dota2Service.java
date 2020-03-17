@@ -66,10 +66,12 @@ public class Dota2Service {
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.APPLICATION_JSON);
                     String uri = bot.getKey() + "?lobbyName=" + game.getLobbyName();
-                    LobbyDto lobbyDto = new LobbyDto(game.getPassword(), game.getPlayer1(), game.getPlayer2());
+                    LobbyDto lobbyDto = new LobbyDto(game.getPassword(), game.getUserSteamId64(),
+                            game.getOpponentSteamId64());
                     String request = objectMapper.writeValueAsString(lobbyDto);
                     HttpEntity<String> requestBody = new HttpEntity<>(request, headers);
-                    ResponseEntity<CreateLobbyDto> response = restTemplate.postForEntity(uri, requestBody, CreateLobbyDto.class);
+                    ResponseEntity<CreateLobbyDto> response = restTemplate.postForEntity(uri, requestBody,
+                            CreateLobbyDto.class);
                     if (Objects.requireNonNull(response.getBody()).getResponseCode().equals("100")) {
                         bot.setValue(true);
                         throw new InternalServerExceptions("startError", bet.getUser().getUsername(),

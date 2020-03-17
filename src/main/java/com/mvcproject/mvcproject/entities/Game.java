@@ -24,18 +24,19 @@ public class Game {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private GameStatus status;
-    private String player1;
-    private String player2;
+    private String userSteamId64;
+    private String opponentSteamId64;
+    private Integer serverStartTime;
 
     public Game(Long id, String lobbyName, String password, String gameMode, Boolean isUserReady,
-                Boolean isOpponentReady, String player1, String player2) {
+                Boolean isOpponentReady, String userSteamId64, String opponentSteamId64) {
         this.id = id;
         this.lobbyName = lobbyName;
         this.password = password;
         this.gameMode = gameMode;
         this.isUserReady = isUserReady;
         this.isOpponentReady = isOpponentReady;
-        this.player1 = player1;
-        this.player2 = player2;
+        this.userSteamId64 = userSteamId64;
+        this.opponentSteamId64 = opponentSteamId64;
     }
 }
