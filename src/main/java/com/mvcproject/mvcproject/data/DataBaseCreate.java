@@ -23,13 +23,15 @@ public class DataBaseCreate {
     private BetRepo betRepo;
     @Autowired
     private GameRepo gameRepo;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public void createUsersInDataBase() {
         userRepo.save(User.builder()
                 .username("vdk64")
                 .firstname("Дмитрий")
                 .lastname("Вознюк")
-                .password(new BCryptPasswordEncoder().encode("a"))
+                .password(passwordEncoder.encode("a"))
                 .email("dkvoznyuk@yandex.ru")
                 .activationCode(null)
                 .avatar("default")
@@ -47,7 +49,7 @@ public class DataBaseCreate {
                 .username("user")
                 .firstname("Ivan")
                 .lastname("Petrov")
-                .password(new BCryptPasswordEncoder().encode("a"))
+                .password(passwordEncoder.encode("a"))
                 .email("user@mail.ru")
                 .activationCode(null)
                 .avatar("default")
@@ -64,7 +66,7 @@ public class DataBaseCreate {
                 .username("kasha111")
                 .firstname("Аркадий")
                 .lastname("Ротенберг")
-                .password(new BCryptPasswordEncoder().encode("a"))
+                .password(passwordEncoder.encode("a"))
                 .email("kasha@mail.ru")
                 .activationCode(null)
                 .avatar("default")
@@ -82,7 +84,7 @@ public class DataBaseCreate {
                 .username("tony64")
                 .firstname("Антон")
                 .lastname("Васильев")
-                .password(new BCryptPasswordEncoder().encode("a"))
+                .password(passwordEncoder.encode("a"))
                 .email("antony@yandex.ru")
                 .activationCode(null)
                 .avatar("default")
@@ -99,7 +101,7 @@ public class DataBaseCreate {
                 .username("vasiliy228")
                 .firstname("Василий")
                 .lastname("Самойлов")
-                .password(new BCryptPasswordEncoder().encode("a"))
+                .password(passwordEncoder.encode("a"))
                 .email("vasdas@rambler.ru")
                 .activationCode(null)
                 .avatar("default")
@@ -116,7 +118,7 @@ public class DataBaseCreate {
                 .username("petro123")
                 .firstname("Петр")
                 .lastname("Добронравов")
-                .password(new BCryptPasswordEncoder().encode("a"))
+                .password(passwordEncoder.encode("a"))
                 .email("dobro@mail.ru")
                 .activationCode(null)
                 .avatar("default")
@@ -164,7 +166,9 @@ public class DataBaseCreate {
         User tony64 = userRepo.findByUsername("tony64").orElseThrow();
         User user = userRepo.findByUsername("user").orElseThrow();
         Game game = new Game(null, "MyLobby", "app", "1x1",
-                false, false, "76561198799034987", "76561199004382586");
+                true, true, "76561198799034987", "76561199004382586");
+        game.setServerStartTime(1584623845 - 100000);
+        game.setStatus(GameStatus.POSITIVE_LEAVE);
         gameRepo.save(game);
 
         Iterable<Bet> bets = betRepo.saveAll(new ArrayList<>() {{

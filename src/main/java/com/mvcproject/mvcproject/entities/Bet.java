@@ -30,7 +30,7 @@ public class Bet {
     private Boolean isConfirm;
     private String whoWin;
     @ToString.Exclude
-    @OneToOne/*(orphanRemoval = true, cascade = CascadeType.ALL)*/
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "game_id")
     private Game game;
     //must be not null. must do it later

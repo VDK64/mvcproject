@@ -1,7 +1,10 @@
 package com.mvcproject.mvcproject.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mvcproject.mvcproject.config.MvcConfig;
 import com.mvcproject.mvcproject.dto.BetDto;
+import com.mvcproject.mvcproject.dto.matchResult.MatchResultDto;
+import com.mvcproject.mvcproject.dto.matchResult.Player;
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.Game;
 import com.mvcproject.mvcproject.entities.GameStatus;
@@ -16,16 +19,15 @@ import freemarker.template.utility.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +50,8 @@ public class BetService {
     private BetService betService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private RestTemplate restTemplate;
 
     public Page<Bet> getBetInfo(User user, String who) {
         if (who.equalsIgnoreCase("owner"))
@@ -196,15 +200,67 @@ public class BetService {
         return betFromDB;
     }
 
-//    @Scheduled(cron = "0 0/5 * * * *")
-//    private void checkGames() {
-//        List<Game> result = gameRepo.findByStatus(GameStatus.POSITIVE_LEAVE);
-//        if (result.size() != 0) {
-//            result.forEach(game -> checkWhoWinInGame(game));
-//        }
-//    }
-//
-//    private void checkWhoWinInGame(Game game) {
-//        userService.convertSteamIdTo32(game.)
-//    }
+    //    @Scheduled(cron = "0 0/5 * * * *")
+    @PostConstruct
+    private void checkGames() {
+        List<Game> result = gameRepo.findByStatus(GameStatus.POSITIVE_LEAVE);
+        if (result.size() != 0) {
+            result.forEach(this::checkWhoWinInGame);
+        }
+    }
+
+    private void checkWhoWinInGame(Game game) {
+        Bet bet = betRepo.findByGame(game).orElseThrow();
+        User user = userRepo.findBySteamId(game.getUserSteamId64()).orElseThrow();
+        User opponent = userRepo.findBySteamId(game.getOpponentSteamId64()).orElseThrow();
+        BetDto betDto = new BetDto(null, null, null, "closeBet");
+        String response = makeRequestToFindMatch(game);
+        if (response == null) {
+            template.convertAndSendToUser(bet.getUser().getUsername(), "/queue/events", betDto);
+            template.convertAndSendToUser(bet.getOpponent().getUsername(), "/queue/events", betDto);
+            user.setDeposit(user.getDeposit() + bet.getValue());
+            opponent.setDeposit(opponent.getDeposit() + bet.getValue());
+        } else {
+
+        }
+        userRepo.save(user);
+        userRepo.save(opponent);
+        betRepo.delete(bet);
+    }
+
+    private String makeRequestToFindMatch(Game game) {
+        int userSteamId32 = userService.convertSteamIdTo32(game.getUserSteamId64());
+        int opponentSteamId32 = userService.convertSteamIdTo32(game.getOpponentSteamId64());
+        String uri = "https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001" +
+                "?league_id=11529&matches_requested=1&account_id=" + userSteamId32 +
+                "&key=" + MvcConfig.steamKey;
+        ResponseEntity<MatchResultDto> response = restTemplate.getForEntity(uri, MatchResultDto.class);
+        MatchResultDto responseBody = response.getBody();
+        Map<String, Object> result = new HashMap<>();
+        if (responseBody != null) {
+            result.put("start_time", responseBody.getResult().getMatches()[0].getStart_time());
+            result.put("match_id", responseBody.getResult().getMatches()[0].getMatch_id());
+            result.put("players", responseBody.getResult().getMatches()[0].getPlayers());
+        }
+        Player[] playersArray = (Player[]) result.get("players");
+        List<?> players = Arrays.asList(playersArray);
+        if (checkPlayersInListAndDifferentTeam(players, String.valueOf(userSteamId32),
+                String.valueOf(opponentSteamId32)) && defineMatch(result, game)) {
+            return (String) result.get("match_id");
+        }
+        return null;
+    }
+
+    private boolean defineMatch(Map<String, Object> result, Game game) {
+        int startTime = Integer.parseInt((String) result.get("start_time"));
+        return game.getServerStartTime() < startTime;
+    }
+
+    private boolean checkPlayersInListAndDifferentTeam(List<?> players, String userAccount, String opponentAccount) {
+        int count = (int) players.stream().filter(player -> player instanceof Player
+                && ((Player) player).getAccount_id() != null
+                && (((Player) player).getAccount_id().equals(userAccount)
+                || ((Player) player).getAccount_id().equals(opponentAccount))).count();
+        return count == 2;
+    }
 }

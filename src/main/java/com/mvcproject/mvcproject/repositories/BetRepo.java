@@ -1,6 +1,7 @@
 package com.mvcproject.mvcproject.repositories;
 
 import com.mvcproject.mvcproject.entities.Bet;
+import com.mvcproject.mvcproject.entities.Game;
 import com.mvcproject.mvcproject.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,4 +21,5 @@ public interface BetRepo extends PagingAndSortingRepository<Bet, Long> {
     Page<Bet> findByOpponent(User opponent, Pageable pageable);
     List<Bet> findByOpponentAndIsNew(User Opponent, Boolean isNew);
     Optional<Bet> findByUserAndOpponentAndWhoWin(User user, User opponent, String whoWin);
+    Optional<Bet> findByGame(Game game);
 }

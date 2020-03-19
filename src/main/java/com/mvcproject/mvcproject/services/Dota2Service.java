@@ -44,6 +44,7 @@ public class Dota2Service {
     private Validator validator;
     @Autowired
     private SimpMessagingTemplate template;
+    @Autowired
     private RestTemplate restTemplate;
     private Map<String, Boolean> bots;
 
@@ -53,7 +54,6 @@ public class Dota2Service {
         bots = new LinkedHashMap<>() {{
             put(localhost1347, true);
         }};
-        restTemplate = new RestTemplate();
     }
 
     public synchronized void createLobby(Bet bet, String principal) throws JsonProcessingException {

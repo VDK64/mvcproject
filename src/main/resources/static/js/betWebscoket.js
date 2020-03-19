@@ -94,6 +94,15 @@ function betInfo(info) {
     case 'showOtherInfo':
       showOtherInfo();
       break;
+    case 'closeBet':
+      closeBet();
+      break;
+  }
+}
+
+function closeBet() {
+  if (urlBet.includes('/bets/**')) {
+    document.location.href = "/";
   }
 }
 

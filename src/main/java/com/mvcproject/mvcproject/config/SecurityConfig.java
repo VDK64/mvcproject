@@ -26,6 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private MyLogoutSuccessHandler myLogoutSuccessHandler;
     @Autowired
     private MySimpleUrlAuthenticationSuccessHandler mySimpleUrlAuthenticationSuccessHandler;
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
 
     //Handlers are disabled because app working with dev tools and save last sessions.
 
@@ -61,6 +63,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .userDetailsService(userService)
-                .passwordEncoder(new BCryptPasswordEncoder());
+                .passwordEncoder(passwordEncoder);
     }
 }

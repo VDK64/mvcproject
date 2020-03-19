@@ -40,6 +40,8 @@ public class UserService implements UserDetailsService {
     private DataBaseCreate dbCreate;
     @Autowired
     private Validator validator;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @PostConstruct
     public void init() {
@@ -63,7 +65,7 @@ public class UserService implements UserDetailsService {
                 .username(username)
                 .firstname(firstname)
                 .lastname(lastname)
-                .password(new BCryptPasswordEncoder().encode(password))
+                .password(passwordEncoder.encode(password))
                 .email(email)
                 .activationCode(UUID.randomUUID().toString())
                 .authorities(Collections.singleton(Role.USER))
@@ -141,7 +143,7 @@ public class UserService implements UserDetailsService {
         if (password == null || password.equals("")) {
             res.put("password", user.getPassword());
         } else {
-            res.put("password", new BCryptPasswordEncoder().encode(password));
+            res.put("password", passwordEncoder.encode(password));
         }
         return res;
     }
