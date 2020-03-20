@@ -22,12 +22,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -190,6 +194,19 @@ public class BetService {
                 && !bet.getOpponent().getUsername().equals(user.getUsername());
     }
 
+    public void formModelForBets(Model model, User user, String table) {
+        Page<Bet> response = betService.getBetInfo(user, table);
+        int totalPages = response.getTotalPages();
+        List<Bet> items = betService.listFromPage(response);
+        UserService.ifAdmin(model, user);
+        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newBets", betService.haveNewBets(user));
+        model.addAttribute("items", items);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("tableName", table);
+    }
+
     public Bet setConfirm(Long id, User user, ModelAndView modelAndView) {
         Bet betFromDB = betRepo.findById(id).orElseThrow();
         validator.validateAndSetDepositAfterBetTaking(user, betFromDB.getValue(), modelAndView);
@@ -200,9 +217,8 @@ public class BetService {
         return betFromDB;
     }
 
-    //    @Scheduled(cron = "0 0/5 * * * *")
-    @PostConstruct
-    private void checkGames() {
+
+    public void checkGames() {
         List<Game> result = gameRepo.findByStatus(GameStatus.POSITIVE_LEAVE);
         if (result.size() != 0) {
             result.forEach(this::checkWhoWinInGame);
@@ -214,10 +230,9 @@ public class BetService {
         User user = userRepo.findBySteamId(game.getUserSteamId64()).orElseThrow();
         User opponent = userRepo.findBySteamId(game.getOpponentSteamId64()).orElseThrow();
         BetDto betDto = new BetDto(null, null, null, "closeBet");
-        String response = makeRequestToFindMatch(game);
+//        String response = makeRequestToFindMatch(game);
+        String response = null;
         if (response == null) {
-            template.convertAndSendToUser(bet.getUser().getUsername(), "/queue/events", betDto);
-            template.convertAndSendToUser(bet.getOpponent().getUsername(), "/queue/events", betDto);
             user.setDeposit(user.getDeposit() + bet.getValue());
             opponent.setDeposit(opponent.getDeposit() + bet.getValue());
         } else {
@@ -226,6 +241,8 @@ public class BetService {
         userRepo.save(user);
         userRepo.save(opponent);
         betRepo.delete(bet);
+        template.convertAndSendToUser(bet.getUser().getUsername(), "/queue/events", betDto);
+        template.convertAndSendToUser(bet.getOpponent().getUsername(), "/queue/events", betDto);
     }
 
     private String makeRequestToFindMatch(Game game) {
@@ -257,10 +274,19 @@ public class BetService {
     }
 
     private boolean checkPlayersInListAndDifferentTeam(List<?> players, String userAccount, String opponentAccount) {
-        int count = (int) players.stream().filter(player -> player instanceof Player
-                && ((Player) player).getAccount_id() != null
-                && (((Player) player).getAccount_id().equals(userAccount)
-                || ((Player) player).getAccount_id().equals(opponentAccount))).count();
-        return count == 2;
+        AtomicInteger radiant = new AtomicInteger();
+        AtomicInteger count = new AtomicInteger();
+        players.forEach(player -> {
+            if (player instanceof Player && ((Player) player).getAccount_id() != null
+                    && (((Player) player).getAccount_id().equals(userAccount)
+                    || ((Player) player).getAccount_id().equals(opponentAccount))) {
+                count.getAndIncrement();
+                if (0 <= Integer.parseInt(((Player) player).getPlayer_slot())
+                        && Integer.parseInt(((Player) player).getPlayer_slot()) < 128) {
+                    radiant.getAndIncrement();
+                }
+            }
+        });
+        return count.get() == 2 && radiant.get() < 2 && radiant.get() > 0;
     }
 }

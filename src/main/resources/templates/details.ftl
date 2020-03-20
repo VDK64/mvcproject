@@ -86,7 +86,7 @@
                   (Don't push for fun! It will be nothing while battle not over!)
                 </p>
                   <p>
-                    <button type="button" class="btn btn-info">check battle status</button>
+                    <button type="button" onclick="checkBattleStatus()" class="btn btn-info">check battle status</button>
                   </p>
             </#if>
           </#if>
@@ -108,6 +108,19 @@
                 deleteButton();
                 sendMessageAboutBet('ready');
               }
+
+              function checkBattleStatus(event) {
+                if (stompClient2) {
+                  let BetDto = {
+                    id: '${bet.id}',
+                    user: '${bet.user.username}',
+                    opponent: '${bet.opponent.username}',
+                    game: null,
+                    info: 'check'
+                  };
+                stompClient2.send("/app/bet", {}, JSON.stringify(BetDto));
+              }
+            }
 
               function ready() {
                 if (but1 === null) {

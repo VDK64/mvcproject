@@ -32,7 +32,7 @@ public class AdminController {
         model.addAttribute("newBets", betService.haveNewBets(user));
         Iterable<User> allUsers = userService.getAllUsers();
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", user);
+        model.addAttribute("user", userService.getUserById(user.getId()));
         model.addAttribute("users", allUsers);
         model.addAttribute("username", user.getUsername());
         return "userList";
@@ -44,7 +44,7 @@ public class AdminController {
         UserService.ifAdmin(model, user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
-        model.addAttribute("user", user);
+        model.addAttribute("user", userService.getUserById(user.getId()));
         model.addAttribute("authorities", Role.values());
         model.addAttribute("username", user.getUsername());
         return "editUser";
@@ -60,7 +60,7 @@ public class AdminController {
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("users", allUsers);
-        model.addAttribute("user", user);
+        model.addAttribute("user", userService.getUserById(user.getId()));
         model.addAttribute("username", user.getUsername());
         UserService.ifAdmin(model, user);
         return "userList";
@@ -73,7 +73,7 @@ public class AdminController {
         model.addAttribute("newBets", betService.haveNewBets(user));
         Iterable<User> allUsers = userService.getAllUsers();
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", user);
+        model.addAttribute("user", userService.getUserById(user.getId()));
         model.addAttribute("token", Dota2Controller.token);
         model.addAttribute("users", allUsers);
         model.addAttribute("username", user.getUsername());

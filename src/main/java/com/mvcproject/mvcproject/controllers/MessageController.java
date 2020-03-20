@@ -26,6 +26,8 @@ public class MessageController {
     @Autowired
     private SimpMessagingTemplate template;
     @Autowired
+    UserService userService;
+    @Autowired
     BetService betService;
 
     @RequestMapping("/dialogs")
@@ -34,7 +36,7 @@ public class MessageController {
         model.addAttribute("newBets", betService.haveNewBets(user));
         Set<DialogDtoResponse> response = messageService.getDialogs(user.getId());
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", user);
+        model.addAttribute("user", userService.getUserById(user.getId()));
         if (!response.isEmpty())
             model.addAttribute("dialogs", response);
         return "dialogs";
@@ -44,7 +46,7 @@ public class MessageController {
     public String getMessages(@AuthenticationPrincipal User user,
                               @PathVariable Long dialogId, Model model) {
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", user);
+        model.addAttribute("user", userService.getUserById(user.getId()));
         if (!messageService.accessRouter(user.getId(), dialogId)) { return "errorPage"; }
         messageService.readNewMessage(dialogId);
         List<MessageDto> response = messageService.loadMessages(user, dialogId);

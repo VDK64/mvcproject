@@ -100,10 +100,25 @@ function betInfo(info) {
   }
 }
 
+function toMainMenu(callback) {
+  document.location.href = "/";
+  callback();
+}
+
 function closeBet() {
-  if (urlBet.includes('/bets/**')) {
-    document.location.href = "/";
-  }
+  console.log("into closeBet()");
+  toMainMenu((callback) => {
+    let deposit = document.getElementById('depositOfUser');
+    console.log(deposit);
+    let color = deposit.color;
+    let timerId = setInterval(() => {
+      if (deposit.color == color)
+        deposit.color = 'green';
+      else
+        deposit.color = color;
+    }, 2000);
+    setTimeout(() => { clearInterval(timerId); }, 10000);
+  });
 }
 
 function printErrorMessage() {
@@ -135,7 +150,7 @@ function onBet(arg) {
   if (arg === 'true' || newBets == 'true') {
     if (!onceBet) {
       setInterval(function() {
-        var a = document.getElementById('betsId').style.opacity || 1;
+        let a = document.getElementById('betsId').style.opacity || 1;
         document.getElementById('betsId').style.opacity = ((parseInt(a)) ? 0 : 1);
       }, 450);
       onceBet = true;
