@@ -50,7 +50,7 @@ public class UserService implements UserDetailsService {
         dbCreate.createBetsInDataBase();
     }
 
-    private void checkUserExsist(User user, ModelAndView model) {
+    private void checkUserExist(User user, ModelAndView model) {
         userRepo.findByUsername(user.getUsername()).
                 ifPresent(user1 -> {
                     if (!user1.getId().equals(user.getId()))
@@ -77,7 +77,7 @@ public class UserService implements UserDetailsService {
                 .deposit(0f)
                 .steamId(null)
                 .build());
-        checkUserExsist(user, model);
+        checkUserExist(user, model);
         userRepo.save(user);
         sendMail(user);
     }
@@ -117,7 +117,7 @@ public class UserService implements UserDetailsService {
         user.setFirstname(map.get("firstname"));
         user.setLastname(map.get("lastname"));
         user.setUsername(map.get("username"));
-        checkUserExsist(user, model);
+        checkUserExist(user, model);
         user.setPassword(map.get("password"));
         user.setAuthorities(roles);
         userRepo.save(user);

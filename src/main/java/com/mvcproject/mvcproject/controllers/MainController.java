@@ -25,7 +25,7 @@ public class MainController {
     @RequestMapping("/")
     public String getMainPage(@AuthenticationPrincipal User user, Model model) {
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
         return "index";

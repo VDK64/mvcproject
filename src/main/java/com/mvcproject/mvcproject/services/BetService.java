@@ -5,6 +5,7 @@ import com.mvcproject.mvcproject.config.MvcConfig;
 import com.mvcproject.mvcproject.dto.BetDto;
 import com.mvcproject.mvcproject.dto.matchResult.MatchResultDto;
 import com.mvcproject.mvcproject.dto.matchResult.Player;
+import com.mvcproject.mvcproject.dto.specialMatchData.SpecialMatchDataDto;
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.Game;
 import com.mvcproject.mvcproject.entities.GameStatus;
@@ -15,7 +16,6 @@ import com.mvcproject.mvcproject.repositories.BetRepo;
 import com.mvcproject.mvcproject.repositories.GameRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.validation.Validator;
-import freemarker.template.utility.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,10 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -77,8 +74,8 @@ public class BetService {
                                  String lobbyName, String password, ModelAndView modelAndView) {
         String opponentUsername = opponent.split(" ")[1];
         User opponentFromDB = userRepo.findByUsername(opponentUsername).orElseThrow();
-        Float floatValue = validateDataToCreateBetAndGame(user, value, modelAndView, opponentFromDB, lobbyName
-                , password);
+        Float floatValue = validator.validateDataToCreateBetAndGame(user, value, modelAndView, opponentFromDB,
+                lobbyName, password);
         Game katka = new Game(null, lobbyName, password, gamemode, false, false,
                 user.getSteamId(), opponentFromDB.getSteamId());
         gameRepo.save(katka);
@@ -90,30 +87,6 @@ public class BetService {
         userRepo.save(user);
         template.convertAndSendToUser(opponentUsername, "/queue/events", new BetDto(user.getUsername(),
                 opponentUsername, game, null));
-    }
-
-    private Float validateDataToCreateBetAndGame(User user, String value, ModelAndView modelAndView,
-                                                 User opponentFromDB, String lobbyName, String password) {
-        if (StringUtil.emptyToNull(lobbyName) == null) {
-            throw new CustomServerException(ServerErrors.LOBBYNAME_NULL, modelAndView);
-        }
-        if (StringUtil.emptyToNull(password) == null) {
-            throw new CustomServerException(ServerErrors.LOBBYPASSWORD_NULL, modelAndView);
-        }
-        betRepo.findByUserAndOpponentAndWhoWin(user, opponentFromDB, null).ifPresent(bet -> {
-            throw new CustomServerException(ServerErrors.BET_EXIST, modelAndView);
-        });
-        betRepo.findByUserAndOpponentAndWhoWin(opponentFromDB, user, null).ifPresent(bet -> {
-            throw new CustomServerException(ServerErrors.BET_EXIST, modelAndView);
-        });
-        Float floatValue = validator.validValueAndConvertToFlat(value, modelAndView);
-        if (floatValue > user.getDeposit() || floatValue > opponentFromDB.getDeposit()) {
-            throw new CustomServerException(ServerErrors.WRONG_BET_VALUE, modelAndView);
-        }
-        if (floatValue == 0f) {
-            throw new CustomServerException(ServerErrors.WRONG_VALUE, modelAndView);
-        }
-        return floatValue;
     }
 
     public void readNewBet(Long id) {
@@ -217,26 +190,32 @@ public class BetService {
         return betFromDB;
     }
 
-
-    public void checkGames() {
-        List<Game> result = gameRepo.findByStatus(GameStatus.POSITIVE_LEAVE);
-        if (result.size() != 0) {
-            result.forEach(this::checkWhoWinInGame);
-        }
+    public void messageParser(User user, BetDto betDto) throws JsonProcessingException {
+        if (betDto.getInfo().equals("check"))
+            betService.checkGames(betDto);
+        else
+            betService.betReady(user, betDto);
     }
 
-    private void checkWhoWinInGame(Game game) {
-        Bet bet = betRepo.findByGame(game).orElseThrow();
+    public void checkGames(BetDto betDto) {
+        Bet bet = betRepo.findById(betDto.getId()).orElseThrow();
+        checkWhoWinInGame(bet);
+    }
+
+    private void checkWhoWinInGame(Bet bet) {
+        Game game = bet.getGame();
         User user = userRepo.findBySteamId(game.getUserSteamId64()).orElseThrow();
         User opponent = userRepo.findBySteamId(game.getOpponentSteamId64()).orElseThrow();
         BetDto betDto = new BetDto(null, null, null, "closeBet");
-//        String response = makeRequestToFindMatch(game);
-        String response = null;
-        if (response == null) {
+        Map<String, String> response = makeRequestToFindMatch(game);
+        if (response.size() == 0) {
             user.setDeposit(user.getDeposit() + bet.getValue());
             opponent.setDeposit(opponent.getDeposit() + bet.getValue());
         } else {
-
+            if (isWinnerUser(response, game, user, opponent, bet))
+                user.setDeposit(user.getDeposit() + bet.getValue());
+            else
+                opponent.setDeposit(opponent.getDeposit() + bet.getValue());
         }
         userRepo.save(user);
         userRepo.save(opponent);
@@ -245,7 +224,18 @@ public class BetService {
         template.convertAndSendToUser(bet.getOpponent().getUsername(), "/queue/events", betDto);
     }
 
-    private String makeRequestToFindMatch(Game game) {
+    private boolean isWinnerUser(Map<String, String> response, Game game, User user, User opponent, Bet bet) {
+        String match_id = response.get("match_id");
+        String radiant = response.get("radiant");
+        String url = "https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/V001/" +
+                "?match_id=" + match_id + "&key=81CDE4D34EED2C73C75AC1E421DF62FA";
+        ResponseEntity<SpecialMatchDataDto> responseTemplate = restTemplate.getForEntity(url,
+                SpecialMatchDataDto.class);
+        SpecialMatchDataDto responseBody = responseTemplate.getBody();
+        return Objects.requireNonNull(responseBody).getResult().isRadiant_win() && user.getUsername().equals(radiant);
+    }
+
+    private Map<String, String> makeRequestToFindMatch(Game game) {
         int userSteamId32 = userService.convertSteamIdTo32(game.getUserSteamId64());
         int opponentSteamId32 = userService.convertSteamIdTo32(game.getOpponentSteamId64());
         String uri = "https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001" +
@@ -259,21 +249,24 @@ public class BetService {
             result.put("match_id", responseBody.getResult().getMatches()[0].getMatch_id());
             result.put("players", responseBody.getResult().getMatches()[0].getPlayers());
         }
-        Player[] playersArray = (Player[]) result.get("players");
-        List<?> players = Arrays.asList(playersArray);
+        List<?> players = Arrays.asList((Player[]) result.get("players"));
+        StringBuilder radiantSteamId32 = new StringBuilder();
+        Map<String, String> resultMap = new HashMap<>();
         if (checkPlayersInListAndDifferentTeam(players, String.valueOf(userSteamId32),
-                String.valueOf(opponentSteamId32)) && defineMatch(result, game)) {
-            return (String) result.get("match_id");
+                String.valueOf(opponentSteamId32), radiantSteamId32) && defineIsMatchStartAfterCreate(result, game)) {
+            resultMap.put("match_id", String.valueOf(result.get("match_id")));
+            resultMap.put("radiant", radiantSteamId32.toString());
         }
-        return null;
+        return resultMap;
     }
 
-    private boolean defineMatch(Map<String, Object> result, Game game) {
+    private boolean defineIsMatchStartAfterCreate(Map<String, Object> result, Game game) {
         int startTime = Integer.parseInt((String) result.get("start_time"));
         return game.getServerStartTime() < startTime;
     }
 
-    private boolean checkPlayersInListAndDifferentTeam(List<?> players, String userAccount, String opponentAccount) {
+    private boolean checkPlayersInListAndDifferentTeam(List<?> players, String userAccount, String opponentAccount,
+                                                       StringBuilder radiantSteamID32) {
         AtomicInteger radiant = new AtomicInteger();
         AtomicInteger count = new AtomicInteger();
         players.forEach(player -> {
@@ -284,6 +277,7 @@ public class BetService {
                 if (0 <= Integer.parseInt(((Player) player).getPlayer_slot())
                         && Integer.parseInt(((Player) player).getPlayer_slot()) < 128) {
                     radiant.getAndIncrement();
+                    radiantSteamID32.append(((Player) player).getAccount_id());
                 }
             }
         });

@@ -6,12 +6,16 @@ import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.CustomServerException;
 import com.mvcproject.mvcproject.exceptions.InternalServerExceptions;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
+import com.mvcproject.mvcproject.repositories.BetRepo;
 import freemarker.template.utility.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 @Component
 public class Validator {
+    @Autowired
+    private BetRepo betRepo;
     private final String regexName = "^(?!\\s*$)[а-яА-Яa-zA-z]*$";
     private final String regexUsername = "^[a-zA-Z0-9._-]{3,}$";
     private final String regexEmail = "^(.+)@(.+)$";
@@ -66,6 +70,30 @@ public class Validator {
             throw new CustomServerException(String.format(ServerErrors.WRONG_FIRSTNAME, minNameLength, maxNameLength),
                     model);
         }
+    }
+
+    public Float validateDataToCreateBetAndGame(User user, String value, ModelAndView modelAndView,
+                                                User opponentFromDB, String lobbyName, String password) {
+        if (StringUtil.emptyToNull(lobbyName) == null) {
+            throw new CustomServerException(ServerErrors.LOBBYNAME_NULL, modelAndView);
+        }
+        if (StringUtil.emptyToNull(password) == null) {
+            throw new CustomServerException(ServerErrors.LOBBYPASSWORD_NULL, modelAndView);
+        }
+        betRepo.findByUserAndOpponentAndWhoWin(user, opponentFromDB, null).ifPresent(bet -> {
+            throw new CustomServerException(ServerErrors.BET_EXIST, modelAndView);
+        });
+        betRepo.findByUserAndOpponentAndWhoWin(opponentFromDB, user, null).ifPresent(bet -> {
+            throw new CustomServerException(ServerErrors.BET_EXIST, modelAndView);
+        });
+        Float floatValue = validValueAndConvertToFlat(value, modelAndView);
+        if (floatValue > user.getDeposit() || floatValue > opponentFromDB.getDeposit()) {
+            throw new CustomServerException(ServerErrors.WRONG_BET_VALUE, modelAndView);
+        }
+        if (floatValue == 0f) {
+            throw new CustomServerException(ServerErrors.WRONG_VALUE, modelAndView);
+        }
+        return floatValue;
     }
 
     private void checkLastname(String lastname, ModelAndView model) {

@@ -45,7 +45,7 @@ public class MessageService {
     }
 
     @Transactional
-    public List<MessageDto> loadMessages(User user, Long dialogId) {
+    public List<MessageDto> loadMessages(Long dialogId) {
         List<MessageDto> response = new ArrayList<>();
         //noinspection OptionalGetWithoutIsPresent
         dialogRepo.findById(dialogId).ifPresent(dialogDB -> dialogDB.getMessages().forEach(

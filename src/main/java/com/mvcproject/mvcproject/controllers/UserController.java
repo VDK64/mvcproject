@@ -38,7 +38,7 @@ public class UserController {
     public String friends(@AuthenticationPrincipal User user, Model model) {
         model.addAttribute("friends", userService.getFriends(user));
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
         return "friends";
@@ -70,7 +70,7 @@ public class UserController {
         int totalPages = response.getTotalPages();
         List<Bet> items = betService.listFromPage(response);
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("items", items);
@@ -82,7 +82,7 @@ public class UserController {
     @GetMapping("/bets/createBet")
     public String createBet(@AuthenticationPrincipal User user, Model model) {
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         model.addAttribute("friends", userService.getFriends(user));
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
@@ -95,7 +95,7 @@ public class UserController {
                             @RequestParam String lobbyName, @RequestParam String password) {
         ModelAndView modelAndView = new ModelAndView("createBet");
         modelAndView.addObject("friends", userService.getFriends(user));
-        modelAndView.addObject("user", userService.getUserById(user.getId()));
+        modelAndView.addObject("user", user);
         modelAndView.addObject("newMessages", messageService.haveNewMessages(user));
         modelAndView.addObject("newBets", betService.haveNewBets(user));
         UserService.ifAdmin(modelAndView, user);
@@ -105,18 +105,16 @@ public class UserController {
     }
 
     @MessageMapping("/bet")
-    public void betNotification(@AuthenticationPrincipal User user, @Payload BetDto betDto) throws JsonProcessingException {
-        if (betDto.getInfo().equals("check"))
-            betService.checkGames();
-        else
-            betService.betReady(user, betDto);
+    public void betNotification(@AuthenticationPrincipal User user, @Payload BetDto betDto)
+            throws JsonProcessingException {
+        betService.messageParser(user, betDto);
     }
 
     @GetMapping("/bets/{id}")
     public String getDetails(@AuthenticationPrincipal User user, Model model, @PathVariable Long id) {
         Bet bet = betService.getBet(id);
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         model.addAttribute("bet", bet);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
@@ -131,12 +129,11 @@ public class UserController {
     private ModelAndView setConfirm(@AuthenticationPrincipal User user, ModelAndView modelAndView,
                                     @PathVariable Long id) {
         modelAndView.setViewName("details");
-        User userFromDB = userService.getUserById(user.getId());
         UserService.ifAdmin(modelAndView, user);
         modelAndView.addObject("newMessages", messageService.haveNewMessages(user));
         modelAndView.addObject("newBets", betService.haveNewBets(user));
-        modelAndView.addObject("user", userFromDB);
-        Bet bet = betService.setConfirm(id, userFromDB, modelAndView);
+        modelAndView.addObject("user", user);
+        Bet bet = betService.setConfirm(id, user, modelAndView);
         modelAndView.addObject("bet", bet);
         betService.betInfo(new BetDto(bet.getId(), bet.getUser().getUsername(), bet.getOpponent().getUsername(),
                 null, "showOtherInfo"));

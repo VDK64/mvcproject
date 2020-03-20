@@ -3,6 +3,7 @@ package com.mvcproject.mvcproject.controllers;
 import com.mvcproject.mvcproject.dto.DialogDtoResponse;
 import com.mvcproject.mvcproject.dto.MessageDto;
 import com.mvcproject.mvcproject.entities.User;
+import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.services.BetService;
 import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
@@ -26,9 +27,11 @@ public class MessageController {
     @Autowired
     private SimpMessagingTemplate template;
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
-    BetService betService;
+    private BetService betService;
+    @Autowired
+    private UserRepo userRepo;
 
     @RequestMapping("/dialogs")
     public String getDialogs(@AuthenticationPrincipal User user, Model model) {
@@ -36,7 +39,7 @@ public class MessageController {
         model.addAttribute("newBets", betService.haveNewBets(user));
         Set<DialogDtoResponse> response = messageService.getDialogs(user.getId());
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         if (!response.isEmpty())
             model.addAttribute("dialogs", response);
         return "dialogs";
@@ -46,10 +49,10 @@ public class MessageController {
     public String getMessages(@AuthenticationPrincipal User user,
                               @PathVariable Long dialogId, Model model) {
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         if (!messageService.accessRouter(user.getId(), dialogId)) { return "errorPage"; }
         messageService.readNewMessage(dialogId);
-        List<MessageDto> response = messageService.loadMessages(user, dialogId);
+        List<MessageDto> response = messageService.loadMessages(dialogId);
         model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("interlocutor", messageService.getInterlocutor(dialogId, user.getId()));
         model.addAttribute("messages", response);

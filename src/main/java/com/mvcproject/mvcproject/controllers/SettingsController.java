@@ -31,7 +31,7 @@ public class SettingsController {
     @Autowired
     private MessageService messageService;
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
     private BetService betService;
 
@@ -43,7 +43,7 @@ public class SettingsController {
         }
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         model.addAttribute("auth", JOpenId.getUrl());
         UserService.ifAdmin(model, user);
         return "settings";
@@ -55,7 +55,7 @@ public class SettingsController {
         settingsService.saveFile(file, user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         model.addAttribute("auth", JOpenId.getUrl());
         UserService.ifAdmin(model, user);
         return "settings";
@@ -66,7 +66,8 @@ public class SettingsController {
                               @RequestParam String lastname, @RequestParam String username) {
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
-        User updateUser = settingsService.setSettings(user, firstname, lastname, username, new ModelAndView("settings"));
+        User updateUser = settingsService.setSettings(user, firstname, lastname, username,
+                new ModelAndView("settings"));
         UserService.ifAdmin(model, updateUser);
         model.addAttribute("user", updateUser);
         model.addAttribute("ok", "Please, relogin to update changes!");
@@ -79,7 +80,7 @@ public class SettingsController {
         model.addObject("newMessages", messageService.haveNewMessages(user));
         model.addObject("newBets", betService.haveNewBets(user));
         UserService.ifAdmin(model, user);
-        model.addObject("user", userService.getUserById(user.getId()));
+        model.addObject("user", user);
         model.addObject("auth", JOpenId.getUrl());
         settingsService.deleteAvatar(user, model);
         return model;
@@ -89,12 +90,11 @@ public class SettingsController {
     public ModelAndView deposit(@AuthenticationPrincipal User user, ModelAndView model,
                                 @RequestParam String value) {
         UserService.ifAdmin(model, user);
-        User userFromDB = userService.getUserById(user.getId());
         model.addObject("newMessages", messageService.haveNewMessages(user));
         model.addObject("newBets", betService.haveNewBets(user));
         model.addObject("auth", JOpenId.getUrl());
-        settingsService.deposit(userFromDB, value, model);
-        model.addObject("user", userFromDB);
+        settingsService.deposit(user, value, model);
+        model.addObject("user", user);
         model.addObject("ok", "Your deposit was successfully replenished!");
         return model;
     }
@@ -103,12 +103,11 @@ public class SettingsController {
     public ModelAndView withdraw(@AuthenticationPrincipal User user, ModelAndView model,
                                  @RequestParam String value) {
         UserService.ifAdmin(model, user);
-        User userFromDB = userService.getUserById(user.getId());
         model.addObject("newMessages", messageService.haveNewMessages(user));
         model.addObject("newBets", betService.haveNewBets(user));
         model.addObject("auth", JOpenId.getUrl());
-        settingsService.withdraw(userFromDB, value, model);
-        model.addObject("user", userFromDB);
+        settingsService.withdraw(user, value, model);
+        model.addObject("user", user);
         model.addObject("ok", "Withdraw was successfully!");
         return model;
     }

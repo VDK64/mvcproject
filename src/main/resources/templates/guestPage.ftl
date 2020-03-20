@@ -1,5 +1,5 @@
 <#import "/header.ftl" as h>
-  <@h.header admin=admin user=user position="home">
+  <@h.header admin=admin user=user position="friends">
     <link rel="stylesheet" href="../static/css/style.css">
 
     <input id="csrfHeaderName" value="${_csrf.headerName}" type="hidden">

@@ -105,21 +105,21 @@ function toMainMenu(callback) {
   callback();
 }
 
-function closeBet() {
-  console.log("into closeBet()");
-  toMainMenu((callback) => {
-    let deposit = document.getElementById('depositOfUser');
-    console.log(deposit);
-    let color = deposit.color;
-    let timerId = setInterval(() => {
-      if (deposit.color == color)
-        deposit.color = 'green';
-      else
-        deposit.color = color;
-    }, 2000);
-    setTimeout(() => { clearInterval(timerId); }, 10000);
-  });
-}
+// function closeBet() {
+//   console.log("into closeBet()");
+//   toMainMenu((callback) => {
+//     let deposit = document.getElementById('depositOfUser');
+//     console.log(deposit);
+//     let color = deposit.color;
+//     let timerId = setInterval(() => {
+//       if (deposit.color == color)
+//         deposit.color = 'green';
+//       else
+//         deposit.color = color;
+//     }, 2000);
+//     setTimeout(() => { clearInterval(timerId); }, 10000);
+//   });
+// }
 
 function printErrorMessage() {
   let lp = document.getElementById('loadingP');

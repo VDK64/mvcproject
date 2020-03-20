@@ -23,7 +23,7 @@ public class AdminController {
     @Autowired
     private MessageService messageService;
     @Autowired
-    BetService betService;
+    private BetService betService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/userList")
@@ -32,7 +32,7 @@ public class AdminController {
         model.addAttribute("newBets", betService.haveNewBets(user));
         Iterable<User> allUsers = userService.getAllUsers();
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         model.addAttribute("users", allUsers);
         model.addAttribute("username", user.getUsername());
         return "userList";
@@ -40,11 +40,11 @@ public class AdminController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{user}")
-    public String getEditUser(@PathVariable User user, Model model) {
+    public String getEditUser(@AuthenticationPrincipal User user, Model model) {
         UserService.ifAdmin(model, user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         model.addAttribute("authorities", Role.values());
         model.addAttribute("username", user.getUsername());
         return "editUser";
@@ -52,15 +52,16 @@ public class AdminController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/{user}")
-    public String editUser(@PathVariable User user, @RequestParam String firstname,
+    public String editUser(@AuthenticationPrincipal User user, @RequestParam String firstname,
                            @RequestParam String lastname, @RequestParam String username, @RequestParam String password,
                            @RequestParam Map<String, String> authorities, Model model) {
-        userService.changeUser(user, firstname, lastname, username, password, authorities, new ModelAndView("editUser"));
+        userService.changeUser(user, firstname, lastname, username, password, authorities,
+                new ModelAndView("editUser"));
         Iterable<User> allUsers = userService.getAllUsers();
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("users", allUsers);
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         model.addAttribute("username", user.getUsername());
         UserService.ifAdmin(model, user);
         return "userList";
@@ -73,7 +74,7 @@ public class AdminController {
         model.addAttribute("newBets", betService.haveNewBets(user));
         Iterable<User> allUsers = userService.getAllUsers();
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         model.addAttribute("token", Dota2Controller.token);
         model.addAttribute("users", allUsers);
         model.addAttribute("username", user.getUsername());
