@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class Dota2Controller {
     @Autowired
     private Dota2Service dota2Service;
-    public static final String token = "123"; /*UUID.randomUUID().toString()  while debug*/;
+    public static final String token = "123"; /*UUID.randomUUID().toString() | 123 while debug*/;
     private final String okStatus = "----------------------done----------------------";
     private final String accessDenied = "----------------------access denied----------------------";
 

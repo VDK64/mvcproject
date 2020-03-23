@@ -95,14 +95,14 @@ function betInfo(info) {
       showOtherInfo();
       break;
     case 'closeBet':
-      closeBet();
+      toMainMenu();
       break;
   }
 }
 
-function toMainMenu(callback) {
+function toMainMenu() {
   document.location.href = "/";
-  callback();
+  // callback();
 }
 
 // function closeBet() {

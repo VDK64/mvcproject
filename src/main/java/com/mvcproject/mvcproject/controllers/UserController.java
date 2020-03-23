@@ -90,7 +90,7 @@ public class UserController {
     }
 
     @PostMapping("/bets/createBet")
-    public String createBet(@AuthenticationPrincipal User user, Model model, @RequestParam String game,
+    public String createBet(@AuthenticationPrincipal User user, @RequestParam String game,
                             @RequestParam String gamemode, @RequestParam String value, @RequestParam String opponent,
                             @RequestParam String lobbyName, @RequestParam String password) {
         ModelAndView modelAndView = new ModelAndView("createBet");

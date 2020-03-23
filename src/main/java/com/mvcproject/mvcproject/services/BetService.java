@@ -172,7 +172,7 @@ public class BetService {
         int totalPages = response.getTotalPages();
         List<Bet> items = betService.listFromPage(response);
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", userService.getUserById(user.getId()));
+        model.addAttribute("user", user);
         model.addAttribute("newMessages", messageService.haveNewMessages(user));
         model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("items", items);
@@ -206,33 +206,40 @@ public class BetService {
         Game game = bet.getGame();
         User user = userRepo.findBySteamId(game.getUserSteamId64()).orElseThrow();
         User opponent = userRepo.findBySteamId(game.getOpponentSteamId64()).orElseThrow();
-        BetDto betDto = new BetDto(null, null, null, "closeBet");
+        BetDto betDto = new BetDto(bet.getId(),user.getUsername(), opponent.getUsername(),
+                null, "closeBet");
         Map<String, String> response = makeRequestToFindMatch(game);
         if (response.size() == 0) {
             user.setDeposit(user.getDeposit() + bet.getValue());
             opponent.setDeposit(opponent.getDeposit() + bet.getValue());
         } else {
-            if (isWinnerUser(response, game, user, opponent, bet))
+            if (isWinnerUser(response, game, user, opponent, bet)) {
                 user.setDeposit(user.getDeposit() + bet.getValue());
-            else
+                bet.setWhoWin(user.getUsername());
+            }
+            else {
                 opponent.setDeposit(opponent.getDeposit() + bet.getValue());
+                bet.setWhoWin(opponent.getUsername());
+            }
         }
+        bet.setGame(null);
         userRepo.save(user);
         userRepo.save(opponent);
-        betRepo.delete(bet);
+        betRepo.save(bet);
         template.convertAndSendToUser(bet.getUser().getUsername(), "/queue/events", betDto);
         template.convertAndSendToUser(bet.getOpponent().getUsername(), "/queue/events", betDto);
     }
 
     private boolean isWinnerUser(Map<String, String> response, Game game, User user, User opponent, Bet bet) {
         String match_id = response.get("match_id");
-        String radiant = response.get("radiant");
+        String radiant = response.get("radiant").trim();
+        String steamId32 = String.valueOf(userService.convertSteamIdTo32(user.getSteamId()));
         String url = "https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/V001/" +
                 "?match_id=" + match_id + "&key=81CDE4D34EED2C73C75AC1E421DF62FA";
         ResponseEntity<SpecialMatchDataDto> responseTemplate = restTemplate.getForEntity(url,
                 SpecialMatchDataDto.class);
         SpecialMatchDataDto responseBody = responseTemplate.getBody();
-        return Objects.requireNonNull(responseBody).getResult().isRadiant_win() && user.getUsername().equals(radiant);
+        return Objects.requireNonNull(responseBody).getResult().isRadiant_win() && steamId32.equals(radiant);
     }
 
     private Map<String, String> makeRequestToFindMatch(Game game) {
