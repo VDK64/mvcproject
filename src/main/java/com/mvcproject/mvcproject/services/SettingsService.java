@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -77,14 +78,17 @@ public class SettingsService {
     }
 
     public void deposit(User user, String deposit, ModelAndView modelAndView) {
-        Float value = validator.validValueAndConvertToFlat(deposit, modelAndView);
+        Float value = validator.validValueAndConvertToFlat(deposit, modelAndView, user);
+        BigDecimal val = new BigDecimal(value);
+        BigDecimal usrValue = BigDecimal.valueOf(user.getDeposit());
+        BigDecimal result = usrValue.add(val);
         if (user.getDeposit() != 0f) { user.setDeposit(user.getDeposit() + value); }
         else { user.setDeposit(value); }
         userRepo.save(user);
     }
 
     public void withdraw(User user, String deposit, ModelAndView modelAndView) {
-        Float value = validator.validValueAndConvertToFlat(deposit, modelAndView);
+        Float value = validator.validValueAndConvertToFlat(deposit, modelAndView, user);
         if (user.getDeposit() < value) { throw new CustomServerException(ServerErrors.NOT_ENOUGH_DEPOSIT_TO_TRANSACTION, modelAndView); }
         else { user.setDeposit(user.getDeposit() - value); }
         userRepo.save(user);

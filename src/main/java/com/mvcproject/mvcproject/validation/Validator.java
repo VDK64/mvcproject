@@ -86,7 +86,7 @@ public class Validator {
         betRepo.findByUserAndOpponentAndWhoWin(opponentFromDB, user, null).ifPresent(bet -> {
             throw new CustomServerException(ServerErrors.BET_EXIST, modelAndView);
         });
-        Float floatValue = validValueAndConvertToFlat(value, modelAndView);
+        Float floatValue = validValueAndConvertToFlat(value, modelAndView, user);
         if (floatValue > user.getDeposit() || floatValue > opponentFromDB.getDeposit()) {
             throw new CustomServerException(ServerErrors.WRONG_BET_VALUE, modelAndView);
         }
@@ -158,22 +158,24 @@ public class Validator {
         }
     }
 
-    private Float checkCorrectlyValueOfDeposit(String deposit, ModelAndView modelAndView) {
+    private Float checkCorrectlyValueOfDeposit(String deposit, ModelAndView modelAndView, User user) {
         String replace = deposit.replace(',', '.');
         @SuppressWarnings("WrapperTypeMayBePrimitive") Float value;
         try {
-            value = Float.parseFloat(replace);
+            value = ((float) Math.floor(Float.parseFloat(replace) * 100)) / 100;
         } catch (NumberFormatException e) {
+            modelAndView.addObject("user", user);
             throw new CustomServerException(ServerErrors.WRONG_VALUE, modelAndView);
         }
         if (value<0) {
+            modelAndView.addObject("user", user);
             throw new CustomServerException(ServerErrors.WRONG_VALUE, modelAndView);
         }
         return value;
     }
 
-    public Float validValueAndConvertToFlat(String deposit, ModelAndView modelAndView) {
-        return checkCorrectlyValueOfDeposit(deposit, modelAndView);
+    public Float validValueAndConvertToFlat(String deposit, ModelAndView modelAndView, User user) {
+        return checkCorrectlyValueOfDeposit(deposit, modelAndView, user);
     }
 
     public void validateStatus(Game game, GameStatus gameStatus) {
