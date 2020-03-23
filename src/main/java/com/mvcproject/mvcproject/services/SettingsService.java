@@ -82,15 +82,21 @@ public class SettingsService {
         BigDecimal val = new BigDecimal(value);
         BigDecimal usrValue = BigDecimal.valueOf(user.getDeposit());
         BigDecimal result = usrValue.add(val);
-        if (user.getDeposit() != 0f) { user.setDeposit(user.getDeposit() + value); }
-        else { user.setDeposit(value); }
+        user.setDeposit(result.floatValue());
         userRepo.save(user);
     }
 
     public void withdraw(User user, String deposit, ModelAndView modelAndView) {
         Float value = validator.validValueAndConvertToFlat(deposit, modelAndView, user);
-        if (user.getDeposit() < value) { throw new CustomServerException(ServerErrors.NOT_ENOUGH_DEPOSIT_TO_TRANSACTION, modelAndView); }
-        else { user.setDeposit(user.getDeposit() - value); }
+        BigDecimal val = new BigDecimal(value);
+        BigDecimal usrValue = BigDecimal.valueOf(user.getDeposit());
+        BigDecimal result = usrValue.subtract(val);
+        if (user.getDeposit() < value) {
+            modelAndView.addObject("user", user);
+            throw new CustomServerException(ServerErrors.NOT_ENOUGH_DEPOSIT_TO_TRANSACTION, modelAndView);
+        } else {
+            user.setDeposit(result.floatValue());
+        }
         userRepo.save(user);
     }
 
