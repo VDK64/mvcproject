@@ -195,34 +195,31 @@ public class BetService {
 
     public void messageParser(User user, BetDto betDto) throws JsonProcessingException {
         if (betDto.getInfo().equals("check"))
-            betService.checkGames(betDto);
+            betService.checkGames(user, betDto);
         else
             betService.betReady(user, betDto);
     }
 
-    public void checkGames(BetDto betDto) {
+    public void checkGames(User principal, BetDto betDto) {
         Bet bet = betRepo.findById(betDto.getId()).orElseThrow();
-        checkWhoWinInGame(bet);
+        checkWhoWinInGame(principal, bet);
     }
 
-    private void checkWhoWinInGame(Bet bet) {
+    private void checkWhoWinInGame(User principal, Bet bet) {
         Game game = bet.getGame();
         User user = userRepo.findBySteamId(game.getUserSteamId64()).orElseThrow();
         User opponent = userRepo.findBySteamId(game.getOpponentSteamId64()).orElseThrow();
-        BetDto betDto = new BetDto(bet.getId(),user.getUsername(), opponent.getUsername(),
+        BetDto betDto = new BetDto(bet.getId(), user.getUsername(), opponent.getUsername(),
                 null, "closeBet");
         Map<String, String> response = makeRequestToFindMatch(game);
         if (response.size() == 0) {
-//            user.setDeposit(user.getDeposit() + bet.getValue());
-//            opponent.setDeposit(opponent.getDeposit() + bet.getValue());
-//            throw new InternalServerExceptions("startError", bet.getUser().getUsername(),
-//                    bet.getOpponent().getUsername(), principal);
+            throw new InternalServerExceptions("startError", bet.getUser().getUsername(),
+                    bet.getOpponent().getUsername(), principal.getUsername());
         } else {
             if (isWinnerUser(response, game, user, opponent, bet)) {
                 user.setDeposit(user.getDeposit() + bet.getValue());
                 bet.setWhoWin(user.getUsername());
-            }
-            else {
+            } else {
                 opponent.setDeposit(opponent.getDeposit() + bet.getValue());
                 bet.setWhoWin(opponent.getUsername());
             }

@@ -120,7 +120,7 @@ function printErrorMessage() {
   div.setAttribute('class', 'alert alert-danger');
   div.setAttribute('role', 'alert');
   let p = document.createElement('p');
-  p.innerHTML = 'Somthing goes wrong with creating new Lobby. Please, reload page and if you are not ready - try again';
+  p.innerHTML = 'Something goes wrong with creating new Lobby. Please, reload page and if you are not ready - try again';
   div.append(p);
   mainDiv.append(div);
 }
