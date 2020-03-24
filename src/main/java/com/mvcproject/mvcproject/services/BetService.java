@@ -11,6 +11,7 @@ import com.mvcproject.mvcproject.entities.Game;
 import com.mvcproject.mvcproject.entities.GameStatus;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.CustomServerException;
+import com.mvcproject.mvcproject.exceptions.InternalServerExceptions;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import com.mvcproject.mvcproject.repositories.BetRepo;
 import com.mvcproject.mvcproject.repositories.GameRepo;
@@ -125,17 +126,19 @@ public class BetService {
         } else {
             game.setIsOpponentReady(true);
         }
-        gameRepo.save(game);
-        betRepo.save(betFromDB);
         if (game.getIsUserReady() && game.getIsOpponentReady()) {
             betDto.setInfo("allReady");
             if (game.getStatus() != GameStatus.STARTED)
                 dota2Service.createLobby(betFromDB, user.getUsername());
+            gameRepo.save(game);
+            betRepo.save(betFromDB);
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
             betDto.setInfo("startLobby");
             template.convertAndSendToUser(betDto.getUser(), "/queue/events", betDto);
             template.convertAndSendToUser(betDto.getOpponent(), "/queue/events", betDto);
         } else {
+            gameRepo.save(game);
+            betRepo.save(betFromDB);
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
         }
     }
@@ -210,8 +213,10 @@ public class BetService {
                 null, "closeBet");
         Map<String, String> response = makeRequestToFindMatch(game);
         if (response.size() == 0) {
-            user.setDeposit(user.getDeposit() + bet.getValue());
-            opponent.setDeposit(opponent.getDeposit() + bet.getValue());
+//            user.setDeposit(user.getDeposit() + bet.getValue());
+//            opponent.setDeposit(opponent.getDeposit() + bet.getValue());
+//            throw new InternalServerExceptions("startError", bet.getUser().getUsername(),
+//                    bet.getOpponent().getUsername(), principal);
         } else {
             if (isWinnerUser(response, game, user, opponent, bet)) {
                 user.setDeposit(user.getDeposit() + bet.getValue());
