@@ -98,7 +98,7 @@
       function sendMessage(event) {
         var messageContent = messageInput.value.trim();
         if (messageContent && stompClient) {
-          var chatMessage = {
+          let chatMessage = {
             from: username,
             to: '${interlocutor.username}',
             text: messageContent,
@@ -107,11 +107,11 @@
           };
           stompClient.send("/app/room", headers, JSON.stringify(chatMessage));
           messageInput.value = '';
-          var messageElement = document.createElement('li');
+          let messageElement = document.createElement('li');
           messageElement.classList.add('chat-message');
-          var avatarElement = document.createElement('i');
-          var image = document.createElement('img');
-          var avatar = '${user.avatar}';
+          let avatarElement = document.createElement('i');
+          let image = document.createElement('img');
+          let avatar = '${user.avatar}';
           if (avatar == 'default') {
             image.setAttribute('src', '/img/avatar.png');
           } else {
@@ -122,15 +122,15 @@
           image.setAttribute('border', '0');
           avatarElement.appendChild(image);
           messageElement.appendChild(avatarElement);
-          var usernameElement = document.createElement('span');
-          var usernameText = document.createTextNode(username);
+          let usernameElement = document.createElement('span');
+          let usernameText = document.createTextNode(username);
           usernameElement.appendChild(usernameText);
           messageElement.appendChild(usernameElement);
-          var textElement = document.createElement('p');
-          var textDate = document.createElement('p');
+          let textElement = document.createElement('p');
+          let textDate = document.createElement('p');
           textDate.setAttribute('id', 'messageDate');
-          var messageText = document.createTextNode(messageContent);
-          var messageDate = document.createTextNode(chatMessage.date);
+          let messageText = document.createTextNode(messageContent);
+          let messageDate = document.createTextNode(chatMessage.date);
           textElement.appendChild(messageText);
           textDate.appendChild(messageDate);
           messageElement.appendChild(textElement);
@@ -141,12 +141,12 @@
       }
 
       function onMessageReceived(payload) {
-        var message = JSON.parse(payload.body);
-        var messageElement = document.createElement('li');
+        let message = JSON.parse(payload.body);
+        let messageElement = document.createElement('li');
         messageElement.classList.add('chat-message');
-        var avatarElement = document.createElement('i');
-        var image = document.createElement('img');
-        var avatar = '${interlocutor.avatar}';
+        let avatarElement = document.createElement('i');
+        let image = document.createElement('img');
+        let avatar = '${interlocutor.avatar}';
         if (avatar == "default") {
           image.setAttribute('src', '/img/avatar.png');
         } else {
@@ -157,15 +157,15 @@
         image.setAttribute('border', '0');
         avatarElement.appendChild(image);
         messageElement.appendChild(avatarElement);
-        var usernameElement = document.createElement('span');
-        var usernameText = document.createTextNode(message.from);
+        let usernameElement = document.createElement('span');
+        let usernameText = document.createTextNode(message.from);
         usernameElement.appendChild(usernameText);
         messageElement.appendChild(usernameElement);
-        var textElement = document.createElement('p');
-        var textDate = document.createElement('p');
+        let textElement = document.createElement('p');
+        let textDate = document.createElement('p');
         textDate.setAttribute('id', 'messageDate');
-        var messageText = document.createTextNode(message.text);
-        var messageDate = document.createTextNode(message.date);
+        let messageText = document.createTextNode(message.text);
+        let messageDate = document.createTextNode(message.date);
         textElement.appendChild(messageText);
         textDate.appendChild(messageDate);
         messageElement.appendChild(textElement);
