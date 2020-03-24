@@ -14,6 +14,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -50,7 +52,8 @@ public class MessageService {
         //noinspection OptionalGetWithoutIsPresent
         dialogRepo.findById(dialogId).ifPresent(dialogDB -> dialogDB.getMessages().forEach(
                 message -> response.add(new MessageDto(userRepo.findById(message.getFromId()).get().getUsername(),
-                        userRepo.findById(message.getToId()).get().getUsername(), message.getText(), message.getDate(),
+                        userRepo.findById(message.getToId()).get().getUsername(), message.getText(),
+                        setCurrentDate(message.getDate()),
                         dialogId
                 ))));
         return response;
@@ -68,6 +71,12 @@ public class MessageService {
         return interlocutorDto[0];
     }
 
+    private String setCurrentDate(Date date) {
+        String pattern = "MM.dd.yyyy, HH:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        return simpleDateFormat.format(date);
+    }
+
     @Transactional
     public MessageDto sendMessage(MessageDto msg) {
         User fromUser = userRepo.findByUsername(msg.getFrom()).orElseThrow();
@@ -77,7 +86,7 @@ public class MessageService {
         Message message = new Message(null, msg.getText(), new Date(), fromUser.getId(), toUser.getId(), dialog,
                 true);
         messageRepo.save(message);
-        return new MessageDto(msg.getFrom(), msg.getTo(), msg.getText(), message.getDate());
+        return new MessageDto(msg.getFrom(), msg.getTo(), msg.getText(), setCurrentDate(message.getDate()));
     }
 
     @Transactional

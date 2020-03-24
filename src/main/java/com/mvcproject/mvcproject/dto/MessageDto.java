@@ -17,10 +17,10 @@ public class MessageDto {
     private String to;
     @NotNull
     private String text;
-    private Date date;
+    private String date;
     private Long dialogId;
 
-    public MessageDto(@NotNull String from, @NotNull String to, @NotNull String text, @NotNull Date date) {
+    public MessageDto(@NotNull String from, @NotNull String to, @NotNull String text, @NotNull String date) {
         this.from = from;
         this.to = to;
         this.text = text;

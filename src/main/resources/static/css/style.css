@@ -216,6 +216,10 @@ button.accent {
     font-weight: 600;
 }
 
+#messageDate {
+  font: 11pt/7pt italic;
+}
+
 #chat-page .chat-message p {
     color: #43464b;
 }

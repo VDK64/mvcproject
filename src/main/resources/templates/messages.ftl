@@ -36,6 +36,9 @@
                 <p>
                   ${message.text}
                 </p>
+                <p id="messageDate">
+                  ${message.date}
+                </p>
               </li>
             </#list>
           </#if>
@@ -64,7 +67,7 @@
       var messageArea = document.querySelector('#messageArea');
       var stompClient = Stomp.over(new SockJS('/room'));
       var stompClientM = Stomp.over(new SockJS('/newMessage'));
-      // stompClient.debug = null;
+      stompClient.debug = null;
       var username = null;
       var headerName = "${_csrf.headerName}";
       var token = "${_csrf.token}";
@@ -99,7 +102,7 @@
             from: username,
             to: '${interlocutor.username}',
             text: messageContent,
-            date: null,
+            date: new Date().toLocaleString(),
             dialogId: ${dialogId}
           };
           stompClient.send("/app/room", headers, JSON.stringify(chatMessage));
@@ -124,9 +127,14 @@
           usernameElement.appendChild(usernameText);
           messageElement.appendChild(usernameElement);
           var textElement = document.createElement('p');
+          var textDate = document.createElement('p');
+          textDate.setAttribute('id', 'messageDate');
           var messageText = document.createTextNode(messageContent);
+          var messageDate = document.createTextNode(chatMessage.date);
           textElement.appendChild(messageText);
+          textDate.appendChild(messageDate);
           messageElement.appendChild(textElement);
+          messageElement.appendChild(textDate);
           messageArea.appendChild(messageElement);
           messageArea.scrollTop = messageArea.scrollHeight;
         }
@@ -154,13 +162,19 @@
         usernameElement.appendChild(usernameText);
         messageElement.appendChild(usernameElement);
         var textElement = document.createElement('p');
+        var textDate = document.createElement('p');
+        textDate.setAttribute('id', 'messageDate');
         var messageText = document.createTextNode(message.text);
+        var messageDate = document.createTextNode(message.date);
         textElement.appendChild(messageText);
+        textDate.appendChild(messageDate);
         messageElement.appendChild(textElement);
+        messageElement.appendChild(textDate);
         messageArea.appendChild(messageElement);
         messageArea.scrollTop = messageArea.scrollHeight;
         updateMessage(payload);
       }
+
 
     </script>
 
