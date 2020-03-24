@@ -43,7 +43,7 @@ public class SettingsController {
             settingsService.setSteamId(userFromDB, identity);
         }
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
-        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("newBets", userFromDB.isHaveNewBets());
         model.addAttribute("user", userFromDB);
         model.addAttribute("auth", JOpenId.getUrl());
         UserService.ifAdmin(model, userFromDB);
@@ -56,7 +56,7 @@ public class SettingsController {
         User userFromDB = userService.getUserById(user.getId());
         settingsService.saveFile(file, userFromDB);
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
-        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("newBets", userFromDB.isHaveNewBets());
         model.addAttribute("user", userFromDB);
         model.addAttribute("auth", JOpenId.getUrl());
         UserService.ifAdmin(model, userFromDB);
@@ -68,7 +68,7 @@ public class SettingsController {
                               @RequestParam String lastname, @RequestParam String username) {
         User userFromDB = userService.getUserById(user.getId());
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
-        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("newBets", userFromDB.isHaveNewBets());
         User updateUser = settingsService.setSettings(userFromDB, firstname, lastname, username,
                 new ModelAndView("settings"));
         UserService.ifAdmin(model, updateUser);
@@ -82,7 +82,7 @@ public class SettingsController {
     public ModelAndView deleteAvatar(@AuthenticationPrincipal User user, ModelAndView model) {
         User userFromDB = userService.getUserById(user.getId());
         model.addObject("newMessages", userFromDB.isHaveNewMessages());
-        model.addObject("newBets", betService.haveNewBets(userFromDB));
+        model.addObject("newBets", userFromDB.isHaveNewBets());
         UserService.ifAdmin(model, userFromDB);
         model.addObject("auth", JOpenId.getUrl());
         settingsService.deleteAvatar(userFromDB, model);
@@ -96,7 +96,7 @@ public class SettingsController {
         User userFromDB = userService.getUserById(user.getId());
         UserService.ifAdmin(model, userFromDB);
         model.addObject("newMessages", userFromDB.isHaveNewMessages());
-        model.addObject("newBets", betService.haveNewBets(userFromDB));
+        model.addObject("newBets", userFromDB.isHaveNewBets());
         model.addObject("auth", JOpenId.getUrl());
         settingsService.deposit(userFromDB, value, model);
         model.addObject("user", userFromDB);
@@ -110,7 +110,7 @@ public class SettingsController {
         User userFromDB = userService.getUserById(user.getId());
         UserService.ifAdmin(model, userFromDB);
         model.addObject("newMessages", userFromDB.isHaveNewMessages());
-        model.addObject("newBets", betService.haveNewBets(userFromDB));
+        model.addObject("newBets", userFromDB.isHaveNewBets());
         model.addObject("auth", JOpenId.getUrl());
         settingsService.withdraw(userFromDB, value, model);
         model.addObject("user", userFromDB);

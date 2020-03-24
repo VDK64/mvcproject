@@ -85,14 +85,19 @@ public class BetService {
                 katka, true);
         betRepo.save(bet);
         user.setDeposit(user.getDeposit() - floatValue);
+        user.setHaveNewBets(true);
+        opponentFromDB.setHaveNewBets(true);
+        userRepo.save(opponentFromDB);
         userRepo.save(user);
         template.convertAndSendToUser(opponentUsername, "/queue/events", new BetDto(user.getUsername(),
                 opponentUsername, game, null));
     }
 
-    public void readNewBet(Long id) {
+    public void readNewBet(Long id, User user) {
         Bet betFromDB = betRepo.findById(id).orElseThrow();
         betFromDB.setIsNew(false);
+        user.setHaveNewBets(false);
+        userRepo.save(user);
         betRepo.save(betFromDB);
     }
 
@@ -130,15 +135,19 @@ public class BetService {
             betDto.setInfo("allReady");
             if (game.getStatus() != GameStatus.STARTED)
                 dota2Service.createLobby(betFromDB, user.getUsername());
+            user.setHaveNewBets(true);
             gameRepo.save(game);
             betRepo.save(betFromDB);
+            userRepo.save(user);
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
             betDto.setInfo("startLobby");
             template.convertAndSendToUser(betDto.getUser(), "/queue/events", betDto);
             template.convertAndSendToUser(betDto.getOpponent(), "/queue/events", betDto);
         } else {
+            user.setHaveNewBets(true);
             gameRepo.save(game);
             betRepo.save(betFromDB);
+            userRepo.save(user);
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
         }
     }
@@ -177,7 +186,7 @@ public class BetService {
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
         model.addAttribute("newMessages", user.isHaveNewMessages());
-        model.addAttribute("newBets", betService.haveNewBets(user));
+        model.addAttribute("newBets", user.isHaveNewBets());
         model.addAttribute("items", items);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("tableName", table);

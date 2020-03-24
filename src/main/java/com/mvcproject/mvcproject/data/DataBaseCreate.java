@@ -177,15 +177,15 @@ public class DataBaseCreate {
         User petro123 = userRepo.findByUsername("petro123").orElseThrow();
         User tony64 = userRepo.findByUsername("tony64").orElseThrow();
         User user = userRepo.findByUsername("user").orElseThrow();
-        Game game = new Game(null, "MyLobby", "app", "1x1",
-                true, true, "76561198799034987", "76561199004382586");
-        game.setServerStartTime(1584623845 - 100000);
-        game.setStatus(GameStatus.POSITIVE_LEAVE);
-        gameRepo.save(game);
+//        Game game = new Game(null, "MyLobby", "app", "1x1",
+//                true, true, "76561198799034987", "76561199004382586");
+//        game.setServerStartTime(1584623845 - 100000);
+//        game.setStatus(GameStatus.POSITIVE_LEAVE);
+//        gameRepo.save(game);
 
         Iterable<Bet> bets = betRepo.saveAll(new ArrayList<>() {{
 //            add(new Bet(null, vdk64, 500f, kasha111, false, vdk64.getUsername(), false));
-            add(new Bet(null, vdk64, 450f, kasha111, true, null, game, false));
+//            add(new Bet(null, vdk64, 450f, kasha111, true, null, game, false));
             add(new Bet(null, petro123, 730f, vdk64, false, vdk64.getUsername(), false));
 //            add(new Bet(null, vdk64, 150f, tony64, false, null, false));
             add(new Bet(null, user, 200f, vdk64, false, vdk64.getUsername(), false));

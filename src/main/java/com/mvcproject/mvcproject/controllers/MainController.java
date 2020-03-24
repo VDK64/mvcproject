@@ -28,7 +28,7 @@ public class MainController {
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
-        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("newBets", userFromDB.isHaveNewBets());
         return "index";
     }
 
@@ -38,7 +38,7 @@ public class MainController {
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userService.getUserById(Long.valueOf(id)));
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
-        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("newBets", userFromDB.isHaveNewBets());
         return "guestPage";
     }
 

@@ -33,7 +33,7 @@ public class AdminController {
     public String getList(@AuthenticationPrincipal User user, Model model) {
         User userFromDB = userService.getUserById(user.getId());
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
-        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("newBets", userFromDB.isHaveNewBets());
         Iterable<User> allUsers = userService.getAllUsers();
         UserService.ifAdmin(model, user);
         model.addAttribute("user", userFromDB);
@@ -48,7 +48,7 @@ public class AdminController {
         User userFromDB = userService.getUserById(user.getId());
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
-        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("newBets", userFromDB.isHaveNewBets());
         model.addAttribute("user", userFromDB);
         model.addAttribute("authorities", Role.values());
         model.addAttribute("username", userFromDB.getUsername());
@@ -65,7 +65,7 @@ public class AdminController {
                 new ModelAndView("editUser"));
         Iterable<User> allUsers = userService.getAllUsers();
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
-        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("newBets", userFromDB.isHaveNewBets());
         model.addAttribute("users", allUsers);
         model.addAttribute("user", userFromDB);
         model.addAttribute("username", userFromDB.getUsername());
@@ -78,7 +78,7 @@ public class AdminController {
     public String getToken(@AuthenticationPrincipal User user, Model model) {
         User userFromDB = userService.getUserById(user.getId());
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
-        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("newBets", userFromDB.isHaveNewBets());
         Iterable<User> allUsers = userService.getAllUsers();
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);

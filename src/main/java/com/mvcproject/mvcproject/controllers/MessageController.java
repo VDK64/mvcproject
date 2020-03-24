@@ -36,8 +36,8 @@ public class MessageController {
     @RequestMapping("/dialogs")
     public String getDialogs(@AuthenticationPrincipal User user, Model model) {
         User userFromDB = userService.getUserById(user.getId());
-        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
-        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
+        model.addAttribute("newBets", userFromDB.isHaveNewBets());
         Set<DialogDtoResponse> response = messageService.getDialogs(userFromDB.getId());
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);
@@ -55,7 +55,7 @@ public class MessageController {
         if (!messageService.accessRouter(userFromDB.getId(), dialogId)) { return "errorPage"; }
         messageService.readNewMessage(user, dialogId);
         List<MessageDto> response = messageService.loadMessages(dialogId);
-        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("newBets", userFromDB.isHaveNewBets());
         model.addAttribute("interlocutor", messageService.getInterlocutor(dialogId, userFromDB.getId()));
         model.addAttribute("messages", response);
         model.addAttribute("dialogId", dialogId);
