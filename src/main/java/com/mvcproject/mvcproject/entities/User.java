@@ -53,4 +53,6 @@ public class User implements UserDetails {
     @NotNull
     private Boolean isOnline;
     private String steamId;
+    private boolean haveNewMessages;
+    private boolean haveNewBets;
 }

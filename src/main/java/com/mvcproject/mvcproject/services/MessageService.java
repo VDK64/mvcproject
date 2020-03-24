@@ -80,11 +80,13 @@ public class MessageService {
     public MessageDto sendMessage(MessageDto msg) {
         User fromUser = userRepo.findByUsername(msg.getFrom()).orElseThrow();
         User toUser = userRepo.findByUsername(msg.getTo()).orElseThrow();
+        toUser.setHaveNewMessages(true);
         Dialog dialog = dialogRepo.findById(msg.getDialogId()).orElseThrow();
         dialog.setHaveNewMessages(true);
         Message message = new Message(null, msg.getText(), new Date(), fromUser.getId(), toUser.getId(), dialog,
                 true);
         messageRepo.save(message);
+        userRepo.save(toUser);
         return new MessageDto(msg.getFrom(), msg.getTo(), msg.getText(), setCurrentDate(message.getDate()));
     }
 
@@ -94,13 +96,16 @@ public class MessageService {
     }
 
     @Transactional
-    public void readNewMessage(Long dialogId) {
+    public void readNewMessage(User user, Long dialogId) {
+        User userFromDB = userRepo.findById(user.getId()).orElseThrow();
         List<Message> messages = messageRepo.findByNewMessageAndDialog(true,
                 dialogRepo.findById(dialogId).orElseThrow());
         messages.forEach(message -> {
             message.setNewMessage(false);
             message.getDialog().setHaveNewMessages(false);
         });
+        userFromDB.setHaveNewMessages(false);
+        userRepo.save(userFromDB);
         messageRepo.saveAll(messages);
     }
 

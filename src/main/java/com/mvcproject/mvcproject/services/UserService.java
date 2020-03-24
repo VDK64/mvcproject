@@ -76,6 +76,8 @@ public class UserService implements UserDetailsService {
                 .enabled(true)
                 .deposit(0f)
                 .steamId(null)
+                .haveNewBets(false)
+                .haveNewMessages(false)
                 .build());
         checkUserExist(user, model);
         userRepo.save(user);

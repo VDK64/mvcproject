@@ -43,6 +43,8 @@ public class DataBaseCreate {
                 .deposit(100f)
                 .isOnline(false)
                 .steamId("76561198799034987")
+                .haveNewBets(false)
+                .haveNewMessages(false)
                 .build());
 
         userRepo.save(User.builder()
@@ -60,6 +62,8 @@ public class DataBaseCreate {
                 .enabled(true)
                 .deposit(100f)
                 .isOnline(false)
+                .haveNewBets(false)
+                .haveNewMessages(false)
                 .build());
 
         userRepo.save(User.builder()
@@ -78,6 +82,8 @@ public class DataBaseCreate {
                 .deposit(100f)
                 .isOnline(false)
                 .steamId("76561199004382586")
+                .haveNewBets(false)
+                .haveNewMessages(false)
                 .build());
 
         userRepo.save(User.builder()
@@ -95,6 +101,8 @@ public class DataBaseCreate {
                 .enabled(true)
                 .deposit(100f)
                 .isOnline(false)
+                .haveNewBets(false)
+                .haveNewMessages(false)
                 .build());
 
         userRepo.save(User.builder()
@@ -112,6 +120,8 @@ public class DataBaseCreate {
                 .enabled(true)
                 .deposit(100f)
                 .isOnline(false)
+                .haveNewBets(false)
+                .haveNewMessages(false)
                 .build());
 
         userRepo.save(User.builder()
@@ -129,6 +139,8 @@ public class DataBaseCreate {
                 .enabled(true)
                 .deposit(100f)
                 .isOnline(false)
+                .haveNewBets(false)
+                .haveNewMessages(false)
                 .build());
     }
 

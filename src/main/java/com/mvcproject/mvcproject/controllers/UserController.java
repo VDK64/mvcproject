@@ -40,7 +40,7 @@ public class UserController {
         model.addAttribute("friends", userService.getFriends(userFromDB));
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);
-        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
         model.addAttribute("newBets", betService.haveNewBets(userFromDB));
         return "friends";
     }
@@ -74,7 +74,7 @@ public class UserController {
         List<Bet> items = betService.listFromPage(response);
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);
-        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
         model.addAttribute("newBets", betService.haveNewBets(userFromDB));
         model.addAttribute("items", items);
         model.addAttribute("totalPages", totalPages);
@@ -88,7 +88,7 @@ public class UserController {
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);
         model.addAttribute("friends", userService.getFriends(userFromDB));
-        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
         model.addAttribute("newBets", betService.haveNewBets(userFromDB));
         return "createBet";
     }
@@ -100,7 +100,7 @@ public class UserController {
         User userFromDB = userService.getUserById(user.getId());
         ModelAndView modelAndView = new ModelAndView("createBet");
         modelAndView.addObject("friends", userService.getFriends(userFromDB));
-        modelAndView.addObject("newMessages", messageService.haveNewMessages(userFromDB));
+        modelAndView.addObject("newMessages", userFromDB.isHaveNewMessages());
         modelAndView.addObject("newBets", betService.haveNewBets(userFromDB));
         UserService.ifAdmin(modelAndView, userFromDB);
         betService.createBetAndGame(userFromDB, game, gamemode, value, opponent, lobbyName, password,
@@ -122,7 +122,7 @@ public class UserController {
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);
         model.addAttribute("bet", bet);
-        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
         model.addAttribute("newBets", betService.haveNewBets(userFromDB));
         if (bet == null || betService.access(bet, userFromDB)) {
             return "errorPage";
@@ -137,7 +137,7 @@ public class UserController {
         User userFromDB = userService.getUserById(user.getId());
         modelAndView.setViewName("details");
         UserService.ifAdmin(modelAndView, userFromDB);
-        modelAndView.addObject("newMessages", messageService.haveNewMessages(userFromDB));
+        modelAndView.addObject("newMessages", userFromDB.isHaveNewMessages());
         modelAndView.addObject("newBets", betService.haveNewBets(userFromDB));
         Bet bet = betService.setConfirm(id, userFromDB, modelAndView);
         modelAndView.addObject("bet", bet);

@@ -53,7 +53,7 @@ public class MessageController {
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);
         if (!messageService.accessRouter(userFromDB.getId(), dialogId)) { return "errorPage"; }
-        messageService.readNewMessage(dialogId);
+        messageService.readNewMessage(user, dialogId);
         List<MessageDto> response = messageService.loadMessages(dialogId);
         model.addAttribute("newBets", betService.haveNewBets(userFromDB));
         model.addAttribute("interlocutor", messageService.getInterlocutor(dialogId, userFromDB.getId()));
@@ -69,7 +69,7 @@ public class MessageController {
     }
 
     @MessageMapping("/newMessage")
-    public void updateMessage(@Payload MessageDto msg) {
-        messageService.readNewMessage(msg.getDialogId());
+    public void updateMessage(@AuthenticationPrincipal User user, @Payload MessageDto msg) {
+        messageService.readNewMessage(user, msg.getDialogId());
     }
 }

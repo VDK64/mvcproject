@@ -173,7 +173,7 @@ public class BetService {
         List<Bet> items = betService.listFromPage(response);
         UserService.ifAdmin(model, user);
         model.addAttribute("user", user);
-        model.addAttribute("newMessages", messageService.haveNewMessages(user));
+        model.addAttribute("newMessages", user.isHaveNewMessages());
         model.addAttribute("newBets", betService.haveNewBets(user));
         model.addAttribute("items", items);
         model.addAttribute("totalPages", totalPages);
