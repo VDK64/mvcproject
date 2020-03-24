@@ -86,7 +86,7 @@
                   (Don't push for fun! It will be nothing while battle not over!)
                 </p>
                   <p>
-                    <button type="button" onclick="checkBattleStatus()" class="btn btn-info">check battle status</button>
+                    <button id="checkBattleStatusButton" type="button" onclick="checkBattleStatus()" class="btn btn-info">check battle status</button>
                   </p>
             </#if>
           </#if>
@@ -118,6 +118,10 @@
                     game: null,
                     info: 'check'
                   };
+                  let button = document.getElementById('checkBattleStatusButton');
+                  if (button != null) {
+                    button.parentNode.removeChild(button);
+                  }
                 stompClient2.send("/app/bet", {}, JSON.stringify(BetDto));
               }
             }

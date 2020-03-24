@@ -95,12 +95,12 @@ public class UserController {
                             @RequestParam String lobbyName, @RequestParam String password) {
         ModelAndView modelAndView = new ModelAndView("createBet");
         modelAndView.addObject("friends", userService.getFriends(user));
-        modelAndView.addObject("user", user);
         modelAndView.addObject("newMessages", messageService.haveNewMessages(user));
         modelAndView.addObject("newBets", betService.haveNewBets(user));
         UserService.ifAdmin(modelAndView, user);
         betService.createBetAndGame(user, game, gamemode, value, opponent, lobbyName, password,
                 modelAndView);
+        modelAndView.addObject("user", user);
         return "redirect:/bets";
     }
 
@@ -132,11 +132,11 @@ public class UserController {
         UserService.ifAdmin(modelAndView, user);
         modelAndView.addObject("newMessages", messageService.haveNewMessages(user));
         modelAndView.addObject("newBets", betService.haveNewBets(user));
-        modelAndView.addObject("user", user);
         Bet bet = betService.setConfirm(id, user, modelAndView);
         modelAndView.addObject("bet", bet);
         betService.betInfo(new BetDto(bet.getId(), bet.getUser().getUsername(), bet.getOpponent().getUsername(),
                 null, "showOtherInfo"));
+        modelAndView.addObject("user", user);
         return modelAndView;
     }
 }

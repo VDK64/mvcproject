@@ -46,6 +46,7 @@ public class SettingsService {
 
     public void deleteAvatar(User user, ModelAndView model) {
         if (StringUtil.emptyToNull(user.getAvatar()) == null) {
+            model.addObject("user", user);
             throw new CustomServerException(ServerErrors.DEFAULT_AVATAR, model);
         }
         //noinspection ResultOfMethodCallIgnored

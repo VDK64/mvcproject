@@ -80,9 +80,9 @@ public class SettingsController {
         model.addObject("newMessages", messageService.haveNewMessages(user));
         model.addObject("newBets", betService.haveNewBets(user));
         UserService.ifAdmin(model, user);
-        model.addObject("user", user);
         model.addObject("auth", JOpenId.getUrl());
         settingsService.deleteAvatar(user, model);
+        model.addObject("user", user);
         return model;
     }
 

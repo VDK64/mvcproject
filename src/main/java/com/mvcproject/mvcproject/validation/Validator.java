@@ -75,22 +75,28 @@ public class Validator {
     public Float validateDataToCreateBetAndGame(User user, String value, ModelAndView modelAndView,
                                                 User opponentFromDB, String lobbyName, String password) {
         if (StringUtil.emptyToNull(lobbyName) == null) {
+            modelAndView.addObject("user", user);
             throw new CustomServerException(ServerErrors.LOBBYNAME_NULL, modelAndView);
         }
         if (StringUtil.emptyToNull(password) == null) {
+            modelAndView.addObject("user", user);
             throw new CustomServerException(ServerErrors.LOBBYPASSWORD_NULL, modelAndView);
         }
         betRepo.findByUserAndOpponentAndWhoWin(user, opponentFromDB, null).ifPresent(bet -> {
+            modelAndView.addObject("user", user);
             throw new CustomServerException(ServerErrors.BET_EXIST, modelAndView);
         });
         betRepo.findByUserAndOpponentAndWhoWin(opponentFromDB, user, null).ifPresent(bet -> {
+            modelAndView.addObject("user", user);
             throw new CustomServerException(ServerErrors.BET_EXIST, modelAndView);
         });
         Float floatValue = validValueAndConvertToFlat(value, modelAndView, user);
         if (floatValue > user.getDeposit() || floatValue > opponentFromDB.getDeposit()) {
+            modelAndView.addObject("user", user);
             throw new CustomServerException(ServerErrors.WRONG_BET_VALUE, modelAndView);
         }
         if (floatValue == 0f) {
+            modelAndView.addObject("user", user);
             throw new CustomServerException(ServerErrors.WRONG_VALUE, modelAndView);
         }
         return floatValue;
@@ -186,8 +192,9 @@ public class Validator {
         }
     }
 
-    public void validateAndSetDepositAfterBetTaking(User opponentFromDB, Float value, ModelAndView modelAndView) {
-        if (opponentFromDB.getDeposit() < value)
+    public void validateAndSetDepositAfterBetTaking(User opponent, Float value, ModelAndView modelAndView) {
+        if (opponent.getDeposit() < value)
+            modelAndView.addObject("user", opponent);
             throw new CustomServerException(ServerErrors.NOT_ENOUGH_MONEY, modelAndView);
     }
 }
