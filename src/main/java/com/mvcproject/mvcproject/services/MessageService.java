@@ -28,7 +28,7 @@ public class MessageService {
     private SimpMessagingTemplate template;
 
     @Transactional
-    public Set<DialogDtoResponse> getDialogs(Long id) { //
+    public Set<DialogDtoResponse> getDialogs(Long id) {
         Set<DialogDtoResponse> response = new LinkedHashSet<>();
         User user = userRepo.findById(id).orElse(null);
         assert user != null;
