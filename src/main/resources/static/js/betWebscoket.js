@@ -101,7 +101,9 @@ function betInfo(info) {
 }
 
 function toMainMenu() {
-  document.location.href = "/";
+  if (window.location.href.search(/\/bets\/\d+/) != -1) {
+    document.location.href = "/";
+  }
 }
 
 function printErrorMessage() {

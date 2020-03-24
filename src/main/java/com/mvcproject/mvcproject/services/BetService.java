@@ -235,7 +235,7 @@ public class BetService {
         String radiant = response.get("radiant").trim();
         String steamId32 = String.valueOf(userService.convertSteamIdTo32(user.getSteamId()));
         String url = "https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/V001/" +
-                "?match_id=" + match_id + "&key=81CDE4D34EED2C73C75AC1E421DF62FA";
+                "?match_id=" + match_id + "&key=" + MvcConfig.steamKey;
         ResponseEntity<SpecialMatchDataDto> responseTemplate = restTemplate.getForEntity(url,
                 SpecialMatchDataDto.class);
         SpecialMatchDataDto responseBody = responseTemplate.getBody();
