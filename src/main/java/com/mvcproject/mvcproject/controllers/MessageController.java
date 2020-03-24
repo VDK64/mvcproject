@@ -35,11 +35,12 @@ public class MessageController {
 
     @RequestMapping("/dialogs")
     public String getDialogs(@AuthenticationPrincipal User user, Model model) {
-        model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("newBets", betService.haveNewBets(user));
-        Set<DialogDtoResponse> response = messageService.getDialogs(user.getId());
-        UserService.ifAdmin(model, user);
-        model.addAttribute("user", user);
+        User userFromDB = userService.getUserById(user.getId());
+        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        Set<DialogDtoResponse> response = messageService.getDialogs(userFromDB.getId());
+        UserService.ifAdmin(model, userFromDB);
+        model.addAttribute("user", userFromDB);
         if (!response.isEmpty())
             model.addAttribute("dialogs", response);
         return "dialogs";
@@ -48,13 +49,14 @@ public class MessageController {
     @RequestMapping("/messages/{dialogId}")
     public String getMessages(@AuthenticationPrincipal User user,
                               @PathVariable Long dialogId, Model model) {
-        UserService.ifAdmin(model, user);
-        model.addAttribute("user", user);
-        if (!messageService.accessRouter(user.getId(), dialogId)) { return "errorPage"; }
+        User userFromDB = userService.getUserById(user.getId());
+        UserService.ifAdmin(model, userFromDB);
+        model.addAttribute("user", userFromDB);
+        if (!messageService.accessRouter(userFromDB.getId(), dialogId)) { return "errorPage"; }
         messageService.readNewMessage(dialogId);
         List<MessageDto> response = messageService.loadMessages(dialogId);
-        model.addAttribute("newBets", betService.haveNewBets(user));
-        model.addAttribute("interlocutor", messageService.getInterlocutor(dialogId, user.getId()));
+        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("interlocutor", messageService.getInterlocutor(dialogId, userFromDB.getId()));
         model.addAttribute("messages", response);
         model.addAttribute("dialogId", dialogId);
         return "messages";

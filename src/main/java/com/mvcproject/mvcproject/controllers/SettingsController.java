@@ -37,36 +37,39 @@ public class SettingsController {
 
     @GetMapping
     public String getSettings(@AuthenticationPrincipal User user, Model model, HttpServletRequest request) {
+        User userFromDB = userService.getUserById(user.getId());
         String identity = request.getParameter("openid.identity");
-        if (identity != null && user.getSteamId() == null) {
-            settingsService.setSteamId(user, identity);
+        if (identity != null && userFromDB.getSteamId() == null) {
+            settingsService.setSteamId(userFromDB, identity);
         }
-        model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("newBets", betService.haveNewBets(user));
-        model.addAttribute("user", user);
+        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("user", userFromDB);
         model.addAttribute("auth", JOpenId.getUrl());
-        UserService.ifAdmin(model, user);
+        UserService.ifAdmin(model, userFromDB);
         return "settings";
     }
 
     @PostMapping
     public String setAvatar(@AuthenticationPrincipal User user, Model model,
                             @RequestParam("file") MultipartFile file) throws IOException {
-        settingsService.saveFile(file, user);
-        model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("newBets", betService.haveNewBets(user));
-        model.addAttribute("user", user);
+        User userFromDB = userService.getUserById(user.getId());
+        settingsService.saveFile(file, userFromDB);
+        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("user", userFromDB);
         model.addAttribute("auth", JOpenId.getUrl());
-        UserService.ifAdmin(model, user);
+        UserService.ifAdmin(model, userFromDB);
         return "settings";
     }
 
     @PostMapping(params = "changeData")
     public String setSettings(@AuthenticationPrincipal User user, Model model, @RequestParam String firstname,
                               @RequestParam String lastname, @RequestParam String username) {
-        model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("newBets", betService.haveNewBets(user));
-        User updateUser = settingsService.setSettings(user, firstname, lastname, username,
+        User userFromDB = userService.getUserById(user.getId());
+        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        User updateUser = settingsService.setSettings(userFromDB, firstname, lastname, username,
                 new ModelAndView("settings"));
         UserService.ifAdmin(model, updateUser);
         model.addAttribute("user", updateUser);
@@ -77,24 +80,26 @@ public class SettingsController {
 
     @PostMapping(params = "button")
     public ModelAndView deleteAvatar(@AuthenticationPrincipal User user, ModelAndView model) {
-        model.addObject("newMessages", messageService.haveNewMessages(user));
-        model.addObject("newBets", betService.haveNewBets(user));
-        UserService.ifAdmin(model, user);
+        User userFromDB = userService.getUserById(user.getId());
+        model.addObject("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addObject("newBets", betService.haveNewBets(userFromDB));
+        UserService.ifAdmin(model, userFromDB);
         model.addObject("auth", JOpenId.getUrl());
-        settingsService.deleteAvatar(user, model);
-        model.addObject("user", user);
+        settingsService.deleteAvatar(userFromDB, model);
+        model.addObject("user", userFromDB);
         return model;
     }
 
     @PostMapping(params = "deposit")
     public ModelAndView deposit(@AuthenticationPrincipal User user, ModelAndView model,
                                 @RequestParam String value) {
-        UserService.ifAdmin(model, user);
-        model.addObject("newMessages", messageService.haveNewMessages(user));
-        model.addObject("newBets", betService.haveNewBets(user));
+        User userFromDB = userService.getUserById(user.getId());
+        UserService.ifAdmin(model, userFromDB);
+        model.addObject("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addObject("newBets", betService.haveNewBets(userFromDB));
         model.addObject("auth", JOpenId.getUrl());
-        settingsService.deposit(user, value, model);
-        model.addObject("user", user);
+        settingsService.deposit(userFromDB, value, model);
+        model.addObject("user", userFromDB);
         model.addObject("ok", "Your deposit was successfully replenished!");
         return model;
     }
@@ -102,12 +107,13 @@ public class SettingsController {
     @PostMapping(params = "withdraw")
     public ModelAndView withdraw(@AuthenticationPrincipal User user, ModelAndView model,
                                  @RequestParam String value) {
-        UserService.ifAdmin(model, user);
-        model.addObject("newMessages", messageService.haveNewMessages(user));
-        model.addObject("newBets", betService.haveNewBets(user));
+        User userFromDB = userService.getUserById(user.getId());
+        UserService.ifAdmin(model, userFromDB);
+        model.addObject("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addObject("newBets", betService.haveNewBets(userFromDB));
         model.addObject("auth", JOpenId.getUrl());
-        settingsService.withdraw(user, value, model);
-        model.addObject("user", user);
+        settingsService.withdraw(userFromDB, value, model);
+        model.addObject("user", userFromDB);
         model.addObject("ok", "Withdraw was successfully!");
         return model;
     }

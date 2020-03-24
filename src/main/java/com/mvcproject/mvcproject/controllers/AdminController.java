@@ -31,25 +31,27 @@ public class AdminController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/userList")
     public String getList(@AuthenticationPrincipal User user, Model model) {
-        model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("newBets", betService.haveNewBets(user));
+        User userFromDB = userService.getUserById(user.getId());
+        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
         Iterable<User> allUsers = userService.getAllUsers();
         UserService.ifAdmin(model, user);
-        model.addAttribute("user", user);
+        model.addAttribute("user", userFromDB);
         model.addAttribute("users", allUsers);
-        model.addAttribute("username", user.getUsername());
+        model.addAttribute("username", userFromDB.getUsername());
         return "userList";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{user}")
     public String getEditUser(@AuthenticationPrincipal User user, Model model) {
-        UserService.ifAdmin(model, user);
-        model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("newBets", betService.haveNewBets(user));
-        model.addAttribute("user", user);
+        User userFromDB = userService.getUserById(user.getId());
+        UserService.ifAdmin(model, userFromDB);
+        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
+        model.addAttribute("user", userFromDB);
         model.addAttribute("authorities", Role.values());
-        model.addAttribute("username", user.getUsername());
+        model.addAttribute("username", userFromDB.getUsername());
         return "editUser";
     }
 
@@ -58,29 +60,31 @@ public class AdminController {
     public String editUser(@AuthenticationPrincipal User user, @RequestParam String firstname,
                            @RequestParam String lastname, @RequestParam String username, @RequestParam String password,
                            @RequestParam Map<String, String> authorities, Model model) {
-        userService.changeUser(user, firstname, lastname, username, password, authorities,
+        User userFromDB = userService.getUserById(user.getId());
+        userService.changeUser(userFromDB, firstname, lastname, username, password, authorities,
                 new ModelAndView("editUser"));
         Iterable<User> allUsers = userService.getAllUsers();
-        model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("newBets", betService.haveNewBets(user));
+        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
         model.addAttribute("users", allUsers);
-        model.addAttribute("user", user);
-        model.addAttribute("username", user.getUsername());
-        UserService.ifAdmin(model, user);
+        model.addAttribute("user", userFromDB);
+        model.addAttribute("username", userFromDB.getUsername());
+        UserService.ifAdmin(model, userFromDB);
         return "userList";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/userList", params = "getToken")
     public String getToken(@AuthenticationPrincipal User user, Model model) {
-        model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("newBets", betService.haveNewBets(user));
+        User userFromDB = userService.getUserById(user.getId());
+        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
         Iterable<User> allUsers = userService.getAllUsers();
-        UserService.ifAdmin(model, user);
-        model.addAttribute("user", user);
+        UserService.ifAdmin(model, userFromDB);
+        model.addAttribute("user", userFromDB);
         model.addAttribute("token", Dota2Controller.token);
         model.addAttribute("users", allUsers);
-        model.addAttribute("username", user.getUsername());
+        model.addAttribute("username", userFromDB.getUsername());
         return "userList";
     }
 }

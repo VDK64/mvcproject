@@ -24,19 +24,21 @@ public class MainController {
 
     @RequestMapping("/")
     public String getMainPage(@AuthenticationPrincipal User user, Model model) {
-        UserService.ifAdmin(model, user);
-        model.addAttribute("user", user);
-        model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("newBets", betService.haveNewBets(user));
+        User userFromDB = userService.getUserById(user.getId());
+        UserService.ifAdmin(model, userFromDB);
+        model.addAttribute("user", userFromDB);
+        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
         return "index";
     }
 
     @RequestMapping("/{id}")
     public String getGuestPage(@AuthenticationPrincipal User user, Model model, @PathVariable String id) {
-        UserService.ifAdmin(model, user);
+        User userFromDB = userService.getUserById(user.getId());
+        UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userService.getUserById(Long.valueOf(id)));
-        model.addAttribute("newMessages", messageService.haveNewMessages(user));
-        model.addAttribute("newBets", betService.haveNewBets(user));
+        model.addAttribute("newMessages", messageService.haveNewMessages(userFromDB));
+        model.addAttribute("newBets", betService.haveNewBets(userFromDB));
         return "guestPage";
     }
 
