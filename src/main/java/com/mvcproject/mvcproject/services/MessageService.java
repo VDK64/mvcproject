@@ -34,11 +34,11 @@ public class MessageService {
     private SimpMessagingTemplate template;
 
     @Transactional
-    public Set<DialogDtoResponse> getDialogs(Long id) {
+    public Set<DialogDtoResponse> getDialogs(User[] userFromDB, Long id) {
         Set<DialogDtoResponse> response = new LinkedHashSet<>();
-        User user = userRepo.findById(id).orElse(null);
-        assert user != null;
-        Set<Dialog> dialogs = user.getDialogs();
+        userFromDB[0] = userRepo.findById(id).orElse(null);
+        assert userFromDB[0] != null;
+        Set<Dialog> dialogs = userFromDB[0].getDialogs();
         for (Dialog dialog : dialogs) {
             for (User dUser : dialog.getUsers()) {
                 if (!dUser.getId().equals(id)) {

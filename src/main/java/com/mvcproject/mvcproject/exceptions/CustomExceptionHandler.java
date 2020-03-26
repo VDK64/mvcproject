@@ -1,7 +1,6 @@
 package com.mvcproject.mvcproject.exceptions;
 
 import com.mvcproject.mvcproject.dto.BetDto;
-import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.services.BetService;
 import com.mvcproject.mvcproject.services.UserService;

@@ -4,7 +4,6 @@ import com.mvcproject.mvcproject.dto.DialogDtoResponse;
 import com.mvcproject.mvcproject.dto.MessageDto;
 import com.mvcproject.mvcproject.entities.Dialog;
 import com.mvcproject.mvcproject.entities.User;
-import com.mvcproject.mvcproject.exceptions.ErrorPageException;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.services.BetService;
 import com.mvcproject.mvcproject.services.MessageService;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -40,12 +38,12 @@ public class MessageController {
 
     @RequestMapping("/dialogs")
     public String getDialogs(@AuthenticationPrincipal User user, Model model) {
-        User userFromDB = userService.getUserById(user.getId());
-        model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
-        model.addAttribute("newBets", userFromDB.isHaveNewBets());
-        Set<DialogDtoResponse> response = messageService.getDialogs(userFromDB.getId());
-        UserService.ifAdmin(model, userFromDB);
-        model.addAttribute("user", userFromDB);
+        final User[] userFromDB = new User[1];
+        Set<DialogDtoResponse> response = messageService.getDialogs(userFromDB, user.getId());
+        model.addAttribute("newMessages", userFromDB[0].isHaveNewMessages());
+        model.addAttribute("newBets", userFromDB[0].isHaveNewBets());
+        UserService.ifAdmin(model, userFromDB[0]);
+        model.addAttribute("user", userFromDB[0]);
         if (!response.isEmpty())
             model.addAttribute("dialogs", response);
         return "dialogs";
