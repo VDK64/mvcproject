@@ -6,16 +6,21 @@ import com.mvcproject.mvcproject.dto.MessageDto;
 import com.mvcproject.mvcproject.entities.Dialog;
 import com.mvcproject.mvcproject.entities.Message;
 import com.mvcproject.mvcproject.entities.User;
+import com.mvcproject.mvcproject.exceptions.ErrorPageException;
 import com.mvcproject.mvcproject.repositories.DialogRepo;
 import com.mvcproject.mvcproject.repositories.MessageRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class MessageService {
@@ -45,28 +50,21 @@ public class MessageService {
         return response;
     }
 
-    @Transactional
-    public List<MessageDto> loadMessages(Long dialogId) {
-        List<MessageDto> response = new ArrayList<>();
-        //noinspection OptionalGetWithoutIsPresent
-        dialogRepo.findById(dialogId).ifPresent(dialogDB -> dialogDB.getMessages().forEach(
-                message -> response.add(new MessageDto(userRepo.findById(message.getFromId()).get().getUsername(),
-                        userRepo.findById(message.getToId()).get().getUsername(), message.getText(),
-                        setCurrentDate(message.getDate()),
-                        dialogId
-                ))));
-        return response;
+    public void loadMessages(Dialog dialog, List<MessageDto> messageList, User user) {
+        String interlocutorUsername = getInterlocutor(dialog, user.getId()).getUsername();
+        dialog.getMessages().forEach(
+                message -> messageList.add(new MessageDto(usernameFromIdInDialog(user, interlocutorUsername,
+                        message.getFromId()), usernameFromIdInDialog(user, interlocutorUsername, message.getToId()),
+                        message.getText(), setCurrentDate(message.getDate()), dialog.getId())));
     }
 
-    @Transactional
-    public InterlocutorDto getInterlocutor(Long dialogId, Long id) {
+    public InterlocutorDto getInterlocutor(Dialog dialog, Long id) {
         final InterlocutorDto[] interlocutorDto = new InterlocutorDto[1];
-        dialogRepo.findById(dialogId).orElseThrow().getUsers().forEach(user -> {
+        dialog.getUsers().forEach(user -> {
             if (!user.getId().equals(id)) {
                 interlocutorDto[0] = new InterlocutorDto(user.getId(), user.getAvatar(), user.getUsername());
             }
         });
-
         return interlocutorDto[0];
     }
 
@@ -91,8 +89,16 @@ public class MessageService {
     }
 
     @Transactional
-    public boolean haveNewMessages(User user) {
-        return !messageRepo.findByNewMessageAndToId(true, user.getId()).isEmpty();
+    public void readNewMessage(User user, Dialog dialog) {
+        List<Message> messages = messageRepo.findByNewMessageAndDialog(true,
+                dialog);
+        messages.forEach(message -> {
+            message.setNewMessage(false);
+            message.getDialog().setHaveNewMessages(false);
+        });
+        user.setHaveNewMessages(false);
+        userRepo.save(user);
+        messageRepo.saveAll(messages);
     }
 
     @Transactional
@@ -109,13 +115,28 @@ public class MessageService {
         messageRepo.saveAll(messages);
     }
 
+    private String usernameFromIdInDialog(User user, String interUsername, long id) {
+        if (id == user.getId())
+            return user.getUsername();
+        else
+            return interUsername;
+    }
+
     @Transactional
-    public boolean accessRouter(Long id, Long dialogId) {
-        User userFromDB = userRepo.findById(id).orElseThrow();
-        for (Dialog dialog : userFromDB.getDialogs()) {
-            if (dialog.getId().equals(dialogId))
-                return true;
-        }
-        return false;
+    public Dialog accessRouter(List<MessageDto> messageList, User user, Long dialogId, ModelAndView model) {
+        Dialog dialog = dialogRepo.findById(dialogId).orElseThrow(() -> {
+            model.setViewName("errorPage");
+            model.addObject("newMessages", user.isHaveNewMessages());
+            throw new ErrorPageException(model);
+        });
+        dialog.getUsers().stream()
+                .filter(user1 -> user1.getId().equals(user.getId()))
+                .findFirst().orElseThrow(() -> {
+            model.setViewName("errorPage");
+            model.addObject("newMessages", user.isHaveNewMessages());
+            throw new ErrorPageException(model);
+        });
+        loadMessages(dialog, messageList, user);
+        return dialog;
     }
 }

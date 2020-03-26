@@ -20,7 +20,7 @@ public class Dialog {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqDialog")
     private Long id;
     @ToString.Exclude
-    @ManyToMany(cascade = CascadeType.DETACH)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JoinTable(name="dlg_usr",
             joinColumns = @JoinColumn(name="dlg_id", referencedColumnName="id"),
             inverseJoinColumns = @JoinColumn(name="usr_id", referencedColumnName="id")

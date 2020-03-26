@@ -4,6 +4,7 @@ import com.mvcproject.mvcproject.dto.BetDto;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.services.BetService;
+import com.mvcproject.mvcproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -33,11 +34,17 @@ public class CustomExceptionHandler {
                                                  MaxUploadSizeExceededException ex) {
         ModelAndView model = new ModelAndView("/settings");
         model.addObject("user", user);
-        if (user.getAuthorities().contains(Role.valueOf("ADMIN"))) {
-            model.addObject("admin", true);
-        }
+//        if (user.getAuthorities().contains(Role.valueOf("ADMIN"))) {
+//            model.addObject("admin", true);
+//        }
+        UserService.ifAdmin(model, user);
         model.addObject("error", ServerErrors.FILE_LIMIT);
         return model;
+    }
+
+    @ExceptionHandler(ErrorPageException.class)
+    public ModelAndView errorPage(ErrorPageException ex) {
+        return ex.getModel();
     }
 
     @MessageExceptionHandler

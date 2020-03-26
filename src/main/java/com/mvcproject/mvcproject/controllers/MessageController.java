@@ -2,7 +2,9 @@ package com.mvcproject.mvcproject.controllers;
 
 import com.mvcproject.mvcproject.dto.DialogDtoResponse;
 import com.mvcproject.mvcproject.dto.MessageDto;
+import com.mvcproject.mvcproject.entities.Dialog;
 import com.mvcproject.mvcproject.entities.User;
+import com.mvcproject.mvcproject.exceptions.ErrorPageException;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.services.BetService;
 import com.mvcproject.mvcproject.services.MessageService;
@@ -16,7 +18,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -47,19 +52,20 @@ public class MessageController {
     }
 
     @RequestMapping("/messages/{dialogId}")
-    public String getMessages(@AuthenticationPrincipal User user,
-                              @PathVariable Long dialogId, Model model) {
+    public ModelAndView getMessages(@AuthenticationPrincipal User user,
+                                    @PathVariable Long dialogId, ModelAndView model) {
+        List<MessageDto> messageList = new ArrayList<>();
         User userFromDB = userService.getUserById(user.getId());
         UserService.ifAdmin(model, userFromDB);
-        model.addAttribute("user", userFromDB);
-        if (!messageService.accessRouter(userFromDB.getId(), dialogId)) { return "errorPage"; }
-        messageService.readNewMessage(user, dialogId);
-        List<MessageDto> response = messageService.loadMessages(dialogId);
-        model.addAttribute("newBets", userFromDB.isHaveNewBets());
-        model.addAttribute("interlocutor", messageService.getInterlocutor(dialogId, userFromDB.getId()));
-        model.addAttribute("messages", response);
-        model.addAttribute("dialogId", dialogId);
-        return "messages";
+        model.addObject("user", userFromDB);
+        model.addObject("newBets", userFromDB.isHaveNewBets());
+        Dialog dialog = messageService.accessRouter(messageList, userFromDB, dialogId, model);
+        messageService.readNewMessage(userFromDB, dialog);
+        model.addObject("interlocutor", messageService.getInterlocutor(dialog, userFromDB.getId()));
+        model.addObject("messages", messageList);
+        model.addObject("dialogId", dialogId);
+        model.setViewName("messages");
+        return model;
     }
 
     @MessageMapping("/room")
