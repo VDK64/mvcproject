@@ -145,24 +145,24 @@ public class DataBaseCreate {
     }
 
     public void createDialogsInDataBase() {
-        User user1 = userRepo.findByUsername("vdk64").orElseThrow();
-        User user2 = userRepo.findByUsername("kasha111").orElseThrow();
-        User user3 = userRepo.findByUsername("petro123").orElseThrow();
-        Dialog dialog1 = new Dialog(null, Stream.of(user1, user2).collect(Collectors.toSet()),
+        User vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
+        User kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
+        User petro123 = userRepo.findByUsername("petro123").orElseThrow();
+        Dialog dialog1 = new Dialog(null, Stream.of(vdk64, kasha111).collect(Collectors.toSet()),
                 new ArrayList<>(), false);
-        Dialog dialog2 = new Dialog(null, Stream.of(user1, user3).collect(Collectors.toSet()),
+        Dialog dialog2 = new Dialog(null, Stream.of(vdk64, petro123).collect(Collectors.toSet()),
                 new ArrayList<>(), false);
         dialogRepo.save(dialog1);
         dialogRepo.save(dialog2);
-        Message message1 = new Message(null, "Hey, Kasha!", new Date(), user1.getId(), user2.getId(), dialog1
+        Message message1 = new Message(null, "Hey, Kasha!", new Date(), vdk64.getId(), kasha111.getId(), dialog1
                 , false);
-        Message message2 = new Message(null, "Hello, vkd64!", new Date(), user2.getId(), user1.getId(), dialog1
+        Message message2 = new Message(null, "Hello, vkd64!", new Date(), kasha111.getId(), vdk64.getId(), dialog1
                 , false);
-        Message message3 = new Message(null, "How are you?", new Date(), user1.getId(), user2.getId(), dialog1,
+        Message message3 = new Message(null, "How are you?", new Date(), vdk64.getId(), kasha111.getId(), dialog1,
                 false);
-        Message message4 = new Message(null, "Fine, and you?", new Date(), user2.getId(), user1.getId(), dialog1,
+        Message message4 = new Message(null, "Fine, and you?", new Date(), kasha111.getId(), vdk64.getId(), dialog1,
                 false);
-        Message message5 = new Message(null, "Fine thanks", new Date(), user1.getId(), user2.getId(), dialog1,
+        Message message5 = new Message(null, "Fine thanks", new Date(), vdk64.getId(), kasha111.getId(), dialog1,
                 false);
         messageRepo.save(message1);
         messageRepo.save(message2);
