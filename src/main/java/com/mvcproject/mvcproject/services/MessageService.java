@@ -62,7 +62,7 @@ public class MessageService {
     public InterlocutorDto getInterlocutor(Dialog dialog, Long id) {
         final InterlocutorDto[] interlocutorDto = new InterlocutorDto[1];
         dialog.getUsers().forEach(user -> {
-            if (!user.getId().equals(id)) {                                     //-----------------refactor
+            if (!user.getId().equals(id)) {
                 interlocutorDto[0] = new InterlocutorDto(user.getId(),
                         user.getAvatar(), user.getUsername());
             }
