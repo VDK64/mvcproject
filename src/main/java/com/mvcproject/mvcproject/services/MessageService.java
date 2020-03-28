@@ -50,7 +50,7 @@ public class MessageService {
         return response;
     }
 
-    public void loadMessages(Dialog dialog, List<MessageDto> messageList, User user) {
+    private void loadMessages(Dialog dialog, List<MessageDto> messageList, User user) {
         String interlocutorUsername = getInterlocutor(dialog, user.getId()).getUsername();
         dialog.getMessages().forEach(
                 message -> messageList.add(new MessageDto(usernameFromIdInDialog(user, interlocutorUsername,
@@ -92,10 +92,7 @@ public class MessageService {
     public void readNewMessage(User user, Dialog dialog) {
         List<Message> messages = messageRepo.findByNewMessageAndDialog(true,
                 dialog);
-        messages.forEach(message -> {
-            message.setNewMessage(false);
-            message.getDialog().setHaveNewMessages(false);
-        });
+        messages.forEach(message -> readNewMessagesIfExist(user, message));
         user.setHaveNewMessages(false);
         userRepo.save(user);
         messageRepo.saveAll(messages);
@@ -105,14 +102,23 @@ public class MessageService {
     public void readNewMessage(User user, Long dialogId) {
         User userFromDB = userRepo.findById(user.getId()).orElseThrow();
         List<Message> messages = messageRepo.findByNewMessageAndDialog(true,
-                dialogRepo.findById(dialogId).orElseThrow());
-        messages.forEach(message -> {
-            message.setNewMessage(false);
-            message.getDialog().setHaveNewMessages(false);
-        });
+                getDialogFromUserDialogs(userFromDB, dialogId));
+        messages.forEach(message -> readNewMessagesIfExist(userFromDB, message));
         userFromDB.setHaveNewMessages(false);
         userRepo.save(userFromDB);
         messageRepo.saveAll(messages);
+    }
+
+    private void readNewMessagesIfExist(User user, Message message) {
+        if (message.getToId().equals(user.getId())) {
+            message.setNewMessage(false);
+            message.getDialog().setHaveNewMessages(false);
+        }
+    }
+
+    private Dialog getDialogFromUserDialogs(User user, long dialogId) {
+        return user.getDialogs().stream().filter(dialog -> dialog.getId()
+                .equals(dialogId)).findFirst().orElseThrow();
     }
 
     private String usernameFromIdInDialog(User user, String interUsername, long id) {
