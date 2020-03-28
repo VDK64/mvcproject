@@ -54,10 +54,10 @@ function onMessage(arg, username) {
         var a = document.getElementById('messagesId').style.opacity || 1;
         document.getElementById('messagesId').style.opacity = ((parseInt(a)) ? 0 : 1);
       }, 450);
-      if (url.includes('/dialogs')) {
-        dialogStyle(username);
-      }
       onceMessage = true;
+    }
+    if (url.includes('/dialogs')) {
+      dialogStyle(username);
     }
   }
 }

@@ -149,12 +149,14 @@ public class DataBaseCreate {
         User kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
         User petro123 = userRepo.findByUsername("petro123").orElseThrow();
         User vasiliy228 = userRepo.findByUsername("vasiliy228").orElseThrow();
+        vdk64.setHaveNewMessages(true);
+        userRepo.save(vdk64);
         Dialog dialog1 = new Dialog(null, Stream.of(vdk64, kasha111).collect(Collectors.toSet()),
                 new ArrayList<>(), false, System.currentTimeMillis());
         Dialog dialog2 = new Dialog(null, Stream.of(vdk64, petro123).collect(Collectors.toSet()),
-                new ArrayList<>(), false, System.currentTimeMillis() + 4000L);
+                new ArrayList<>(), true, System.currentTimeMillis() + 4000L);
         Dialog dialog3 = new Dialog(null, Stream.of(vdk64, vasiliy228).collect(Collectors.toSet()),
-                new ArrayList<>(), false, System.currentTimeMillis() + 7000L);
+                new ArrayList<>(), true, System.currentTimeMillis() + 7000L);
         dialogRepo.save(dialog1);
         dialogRepo.save(dialog2);
         dialogRepo.save(dialog3);
@@ -168,11 +170,17 @@ public class DataBaseCreate {
                 false);
         Message message5 = new Message(null, "Fine thanks", new Date(), vdk64.getId(), kasha111.getId(), dialog1,
                 false);
+        Message message6 = new Message(null, "test text", new Date(), vasiliy228.getId(), vdk64.getId(), dialog3,
+                true);
+        Message message7 = new Message(null, "test text", new Date(), petro123.getId(), vdk64.getId(), dialog2,
+                true);
         messageRepo.save(message1);
         messageRepo.save(message2);
         messageRepo.save(message3);
         messageRepo.save(message4);
         messageRepo.save(message5);
+        messageRepo.save(message6);
+        messageRepo.save(message7);
     }
 
     public void createBetsInDataBase() {

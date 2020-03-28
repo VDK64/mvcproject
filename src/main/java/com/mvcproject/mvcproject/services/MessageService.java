@@ -33,9 +33,8 @@ public class MessageService {
 
     @Transactional
     public Set<DialogDtoResponse> getDialogs(User[] userFromDB, Long id) {
+        userFromDB[0] = userRepo.findById(id).orElseThrow();
         Set<DialogDtoResponse> response = new LinkedHashSet<>();
-        userFromDB[0] = userRepo.findById(id).orElse(null);
-        assert userFromDB[0] != null;
         sortedByDescAndFormDialogRtoResponse(userFromDB[0], id, response);
         return response;
     }
@@ -63,7 +62,7 @@ public class MessageService {
     public InterlocutorDto getInterlocutor(Dialog dialog, Long id) {
         final InterlocutorDto[] interlocutorDto = new InterlocutorDto[1];
         dialog.getUsers().forEach(user -> {
-            if (!user.getId().equals(id)) {
+            if (!user.getId().equals(id)) {                                     //-----------------refactor
                 interlocutorDto[0] = new InterlocutorDto(user.getId(),
                         user.getAvatar(), user.getUsername());
             }
@@ -98,8 +97,11 @@ public class MessageService {
         List<Message> messages = messageRepo.findByNewMessageAndDialog(true,
                 dialog);
         messages.forEach(message -> readNewMessagesIfExist(user, message));
-        user.setHaveNewMessages(false);
-        userRepo.save(user);
+        if (dialogRepo.findDialogByContainingUserNative(user.getId())
+                .stream().noneMatch(Dialog::getHaveNewMessages)) {
+            user.setHaveNewMessages(false);
+            userRepo.save(user);
+        }
         messageRepo.saveAll(messages);
     }
 
@@ -109,8 +111,10 @@ public class MessageService {
         List<Message> messages = messageRepo.findByNewMessageAndDialog(true,
                 getDialogFromUserDialogs(userFromDB, dialogId));
         messages.forEach(message -> readNewMessagesIfExist(userFromDB, message));
-        userFromDB.setHaveNewMessages(false);
-        userRepo.save(userFromDB);
+        if (userFromDB.getDialogs().stream().noneMatch(Dialog::getHaveNewMessages)) {
+            userFromDB.setHaveNewMessages(false);
+            userRepo.save(userFromDB);
+        }
         messageRepo.saveAll(messages);
     }
 

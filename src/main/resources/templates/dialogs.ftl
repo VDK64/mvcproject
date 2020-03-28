@@ -21,9 +21,16 @@
               <tr>
                 <td>
                   <#if dialog.haveNewMessages && newMessages>
-                  <b id="${dialog.username}-new"><a id="${dialog.username}" class="nav-link" href="/messages/${dialog.dialogId}">${dialog.firstname} ${dialog.username} ${dialog.lastname}</a></b>
+                  <b id="${dialog.username}-new">
+                    <a id="${dialog.username}" class="nav-link"
+                    href="/messages/${dialog.dialogId}">
+                    ${dialog.firstname} ${dialog.username} ${dialog.lastname}
+                  </a></b>
                   <#else>
-                  <a id="${dialog.username}" class="nav-link" href="/messages/${dialog.dialogId}">${dialog.firstname} ${dialog.username} ${dialog.lastname}</a>
+                  <a id="${dialog.username}" class="nav-link"
+                  href="/messages/${dialog.dialogId}">
+                  ${dialog.firstname} ${dialog.username} ${dialog.lastname}
+                </a>
                   </#if>
                 </td>
               </tr>
