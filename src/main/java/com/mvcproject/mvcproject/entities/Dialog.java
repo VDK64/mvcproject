@@ -30,4 +30,5 @@ public class Dialog {
     @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
     private Boolean haveNewMessages;
+    private long lastNewMessage;
 }

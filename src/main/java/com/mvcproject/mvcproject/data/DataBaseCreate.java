@@ -148,12 +148,16 @@ public class DataBaseCreate {
         User vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
         User kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
         User petro123 = userRepo.findByUsername("petro123").orElseThrow();
+        User vasiliy228 = userRepo.findByUsername("vasiliy228").orElseThrow();
         Dialog dialog1 = new Dialog(null, Stream.of(vdk64, kasha111).collect(Collectors.toSet()),
-                new ArrayList<>(), false);
+                new ArrayList<>(), false, System.currentTimeMillis());
         Dialog dialog2 = new Dialog(null, Stream.of(vdk64, petro123).collect(Collectors.toSet()),
-                new ArrayList<>(), false);
+                new ArrayList<>(), false, System.currentTimeMillis() + 4000L);
+        Dialog dialog3 = new Dialog(null, Stream.of(vdk64, vasiliy228).collect(Collectors.toSet()),
+                new ArrayList<>(), false, System.currentTimeMillis() + 7000L);
         dialogRepo.save(dialog1);
         dialogRepo.save(dialog2);
+        dialogRepo.save(dialog3);
         Message message1 = new Message(null, "Hey, Kasha!", new Date(), vdk64.getId(), kasha111.getId(), dialog1
                 , false);
         Message message2 = new Message(null, "Hello, vkd64!", new Date(), kasha111.getId(), vdk64.getId(), dialog1
