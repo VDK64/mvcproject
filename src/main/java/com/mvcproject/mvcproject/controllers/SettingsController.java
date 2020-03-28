@@ -34,6 +34,8 @@ public class SettingsController {
     private UserService userService;
     @Autowired
     private BetService betService;
+    @Autowired
+    private JOpenId jOpenId;
 
     @GetMapping
     public String getSettings(@AuthenticationPrincipal User user, Model model, HttpServletRequest request) {
@@ -45,7 +47,7 @@ public class SettingsController {
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
         model.addAttribute("newBets", userFromDB.isHaveNewBets());
         model.addAttribute("user", userFromDB);
-        model.addAttribute("auth", JOpenId.getUrl());
+        model.addAttribute("auth", jOpenId.getUrl());
         UserService.ifAdmin(model, userFromDB);
         return "settings";
     }
@@ -58,7 +60,7 @@ public class SettingsController {
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
         model.addAttribute("newBets", userFromDB.isHaveNewBets());
         model.addAttribute("user", userFromDB);
-        model.addAttribute("auth", JOpenId.getUrl());
+        model.addAttribute("auth", jOpenId.getUrl());
         UserService.ifAdmin(model, userFromDB);
         return "settings";
     }
@@ -74,7 +76,7 @@ public class SettingsController {
         UserService.ifAdmin(model, updateUser);
         model.addAttribute("user", updateUser);
         model.addAttribute("ok", "Please, relogin to update changes!");
-        model.addAttribute("auth", JOpenId.getUrl());
+        model.addAttribute("auth", jOpenId.getUrl());
         return "settings";
     }
 
@@ -84,7 +86,7 @@ public class SettingsController {
         model.addObject("newMessages", userFromDB.isHaveNewMessages());
         model.addObject("newBets", userFromDB.isHaveNewBets());
         UserService.ifAdmin(model, userFromDB);
-        model.addObject("auth", JOpenId.getUrl());
+        model.addObject("auth", jOpenId.getUrl());
         settingsService.deleteAvatar(userFromDB, model);
         model.addObject("user", userFromDB);
         return model;
@@ -97,7 +99,7 @@ public class SettingsController {
         UserService.ifAdmin(model, userFromDB);
         model.addObject("newMessages", userFromDB.isHaveNewMessages());
         model.addObject("newBets", userFromDB.isHaveNewBets());
-        model.addObject("auth", JOpenId.getUrl());
+        model.addObject("auth", jOpenId.getUrl());
         settingsService.deposit(userFromDB, value, model);
         model.addObject("user", userFromDB);
         model.addObject("ok", "Your deposit was successfully replenished!");
@@ -111,7 +113,7 @@ public class SettingsController {
         UserService.ifAdmin(model, userFromDB);
         model.addObject("newMessages", userFromDB.isHaveNewMessages());
         model.addObject("newBets", userFromDB.isHaveNewBets());
-        model.addObject("auth", JOpenId.getUrl());
+        model.addObject("auth", jOpenId.getUrl());
         settingsService.withdraw(userFromDB, value, model);
         model.addObject("user", userFromDB);
         model.addObject("ok", "Withdraw was successfully!");
