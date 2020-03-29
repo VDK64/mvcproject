@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-@EqualsAndHashCode(exclude = { "users", "messages" } )
+@EqualsAndHashCode(exclude = { "users", "messages", "showStatuses" } )
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -29,6 +29,9 @@ public class Dialog {
     @ToString.Exclude
     @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
+    @ToString.Exclude
+    @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<ShowStatus> showStatuses = new ArrayList<>();
     private Boolean haveNewMessages;
     private long lastNewMessage;
 }

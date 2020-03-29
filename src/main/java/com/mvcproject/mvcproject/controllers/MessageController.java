@@ -15,8 +15,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public class MessageController {
     @Autowired
     private UserRepo userRepo;
 
-    @RequestMapping("/dialogs")
+    @GetMapping("/dialogs")
     public String getDialogs(@AuthenticationPrincipal User user, Model model) {
         final User[] userFromDB = new User[1];
         Set<DialogDtoResponse> response = messageService.getDialogs(userFromDB, user.getId());
@@ -47,6 +46,13 @@ public class MessageController {
         if (!response.isEmpty())
             model.addAttribute("dialogs", response);
         return "dialogs";
+    }
+
+    @PostMapping("/dialogs")
+    public String deleteDialog(@AuthenticationPrincipal User user, @RequestParam String dialogId,
+                               Model model) {
+        messageService.deleteDialog(dialogId, user);
+        return "redirect:/dialogs";
     }
 
     @RequestMapping("/messages/{dialogId}")

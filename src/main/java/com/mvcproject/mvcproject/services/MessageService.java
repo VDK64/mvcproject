@@ -5,6 +5,7 @@ import com.mvcproject.mvcproject.dto.InterlocutorDto;
 import com.mvcproject.mvcproject.dto.MessageDto;
 import com.mvcproject.mvcproject.entities.Dialog;
 import com.mvcproject.mvcproject.entities.Message;
+import com.mvcproject.mvcproject.entities.ShowStatus;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.ErrorPageException;
 import com.mvcproject.mvcproject.repositories.DialogRepo;
@@ -43,12 +44,17 @@ public class MessageService {
         user.getDialogs().stream()
                 .sorted(Comparator.comparingLong(Dialog::getLastNewMessage).reversed())
                 .collect(Collectors.toCollection(LinkedHashSet::new))
-                .forEach(dialog -> dialog.getUsers().forEach(user1 -> {
-                    if (!user1.getId().equals(id)) {
-                        response.add(new DialogDtoResponse(dialog.getId(), user1.getFirstname(),
-                                user1.getLastname(), user1.getUsername(), dialog.getHaveNewMessages()));
+                .forEach(dialog -> {
+                    if (dialog.getShowStatuses().stream().anyMatch(showStatus ->
+                            showStatus.getUsername().equals(user.getUsername()) && showStatus.isVisible())) {
+                        dialog.getUsers().forEach(user1 -> {
+                            if (!user1.getId().equals(id)) {
+                                response.add(new DialogDtoResponse(dialog.getId(), user1.getFirstname(),
+                                        user1.getLastname(), user1.getUsername(), dialog.getHaveNewMessages()));
+                            }
+                        });
                     }
-                }));
+                });
     }
 
     private void loadMessages(Dialog dialog, List<MessageDto> messageList, User user) {
@@ -154,5 +160,20 @@ public class MessageService {
         });
         loadMessages(dialog, messageList, user);
         return dialog;
+    }
+
+    @Transactional
+    public void deleteDialog(String strDialogId, User user) {
+        User userFromDB = userRepo.findById(user.getId()).orElseThrow();
+        Long dialogId = Long.valueOf(strDialogId);
+        Dialog dialog = dialogRepo.findById(dialogId).orElseThrow();
+        dialog.getShowStatuses().stream()
+                .filter(showStatus -> showStatus.getUsername().equals(userFromDB.getUsername()))
+                .findFirst()
+                .ifPresent(showStatus -> showStatus.setVisible(false));
+        if (dialog.getShowStatuses().stream().noneMatch(ShowStatus::isVisible))
+            dialogRepo.deleteById(dialogId);
+        else
+            dialogRepo.save(dialog);
     }
 }

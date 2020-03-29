@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,6 +26,8 @@ public class DataBaseCreate {
     private GameRepo gameRepo;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private ShowStatusRepo showStatusRepo;
 
     public void createUsersInDataBase() {
         userRepo.save(User.builder()
@@ -149,31 +152,45 @@ public class DataBaseCreate {
         User kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
         User petro123 = userRepo.findByUsername("petro123").orElseThrow();
         User vasiliy228 = userRepo.findByUsername("vasiliy228").orElseThrow();
-        vdk64.setHaveNewMessages(true);
+        vdk64.setHaveNewMessages(false);
         userRepo.save(vdk64);
         Dialog dialog1 = new Dialog(null, Stream.of(vdk64, kasha111).collect(Collectors.toSet()),
-                new ArrayList<>(), false, System.currentTimeMillis());
+                new ArrayList<>(), null/*new ArrayList<>(Arrays.asList(new ShowStatus(null,
+                vdk64.getUsername(), null, true), new ShowStatus(null,
+                kasha111.getUsername(), null,true)))*/,false, System.currentTimeMillis());
         Dialog dialog2 = new Dialog(null, Stream.of(vdk64, petro123).collect(Collectors.toSet()),
-                new ArrayList<>(), true, System.currentTimeMillis() + 4000L);
+                new ArrayList<>(), new ArrayList<>(), false, System.currentTimeMillis() + 4000L);
         Dialog dialog3 = new Dialog(null, Stream.of(vdk64, vasiliy228).collect(Collectors.toSet()),
-                new ArrayList<>(), true, System.currentTimeMillis() + 7000L);
-        dialogRepo.save(dialog1);
-        dialogRepo.save(dialog2);
-        dialogRepo.save(dialog3);
-        Message message1 = new Message(null, "Hey, Kasha!", new Date(), vdk64.getId(), kasha111.getId(), dialog1
+                new ArrayList<>(), new ArrayList<>(), false, System.currentTimeMillis() + 7000L);
+        Dialog saveDialog1 = dialogRepo.save(dialog1);
+        Dialog saveDialog2 = dialogRepo.save(dialog2);
+        Dialog saveDialog3 = dialogRepo.save(dialog3);
+        Message message1 = new Message(null, "Hey, Kasha!", new Date(), vdk64.getId(), kasha111.getId(), saveDialog1
                 , false);
-        Message message2 = new Message(null, "Hello, vkd64!", new Date(), kasha111.getId(), vdk64.getId(), dialog1
+        Message message2 = new Message(null, "Hello, vkd64!", new Date(), kasha111.getId(), vdk64.getId(), saveDialog1
                 , false);
-        Message message3 = new Message(null, "How are you?", new Date(), vdk64.getId(), kasha111.getId(), dialog1,
+        Message message3 = new Message(null, "How are you?", new Date(), vdk64.getId(), kasha111.getId(), saveDialog1,
                 false);
-        Message message4 = new Message(null, "Fine, and you?", new Date(), kasha111.getId(), vdk64.getId(), dialog1,
+        Message message4 = new Message(null, "Fine, and you?", new Date(), kasha111.getId(), vdk64.getId(), saveDialog1,
                 false);
-        Message message5 = new Message(null, "Fine thanks", new Date(), vdk64.getId(), kasha111.getId(), dialog1,
+        Message message5 = new Message(null, "Fine thanks", new Date(), vdk64.getId(), kasha111.getId(), saveDialog1,
                 false);
-        Message message6 = new Message(null, "test text", new Date(), vasiliy228.getId(), vdk64.getId(), dialog3,
-                true);
-        Message message7 = new Message(null, "test text", new Date(), petro123.getId(), vdk64.getId(), dialog2,
-                true);
+        Message message6 = new Message(null, "vasiliy228 text", new Date(), vasiliy228.getId(), vdk64.getId(), saveDialog3,
+                false);
+        Message message7 = new Message(null, "petro123 text", new Date(), petro123.getId(), vdk64.getId(), saveDialog2,
+                false);
+        ShowStatus showStatus1 = new ShowStatus(null, vdk64.getUsername(), saveDialog1, true);
+        ShowStatus showStatus2 = new ShowStatus(null, kasha111.getUsername(), saveDialog1, true);
+//        ShowStatus showStatus3 = new ShowStatus(null, vdk64.getUsername(), saveDialog2, true);
+//        ShowStatus showStatus4 = new ShowStatus(null, petro123.getUsername(), saveDialog2, true);
+//        ShowStatus showStatus5 = new ShowStatus(null, vdk64.getUsername(), saveDialog3, true);
+//        ShowStatus showStatus6 = new ShowStatus(null, vasiliy228.getUsername(), saveDialog3, true);
+        showStatusRepo.save(showStatus1);
+        showStatusRepo.save(showStatus2);
+//        showStatusRepo.save(showStatus3);
+//        showStatusRepo.save(showStatus4);
+//        showStatusRepo.save(showStatus5);
+//        showStatusRepo.save(showStatus6);
         messageRepo.save(message1);
         messageRepo.save(message2);
         messageRepo.save(message3);
