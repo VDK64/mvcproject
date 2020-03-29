@@ -7,7 +7,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -155,9 +154,7 @@ public class DataBaseCreate {
         vdk64.setHaveNewMessages(false);
         userRepo.save(vdk64);
         Dialog dialog1 = new Dialog(null, Stream.of(vdk64, kasha111).collect(Collectors.toSet()),
-                new ArrayList<>(), null/*new ArrayList<>(Arrays.asList(new ShowStatus(null,
-                vdk64.getUsername(), null, true), new ShowStatus(null,
-                kasha111.getUsername(), null,true)))*/,false, System.currentTimeMillis());
+                new ArrayList<>(), null,false, System.currentTimeMillis());
         Dialog dialog2 = new Dialog(null, Stream.of(vdk64, petro123).collect(Collectors.toSet()),
                 new ArrayList<>(), new ArrayList<>(), false, System.currentTimeMillis() + 4000L);
         Dialog dialog3 = new Dialog(null, Stream.of(vdk64, vasiliy228).collect(Collectors.toSet()),
@@ -181,16 +178,16 @@ public class DataBaseCreate {
                 false);
         ShowStatus showStatus1 = new ShowStatus(null, vdk64.getUsername(), saveDialog1, true);
         ShowStatus showStatus2 = new ShowStatus(null, kasha111.getUsername(), saveDialog1, true);
-//        ShowStatus showStatus3 = new ShowStatus(null, vdk64.getUsername(), saveDialog2, true);
-//        ShowStatus showStatus4 = new ShowStatus(null, petro123.getUsername(), saveDialog2, true);
-//        ShowStatus showStatus5 = new ShowStatus(null, vdk64.getUsername(), saveDialog3, true);
-//        ShowStatus showStatus6 = new ShowStatus(null, vasiliy228.getUsername(), saveDialog3, true);
+        ShowStatus showStatus3 = new ShowStatus(null, vdk64.getUsername(), saveDialog2, true);
+        ShowStatus showStatus4 = new ShowStatus(null, petro123.getUsername(), saveDialog2, true);
+        ShowStatus showStatus5 = new ShowStatus(null, vdk64.getUsername(), saveDialog3, true);
+        ShowStatus showStatus6 = new ShowStatus(null, vasiliy228.getUsername(), saveDialog3, true);
         showStatusRepo.save(showStatus1);
         showStatusRepo.save(showStatus2);
-//        showStatusRepo.save(showStatus3);
-//        showStatusRepo.save(showStatus4);
-//        showStatusRepo.save(showStatus5);
-//        showStatusRepo.save(showStatus6);
+        showStatusRepo.save(showStatus3);
+        showStatusRepo.save(showStatus4);
+        showStatusRepo.save(showStatus5);
+        showStatusRepo.save(showStatus6);
         messageRepo.save(message1);
         messageRepo.save(message2);
         messageRepo.save(message3);

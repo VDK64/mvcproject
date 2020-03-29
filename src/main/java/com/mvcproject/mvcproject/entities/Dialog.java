@@ -30,7 +30,7 @@ public class Dialog {
     @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
     @ToString.Exclude
-    @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShowStatus> showStatuses = new ArrayList<>();
     private Boolean haveNewMessages;
     private long lastNewMessage;
