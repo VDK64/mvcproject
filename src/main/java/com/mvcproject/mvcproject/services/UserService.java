@@ -47,6 +47,7 @@ public class UserService implements UserDetailsService {
         dbCreate.createUsersInDataBase();
         dbCreate.createDialogsInDataBase();
         dbCreate.createBetsInDataBase();
+        dbCreate.addFriends();
     }
 
     private void checkUserExist(User user, ModelAndView model) {
@@ -187,6 +188,24 @@ public class UserService implements UserDetailsService {
             }
         }));
         return friendsList;
+    }
+
+    @Transactional
+    public Map<String, Object> getFriends(Long id) {
+        Map<String, Object> result = new HashMap<>();
+        List<User> friends = new ArrayList<>();
+        List<User> unconfirmeds = new ArrayList<>();
+        User userFromDB = userRepo.findById(id).orElseThrow();
+        result.put("user", userFromDB);
+        userFromDB.getFriends().forEach(user -> {
+            if (user.getFriends().contains(userFromDB))
+                friends.add(user);
+            else
+                unconfirmeds.add(user);
+        });
+        result.put("friends", friends);
+        result.put("unconfirmeds", unconfirmeds);
+        return result;
     }
 
     public void createSessionInfo(Object user) {

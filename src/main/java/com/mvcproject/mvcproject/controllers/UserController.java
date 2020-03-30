@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -36,8 +37,10 @@ public class UserController {
 
     @GetMapping("/friends")
     public String friends(@AuthenticationPrincipal User user, Model model) {
-        User userFromDB = userService.getUserById(user.getId());
-        model.addAttribute("friends", userService.getFriends(userFromDB));
+        Map<String, Object> data = userService.getFriends(user.getId());
+        User userFromDB = (User) data.get("user");
+        model.addAttribute("friends", data.get("friends"));
+        model.addAttribute("unconfirmeds", data.get("unconfirmeds"));
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());

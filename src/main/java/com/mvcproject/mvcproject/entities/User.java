@@ -5,11 +5,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Data
-@EqualsAndHashCode(exclude = { "dialogs", "bets", "betsOpponent" })
+@EqualsAndHashCode(exclude = { "dialogs", "bets", "betsOpponent", "friends" })
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,6 +43,14 @@ public class User implements UserDetails {
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "users")
     private Set<Dialog> dialogs = new LinkedHashSet<>();
+    @ToString.Exclude
+    @ManyToMany()
+    @JoinTable(name = "usr_fr",
+            joinColumns =
+            @JoinColumn(name = "user_id", referencedColumnName = "Id"),
+            inverseJoinColumns =
+            @JoinColumn(name = "friend_id", referencedColumnName = "Id"))
+    private Set<User> friends = new HashSet<>();
     @NotNull
     private Float deposit;
     @ToString.Exclude

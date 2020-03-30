@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -216,5 +217,21 @@ public class DataBaseCreate {
 //            add(new Bet(null, vdk64, 150f, tony64, false, null, false));
             add(new Bet(null, user, 200f, vdk64, false, vdk64.getUsername(), false));
         }});
+    }
+
+    @Transactional
+    public void addFriends() {
+        User vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
+        User kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
+        User petro123 = userRepo.findByUsername("petro123").orElseThrow();
+        User tony64 = userRepo.findByUsername("tony64").orElseThrow();
+        User vasiliy228 = userRepo.findByUsername("vasiliy228").orElseThrow();
+        vdk64.getFriends().add(kasha111);
+        vdk64.getFriends().add(petro123);
+        vdk64.getFriends().add(vasiliy228);
+        vdk64.getFriends().add(tony64);
+        kasha111.getFriends().add(vdk64);
+        userRepo.save(kasha111);
+        userRepo.save(vdk64);
     }
 }

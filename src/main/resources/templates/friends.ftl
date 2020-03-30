@@ -38,6 +38,23 @@
        </div>
       </#list>
       </#if>
+      <#list unconfirmeds as unconfirmed>
+       <div class="row">
+         <#if unconfirmed.avatar=="default">
+           <img src="/img/avatar.png" class="img-thumbnail" style="width:50px">
+           <#else>
+             <img src="/img/${unconfirmed.id}/${unconfirmed.avatar}" class="img-thumbnail" style="width:150px">
+         </#if>
+       </div>
+       <div class="row">
+         <a href="/friend/${unconfirmed.id}">${unconfirmed.firstname} ${unconfirmed.username} ${unconfirmed.lastname} </a>
+         <#if unconfirmed.isOnline>
+         <p>&nbsp&nbsp Online</p>
+         </#if>
+         &nbsp&nbsp Waiting for confirmation!
+         &nbsp&nbsp <a href="/friends/find_friends"><button type="button" class="btn btn-success btn-sm button">Find Friends</button></a>
+       </div>
+      </#list>
     </div>
 
     <script src="/static/js/sock.js"></script>
