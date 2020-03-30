@@ -2,6 +2,13 @@
   <@h.header admin=admin user=user position="friends">
     <link rel="stylesheet" href="../static/css/style.css">
 
+    <style>
+      .button {
+        height: 5px;
+        padding: 5px 5px;
+      }
+    </style>
+
     <input id="csrfHeaderName" value="${_csrf.headerName}" type="hidden">
     <input id="csrfToken" value="${_csrf.token}" type="hidden">
     <input id="newMessages" value="${newMessages?c}" type="hidden">
@@ -22,10 +29,12 @@
          </#if>
        </div>
        <div class="row">
-         <a href="/${friend.id}">${friend.firstname} ${friend.username} ${friend.lastname} </a>
+         <a href="/friend/${friend.id}">${friend.firstname} ${friend.username} ${friend.lastname} </a>
          <#if friend.isOnline>
          <p>&nbsp&nbsp Online</p>
          </#if>
+         &nbsp&nbsp <button type="button" class="btn btn-primary btn-sm button">Send message</button>
+         &nbsp&nbsp <a href="/friends/find_friends"><button type="button" class="btn btn-success btn-sm button">Find Friends</button></a>
        </div>
       </#list>
       </#if>
@@ -35,5 +44,9 @@
     <script src="/static/js/stomp.js"></script>
     <script src="/static/js/messageWebscoket.js"></script>
     <script src="/static/js/betWebscoket.js"></script>
+    <script type="text/javascript">
+      document.body.style.overflow = "auto";
+      document.body.style['overflow-x'] = "hidden";
+    </script>
 
   </@h.header>

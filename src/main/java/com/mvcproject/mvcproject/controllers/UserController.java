@@ -45,6 +45,28 @@ public class UserController {
         return "friends";
     }
 
+    @GetMapping("/friends/find_friends")
+    public String getFindFriends(@AuthenticationPrincipal User user, Model model) {
+        User userFromDB = userService.getUserById(user.getId());
+        UserService.ifAdmin(model, userFromDB);
+        model.addAttribute("user", userFromDB);
+        model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
+        model.addAttribute("newBets", userFromDB.isHaveNewBets());
+        return "findFriends";
+    }
+
+    @PostMapping("/friends/find_friends")
+    public ModelAndView findFriends(@AuthenticationPrincipal User user, ModelAndView model) {
+        User userFromDB = userService.getUserById(user.getId());
+        UserService.ifAdmin(model, userFromDB);
+        model.addObject("user", userFromDB);
+        model.addObject("newMessages", userFromDB.isHaveNewMessages());
+        model.addObject("newBets", userFromDB.isHaveNewBets());
+        model.setViewName("findFriends");
+        return model;
+    }
+
+
     @GetMapping("/bets")
     public String bets(@AuthenticationPrincipal User user, Model model) {
         User userFromDB = userService.getUserById(user.getId());

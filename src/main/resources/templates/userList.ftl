@@ -66,5 +66,7 @@
           elem.remove();
         }, 5000);
       }
+      document.body.style.overflow = "auto";
+      document.body.style['overflow-x'] = "hidden";      
     </script>
   </@h.header>

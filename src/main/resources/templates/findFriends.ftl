@@ -10,19 +10,12 @@
     <div id="mainDiv" class="container-fluid" style="margin-left:10px">
       <div class="row">
         <div class="col-md-12" style="margin-top: 10px">
-          <#if user.avatar=="default">
-            <img src="/img/avatar.png" class="img-thumbnail" style="width:150px">
-          <#else>
-            <img src="/img/${user.id}/${user.avatar}" class="img-thumbnail" style="width:150px">
-          </#if>
-          <div class="row">
-            <h1>${user.firstname} ${user.username} ${user.lastname}</h1>
-            <#if user.isOnline>
-             online
-            </#if>
-          </div>
+          It's page to find friends!
+          <form method="post">
+            <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+            <button type="submit" class="btn btn-primary">Primary</button>
+          </form>
         </div>
-        <button type="button" class="btn btn-primary">Send message</button>
       </div>
     </div>
 
@@ -30,5 +23,9 @@
     <script src="/static/js/stomp.js"></script>
     <script src="/static/js/messageWebscoket.js"></script>
     <script src="/static/js/betWebscoket.js"></script>
+    <script type="text/javascript">
+      document.body.style.overflow = "auto";
+      document.body.style['overflow-x'] = "hidden";
+    </script>
 
   </@h.header>

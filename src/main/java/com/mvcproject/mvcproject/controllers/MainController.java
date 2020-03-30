@@ -32,7 +32,7 @@ public class MainController {
         return "index";
     }
 
-    @RequestMapping("/{id}")
+    @RequestMapping("/friend/{id}")
     public String getGuestPage(@AuthenticationPrincipal User user, Model model, @PathVariable String id) {
         User userFromDB = userService.getUserById(user.getId());
         UserService.ifAdmin(model, userFromDB);

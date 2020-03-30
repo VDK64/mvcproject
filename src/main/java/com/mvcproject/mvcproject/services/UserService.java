@@ -9,7 +9,6 @@ import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.session.LoggedUser;
 import com.mvcproject.mvcproject.validation.Validator;
-import freemarker.template.utility.StringUtil;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -182,8 +181,8 @@ public class UserService implements UserDetailsService {
         List<User> friendsList = new ArrayList<>();
         User userFromDB = userRepo.findById(user.getId()).orElseThrow();
         userFromDB.getDialogs().forEach(dialog -> dialog.getUsers().forEach(user1 -> {
-            if (!user1.getUsername().equals(user.getUsername()) &&
-                    StringUtil.emptyToNull(user1.getSteamId()) != null) {
+            if (!user1.getUsername().equals(user.getUsername()) /*&&
+                    StringUtil.emptyToNull(user1.getSteamId()) != null*/) {
                 friendsList.add(user1);
             }
         }));

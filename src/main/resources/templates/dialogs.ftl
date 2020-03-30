@@ -64,6 +64,7 @@
 
     <script type="text/javascript">
       document.body.style.overflow = "auto"
+      document.body.style['overflow-x'] = "hidden";      
     </script>
 
     </@h.header>

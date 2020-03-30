@@ -112,6 +112,7 @@
 
       <script type="text/javascript">
         document.body.style.overflow = "auto"
+        document.body.style['overflow-x'] = "hidden";        
 
         function createBet() {
           document.location.href = "/bets/createBet";
