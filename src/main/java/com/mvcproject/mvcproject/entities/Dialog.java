@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,7 +25,7 @@ public class Dialog {
             joinColumns = @JoinColumn(name="dlg_id", referencedColumnName="id"),
             inverseJoinColumns = @JoinColumn(name="usr_id", referencedColumnName="id")
     )
-    private Set<User> users = new LinkedHashSet<>();
+    private Set<User> users = new HashSet<>();
     @ToString.Exclude
     @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();

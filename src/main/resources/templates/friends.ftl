@@ -54,30 +54,49 @@
          </#if>
        </div>
        <div class="row">
-         <a href="/friend/${friend.id}">${friend.firstname} ${friend.username} ${friend.lastname} </a>
+         <a href="/friend/${friend.id}">
+           ${friend.firstname} ${friend.username} ${friend.lastname}
+         </a>
          <#if friend.isOnline>
          <p>&nbsp&nbsp Online</p>
          </#if>
-         &nbsp&nbsp <button type="button" class="btn btn-primary btn-sm button">Send message</button>
-         &nbsp&nbsp <a href="/friends/find_friends"><button type="button" class="btn btn-success btn-sm button">Find Friends</button></a>
+         &nbsp&nbsp
+         <form method="post">
+           <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+           <input name="friendId" value="${friend.id}" type="hidden">
+           <button name="sendMessageToFriend" 
+           type="submit" class="btn btn-primary btn-sm button">Send message</button>
+         </form>
+         &nbsp&nbsp
+         <a href="/friends/find_friends">
+           <button type="button" class="btn btn-success btn-sm button">Find Friends
+           </button>
+         </a>
        </div>
       </#list>
       </#if>
       <#list unconfirmeds as unconfirmed>
        <div class="row">
          <#if unconfirmed.avatar=="default">
-           <img src="/img/avatar.png" class="img-thumbnail" style="width:50px">
+           <img src="/img/avatar.png" class="img-thumbnail"
+           style="width:50px">
            <#else>
-             <img src="/img/${unconfirmed.id}/${unconfirmed.avatar}" class="img-thumbnail" style="width:150px">
+             <img src="/img/${unconfirmed.id}/${unconfirmed.avatar}"
+             class="img-thumbnail" style="width:150px">
          </#if>
        </div>
        <div class="row">
-         <a href="/friend/${unconfirmed.id}">${unconfirmed.firstname} ${unconfirmed.username} ${unconfirmed.lastname} </a>
+         <a href="/friend/${unconfirmed.id}">
+           ${unconfirmed.firstname} ${unconfirmed.username} ${unconfirmed.lastname}
+         </a>
          <#if unconfirmed.isOnline>
          <p>&nbsp&nbsp Online</p>
          </#if>
          &nbsp&nbsp Waiting for confirmation!
-         &nbsp&nbsp <a href="/friends/find_friends"><button type="button" class="btn btn-success btn-sm button">Find Friends</button></a>
+         &nbsp&nbsp
+         <a href="/friends/find_friends">
+           <button type="button" class="btn btn-success btn-sm button">Find Friends</button>
+         </a>
        </div>
       </#list>
       </#if>

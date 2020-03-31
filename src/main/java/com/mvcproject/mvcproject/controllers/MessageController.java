@@ -49,8 +49,7 @@ public class MessageController {
     }
 
     @PostMapping("/dialogs")
-    public String deleteDialog(@AuthenticationPrincipal User user, @RequestParam String dialogId,
-                               Model model) {
+    public String deleteDialog(@AuthenticationPrincipal User user, @RequestParam String dialogId) {
         messageService.deleteDialog(dialogId, user);
         return "redirect:/dialogs";
     }

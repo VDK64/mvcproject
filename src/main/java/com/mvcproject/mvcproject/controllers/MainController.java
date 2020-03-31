@@ -33,13 +33,21 @@ public class MainController {
     }
 
     @RequestMapping("/friend/{id}")
-    public String getGuestPage(@AuthenticationPrincipal User user, Model model, @PathVariable String id) {
+    public String getGuestPage(@AuthenticationPrincipal User user, Model model,
+                               @PathVariable String id) {
         User userFromDB = userService.getUserById(user.getId());
         UserService.ifAdmin(model, userFromDB);
-        model.addAttribute("user", userService.getUserById(Long.valueOf(id)));
+        model.addAttribute("user", userFromDB);
+        model.addAttribute("friend", userService.getUserById(Long.valueOf(id)));
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
         model.addAttribute("newBets", userFromDB.isHaveNewBets());
         return "guestPage";
+    }
+
+    @PostMapping(value = "/friend/{id}", params = "sendMessageToFriend")
+    public String sendMessage(@AuthenticationPrincipal User user, @RequestParam String friendId) {
+        long dialogId = messageService.determineDialog(Long.parseLong(friendId), user);
+        return "redirect:/messages/" + dialogId;
     }
 
     @RequestMapping("/login")
@@ -57,18 +65,25 @@ public class MainController {
     @PostMapping("/register")
     public String registerUser(@RequestParam String firstname,
                                @RequestParam String lastname,
-                               @RequestParam String username, @RequestParam String password, @RequestParam String email,
+                               @RequestParam String username,
+                               @RequestParam String password,
+                               @RequestParam String email,
                                RedirectAttributes attributes) {
-        userService.createUser(firstname, lastname, username, password, email, new ModelAndView("register"));
+        userService.createUser(firstname, lastname, username, password, email,
+                new ModelAndView("register"));
         attributes.addFlashAttribute("ok", "true");
         return "redirect:/login";
     }
 
     @GetMapping("email/activate/{code}")
-    public String emailActivate(@PathVariable String code, Model model, @Value("${success.confirm}") String ok,
+    public String emailActivate(@PathVariable String code, Model model,
+                                @Value("${success.confirm}") String ok,
                                 @Value("${wrong.confirm}") String wrongConfirm) {
         boolean res = userService.confirmEmail(code, model);
-        if (res) { model.addAttribute("msg", ok); } else { model.addAttribute("msg", wrongConfirm); }
+        if (res)
+            model.addAttribute("msg", ok);
+        else
+            model.addAttribute("msg", wrongConfirm);
         model.addAttribute("admin", false);
         model.addAttribute("user", new User());
         return "emailConfirm";

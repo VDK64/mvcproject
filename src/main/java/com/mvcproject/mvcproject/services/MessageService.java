@@ -10,6 +10,7 @@ import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.ErrorPageException;
 import com.mvcproject.mvcproject.repositories.DialogRepo;
 import com.mvcproject.mvcproject.repositories.MessageRepo;
+import com.mvcproject.mvcproject.repositories.ShowStatusRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,6 +21,7 @@ import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class MessageService {
@@ -31,6 +33,8 @@ public class MessageService {
     private MessageRepo messageRepo;
     @Autowired
     private SimpMessagingTemplate template;
+    @Autowired
+    private ShowStatusRepo showStatusRepo;
 
     @Transactional
     public Set<DialogDtoResponse> getDialogs(User[] userFromDB, Long id) {
@@ -103,7 +107,7 @@ public class MessageService {
         List<Message> messages = messageRepo.findByNewMessageAndDialog(true,
                 dialog);
         messages.forEach(message -> readNewMessagesIfExist(user, message));
-        if (dialogRepo.findDialogByContainingUserNative(user.getId())
+        if (dialogRepo.findDialogsByContainingUserNative(user.getId())
                 .stream().noneMatch(Dialog::getHaveNewMessages)) {
             user.setHaveNewMessages(false);
             userRepo.save(user);
@@ -175,5 +179,47 @@ public class MessageService {
             dialogRepo.deleteById(dialogId);
         else
             dialogRepo.save(dialog);
+    }
+
+    private Dialog getDialog(User user, long friendId) {
+        User principal = userRepo.findById(user.getId()).orElseThrow();
+        Optional<Dialog> any = principal.getDialogs().stream().filter(dialog -> dialog.getUsers()
+                .stream()
+                .anyMatch(user1 -> user1.getId().equals(friendId))).findAny();
+        return any.orElse(null);
+    }
+
+    @Transactional
+    public long determineDialog(long friendId, User user) {
+        Dialog sameDialog = getDialog(user, friendId);
+        if (sameDialog != null) {
+            setShowStatusTrue(user, sameDialog);
+        } else {
+            return createDialogWithShowStatus(friendId, user).getId();
+        }
+        return sameDialog.getId();
+    }
+
+    private Dialog createDialogWithShowStatus(long friendId, User user) {
+        User friendFromDB = userRepo.findById(friendId).orElseThrow();
+        Dialog savedDialog = dialogRepo.save(new Dialog(null, Stream.of(user, friendFromDB)
+                .collect(Collectors.toSet()), new ArrayList<>(), null,
+                false, System.currentTimeMillis()));
+        ShowStatus showStatus1 = new ShowStatus(null, user.getUsername(), savedDialog, true);
+        ShowStatus showStatus2 = new ShowStatus(null, friendFromDB.getUsername(), savedDialog, false);
+        showStatusRepo.save(showStatus1);
+        showStatusRepo.save(showStatus2);
+        return savedDialog;
+    }
+
+    private void setShowStatusTrue(User user, Dialog sameDialog) {
+        List<ShowStatus> showStatuses = showStatusRepo.findByDialog(sameDialog);
+        ShowStatus showStatusPrincipal = showStatuses
+                .stream()
+                .filter(showStatus -> showStatus.getUsername().equals(user.getUsername()))
+                .findAny()
+                .orElseThrow();
+        showStatusPrincipal.setVisible(true);
+        showStatusRepo.save(showStatusPrincipal);
     }
 }

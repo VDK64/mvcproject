@@ -49,7 +49,7 @@ public class UserController {
         return "friends";
     }
 
-    @PostMapping(value = "/friends", name = "confirmInvite")
+    @PostMapping(value = "/friends", params = "confirmInvite")
     public String addFriend(@AuthenticationPrincipal User user,
                             @RequestParam String inviteUsername, Model model) {
         User userFromDB = userService.addFriend(user.getId(), inviteUsername);
@@ -58,6 +58,13 @@ public class UserController {
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
         model.addAttribute("newBets", userFromDB.isHaveNewBets());
         return "redirect:/friends";
+    }
+
+    @PostMapping(value = "/friends", params = "sendMessageToFriend")
+    public String sendMessage(@AuthenticationPrincipal User user,
+                              @RequestParam String friendId) {
+        long dialogId = messageService.determineDialog(Long.parseLong(friendId), user);
+        return "redirect:/messages/" + dialogId;
     }
 
     @GetMapping("/friends/find_friends")

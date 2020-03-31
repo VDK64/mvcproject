@@ -10,19 +10,24 @@
     <div id="mainDiv" class="container-fluid" style="margin-left:10px">
       <div class="row">
         <div class="col-md-12" style="margin-top: 10px">
-          <#if user.avatar=="default">
+          <#if friend.avatar=="default">
             <img src="/img/avatar.png" class="img-thumbnail" style="width:150px">
           <#else>
-            <img src="/img/${user.id}/${user.avatar}" class="img-thumbnail" style="width:150px">
+            <img src="/img/${friend.id}/${friend.avatar}" class="img-thumbnail" style="width:150px">
           </#if>
           <div class="row">
-            <h1>${user.firstname} ${user.username} ${user.lastname}</h1>
-            <#if user.isOnline>
+            <h1>${friend.firstname} ${friend.username} ${friend.lastname}</h1>
+            <#if friend.isOnline>
              online
             </#if>
           </div>
         </div>
-        <button type="button" class="btn btn-primary">Send message</button>
+        <form method="post">
+          <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+          <input name="friendId" value="${friend.id}" type="hidden">
+          <button name="sendMessageToFriend"
+          type="submit" class="btn btn-primary btn-sm button">Send message</button>
+        </form>
       </div>
     </div>
 
