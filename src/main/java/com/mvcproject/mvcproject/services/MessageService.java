@@ -35,6 +35,8 @@ public class MessageService {
     private SimpMessagingTemplate template;
     @Autowired
     private ShowStatusRepo showStatusRepo;
+    @Autowired
+    private MessageService messageService;
 
     @Transactional
     public Set<DialogDtoResponse> getDialogs(User[] userFromDB, Long id) {
@@ -92,14 +94,24 @@ public class MessageService {
         User toUser = userRepo.findByUsername(msg.getTo()).orElseThrow();
         toUser.setHaveNewMessages(true);
         Dialog dialog = dialogRepo.findById(msg.getDialogId()).orElseThrow();
+        findShowStatusByDialogAndUsernameAndSetVisibility(dialog, toUser, true);
         dialog.setHaveNewMessages(true);
         dialog.setLastNewMessage(System.currentTimeMillis());
         Message message = new Message(null, msg.getText(), new Date(),
                 fromUser.getId(), toUser.getId(), dialog, true);
         messageRepo.save(message);
         userRepo.save(toUser);
+        dialogRepo.save(dialog);
         return new MessageDto(msg.getFrom(), msg.getTo(), msg.getText(),
                 setCurrentDate(message.getDate()));
+    }
+
+    private void findShowStatusByDialogAndUsernameAndSetVisibility(Dialog dialog,
+                                                                   User userFromDB, boolean visible) {
+        dialog.getShowStatuses().stream()
+                .filter(showStatus -> showStatus.getUsername().equals(userFromDB.getUsername()))
+                .findFirst()
+                .ifPresent(showStatus -> showStatus.setVisible(visible));
     }
 
     @Transactional
@@ -171,10 +183,8 @@ public class MessageService {
         User userFromDB = userRepo.findById(user.getId()).orElseThrow();
         Long dialogId = Long.valueOf(strDialogId);
         Dialog dialog = dialogRepo.findById(dialogId).orElseThrow();
-        dialog.getShowStatuses().stream()
-                .filter(showStatus -> showStatus.getUsername().equals(userFromDB.getUsername()))
-                .findFirst()
-                .ifPresent(showStatus -> showStatus.setVisible(false));
+        messageService.readNewMessage(userFromDB, dialog);
+        findShowStatusByDialogAndUsernameAndSetVisibility(dialog, userFromDB, false);
         if (dialog.getShowStatuses().stream().noneMatch(ShowStatus::isVisible))
             dialogRepo.deleteById(dialogId);
         else
