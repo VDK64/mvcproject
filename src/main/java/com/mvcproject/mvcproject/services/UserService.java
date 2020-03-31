@@ -24,6 +24,7 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -47,7 +48,7 @@ public class UserService implements UserDetailsService {
         dbCreate.createUsersInDataBase();
         dbCreate.createDialogsInDataBase();
         dbCreate.createBetsInDataBase();
-        dbCreate.addFriends();
+        dbCreate.formFriends();
     }
 
     private void checkUserExist(User user, ModelAndView model) {
@@ -178,24 +179,12 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public List<User> getFriends(User user) {
-        List<User> friendsList = new ArrayList<>();
-        User userFromDB = userRepo.findById(user.getId()).orElseThrow();
-        userFromDB.getDialogs().forEach(dialog -> dialog.getUsers().forEach(user1 -> {
-            if (!user1.getUsername().equals(user.getUsername()) /*&&
-                    StringUtil.emptyToNull(user1.getSteamId()) != null*/) {
-                friendsList.add(user1);
-            }
-        }));
-        return friendsList;
-    }
-
-    @Transactional
-    public Map<String, Object> getFriends(Long id) {
+    public Map<String, Object> getFriendsSeparately(Long id) {
         Map<String, Object> result = new HashMap<>();
         List<User> friends = new ArrayList<>();
         List<User> unconfirmeds = new ArrayList<>();
         User userFromDB = userRepo.findById(id).orElseThrow();
+        invites(userFromDB, result);
         result.put("user", userFromDB);
         userFromDB.getFriends().forEach(user -> {
             if (user.getFriends().contains(userFromDB))
@@ -206,6 +195,24 @@ public class UserService implements UserDetailsService {
         result.put("friends", friends);
         result.put("unconfirmeds", unconfirmeds);
         return result;
+    }
+
+    private void invites(User principal, Map<String, Object> result) {
+        List<User> whomFriend = userRepo.whomFriend(principal.getId());
+        Set<User> invites = whomFriend.stream()
+                .filter(user -> !principal.getFriends().contains(user))
+                .collect(Collectors.toSet());
+        result.put("invites", invites);
+    }
+
+    @Transactional
+    public Map<String, Object> getFriendsAll(Long id) {
+        User userFromDB = userRepo.findById(id).orElseThrow();
+        List<User> friends = new ArrayList<>(userFromDB.getFriends());
+        return new HashMap<>() {{
+            put("user", userFromDB);
+            put("friends", friends);
+        }};
     }
 
     public void createSessionInfo(Object user) {
@@ -227,5 +234,13 @@ public class UserService implements UserDetailsService {
 
     public int convertSteamIdTo32(String steamId) {
         return new BigInteger(steamId).subtract(new BigInteger("76561197960265728")).intValue();
+    }
+
+    @Transactional
+    public User addFriend(Long id, String inviteUsername) {
+        User userFromDB = userRepo.findById(id).orElseThrow();
+        User inviteUser = userRepo.findByUsername(inviteUsername).orElseThrow();
+        userFromDB.getFriends().add(inviteUser);
+        return userRepo.save(userFromDB);
     }
 }

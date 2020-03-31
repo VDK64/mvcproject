@@ -220,7 +220,7 @@ public class DataBaseCreate {
     }
 
     @Transactional
-    public void addFriends() {
+    public void formFriends() {
         User vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
         User kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
         User petro123 = userRepo.findByUsername("petro123").orElseThrow();
@@ -229,8 +229,9 @@ public class DataBaseCreate {
         vdk64.getFriends().add(kasha111);
         vdk64.getFriends().add(petro123);
         vdk64.getFriends().add(vasiliy228);
-        vdk64.getFriends().add(tony64);
+        tony64.getFriends().add(vdk64);
         kasha111.getFriends().add(vdk64);
+        userRepo.save(tony64);
         userRepo.save(kasha111);
         userRepo.save(vdk64);
     }

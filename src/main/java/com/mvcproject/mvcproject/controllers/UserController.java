@@ -37,15 +37,27 @@ public class UserController {
 
     @GetMapping("/friends")
     public String friends(@AuthenticationPrincipal User user, Model model) {
-        Map<String, Object> data = userService.getFriends(user.getId());
+        Map<String, Object> data = userService.getFriendsSeparately(user.getId());
         User userFromDB = (User) data.get("user");
         model.addAttribute("friends", data.get("friends"));
         model.addAttribute("unconfirmeds", data.get("unconfirmeds"));
+        model.addAttribute("invites", data.get("invites"));
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
         model.addAttribute("newBets", userFromDB.isHaveNewBets());
         return "friends";
+    }
+
+    @PostMapping(value = "/friends", name = "confirmInvite")
+    public String addFriend(@AuthenticationPrincipal User user,
+                            @RequestParam String inviteUsername, Model model) {
+        User userFromDB = userService.addFriend(user.getId(), inviteUsername);
+        UserService.ifAdmin(model, userFromDB);
+        model.addAttribute("user", userFromDB);
+        model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
+        model.addAttribute("newBets", userFromDB.isHaveNewBets());
+        return "redirect:/friends";
     }
 
     @GetMapping("/friends/find_friends")
@@ -108,10 +120,11 @@ public class UserController {
 
     @GetMapping("/bets/createBet")
     public String createBet(@AuthenticationPrincipal User user, Model model) {
-        User userFromDB = userService.getUserById(user.getId());
+        Map<String, Object> data = userService.getFriendsAll(user.getId());
+        User userFromDB = (User) data.get("user");
+        model.addAttribute("friends", data.get("friends"));
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);
-        model.addAttribute("friends", userService.getFriends(userFromDB));
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
         model.addAttribute("newBets", userFromDB.isHaveNewBets());
         return "createBet";
@@ -121,9 +134,10 @@ public class UserController {
     public String createBet(@AuthenticationPrincipal User user, @RequestParam String game,
                             @RequestParam String gamemode, @RequestParam String value, @RequestParam String opponent,
                             @RequestParam String lobbyName, @RequestParam String password) {
-        User userFromDB = userService.getUserById(user.getId());
         ModelAndView modelAndView = new ModelAndView("createBet");
-        modelAndView.addObject("friends", userService.getFriends(userFromDB));
+        Map<String, Object> data = userService.getFriendsAll(user.getId());
+        User userFromDB = (User) data.get("user");
+        modelAndView.addObject("friends", data.get("friends"));
         modelAndView.addObject("newMessages", userFromDB.isHaveNewMessages());
         modelAndView.addObject("newBets", userFromDB.isHaveNewBets());
         UserService.ifAdmin(modelAndView, userFromDB);
