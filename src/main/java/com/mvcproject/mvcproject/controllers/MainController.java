@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Map;
+
 @Controller
 public class MainController {
     @Autowired
@@ -35,12 +37,15 @@ public class MainController {
     @RequestMapping("/friend/{id}")
     public String getGuestPage(@AuthenticationPrincipal User user, Model model,
                                @PathVariable String id) {
-        User userFromDB = userService.getUserById(user.getId());
+        Map<String, Object> data = userService.isFriend(user, Long.parseLong(id));
+        User userFromDB = (User) data.get("user");
+        User friend = (User) data.get("friend");
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);
-        model.addAttribute("friend", userService.getUserById(Long.valueOf(id)));
+        model.addAttribute("friend", friend);
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
         model.addAttribute("newBets", userFromDB.isHaveNewBets());
+        model.addAttribute("isFriend", data.get("isFriend"));
         return "guestPage";
     }
 

@@ -22,12 +22,14 @@
             </#if>
           </div>
         </div>
+        <#if isFriend>
         <form method="post">
           <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
           <input name="friendId" value="${friend.id}" type="hidden">
           <button name="sendMessageToFriend"
           type="submit" class="btn btn-primary btn-sm button">Send message</button>
         </form>
+        </#if>
       </div>
     </div>
 

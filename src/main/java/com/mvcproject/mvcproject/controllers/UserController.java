@@ -80,12 +80,28 @@ public class UserController {
     @PostMapping("/friends/find_friends")
     public ModelAndView findFriends(@AuthenticationPrincipal User user, @RequestParam String username,
                                     ModelAndView model) {
+        model.setViewName("findFriends");
         User userFromDB = userService.getUserById(user.getId());
+        User findUser = userService.findUser(userFromDB, username, model);
         UserService.ifAdmin(model, userFromDB);
         model.addObject("user", userFromDB);
         model.addObject("newMessages", userFromDB.isHaveNewMessages());
         model.addObject("newBets", userFromDB.isHaveNewBets());
+        model.addObject("findUser", findUser);
+        return model;
+    }
+
+    @PostMapping(value = "/friends/find_friends", params = "addFriend")
+    public ModelAndView addFriend(@AuthenticationPrincipal User user, @RequestParam String username,
+                                    ModelAndView model) {
         model.setViewName("findFriends");
+        User userFromDB = userService.getUserById(user.getId());
+        User findUser = userService.findUser(userFromDB, username, model);
+        UserService.ifAdmin(model, userFromDB);
+        model.addObject("user", userFromDB);
+        model.addObject("newMessages", userFromDB.isHaveNewMessages());
+        model.addObject("newBets", userFromDB.isHaveNewBets());
+        model.addObject("findUser", findUser);
         return model;
     }
 

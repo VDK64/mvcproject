@@ -5,6 +5,7 @@ import com.mvcproject.mvcproject.email.EmailService;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.CustomServerException;
+import com.mvcproject.mvcproject.exceptions.InternalServerExceptions;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.session.LoggedUser;
@@ -242,5 +243,23 @@ public class UserService implements UserDetailsService {
         User inviteUser = userRepo.findByUsername(inviteUsername).orElseThrow();
         userFromDB.getFriends().add(inviteUser);
         return userRepo.save(userFromDB);
+    }
+
+    public User findUser(User userFromDB, String username, ModelAndView model) {
+        Optional<User> findUser = userRepo.findByUsername(username);
+        return findUser.orElseThrow(() -> {
+            throw new CustomServerException(ServerErrors.USER_NOT_FOUND, model);
+        });
+    }
+
+    @Transactional
+    public Map<String, Object> isFriend(User principal, long id) {
+        User user = getUserById(principal.getId());
+        User friend = getUserById(id);
+        return new HashMap<>() {{
+            put("user", user);
+            put("friend", friend);
+            put("isFriend", user.getFriends().contains(friend));
+        }};
     }
 }
