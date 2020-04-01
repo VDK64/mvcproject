@@ -5,7 +5,6 @@ import com.mvcproject.mvcproject.email.EmailService;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.CustomServerException;
-import com.mvcproject.mvcproject.exceptions.InternalServerExceptions;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.session.LoggedUser;
@@ -238,10 +237,19 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User addFriend(Long id, String inviteUsername) {
+    public User addFriend(Long id, String inviteUsername, ModelAndView model) {
         User userFromDB = userRepo.findById(id).orElseThrow();
         User inviteUser = userRepo.findByUsername(inviteUsername).orElseThrow();
-        userFromDB.getFriends().add(inviteUser);
+        if (!userFromDB.getFriends().contains(inviteUser)) {
+            userFromDB.getFriends().add(inviteUser);
+        }
+        else {
+            UserService.ifAdmin(model, userFromDB);
+            model.addObject("user", userFromDB);
+            model.addObject("newMessages", userFromDB.isHaveNewMessages());
+            model.addObject("newBets", userFromDB.isHaveNewBets());
+            throw new CustomServerException(ServerErrors.ALREADY_IN_FRIENDS, model);
+        }
         return userRepo.save(userFromDB);
     }
 

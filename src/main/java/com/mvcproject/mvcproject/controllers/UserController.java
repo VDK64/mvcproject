@@ -52,7 +52,8 @@ public class UserController {
     @PostMapping(value = "/friends", params = "confirmInvite")
     public String addFriend(@AuthenticationPrincipal User user,
                             @RequestParam String inviteUsername, Model model) {
-        User userFromDB = userService.addFriend(user.getId(), inviteUsername);
+        User userFromDB = userService.addFriend(user.getId(), inviteUsername,
+                new ModelAndView("/friends"));
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
@@ -82,11 +83,11 @@ public class UserController {
                                     ModelAndView model) {
         model.setViewName("findFriends");
         User userFromDB = userService.getUserById(user.getId());
-        User findUser = userService.findUser(userFromDB, username, model);
         UserService.ifAdmin(model, userFromDB);
         model.addObject("user", userFromDB);
         model.addObject("newMessages", userFromDB.isHaveNewMessages());
         model.addObject("newBets", userFromDB.isHaveNewBets());
+        User findUser = userService.findUser(userFromDB, username, model);
         model.addObject("findUser", findUser);
         return model;
     }
@@ -95,13 +96,11 @@ public class UserController {
     public ModelAndView addFriend(@AuthenticationPrincipal User user, @RequestParam String username,
                                     ModelAndView model) {
         model.setViewName("findFriends");
-        User userFromDB = userService.getUserById(user.getId());
-        User findUser = userService.findUser(userFromDB, username, model);
+        User userFromDB = userService.addFriend(user.getId(), username, model);
         UserService.ifAdmin(model, userFromDB);
         model.addObject("user", userFromDB);
         model.addObject("newMessages", userFromDB.isHaveNewMessages());
         model.addObject("newBets", userFromDB.isHaveNewBets());
-        model.addObject("findUser", findUser);
         return model;
     }
 

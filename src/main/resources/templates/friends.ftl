@@ -40,6 +40,16 @@
        </div>
       </#list>
       <#else>
+
+      <#if error??>
+        <div class="alert alert-danger" role="alert">
+          ${error}
+        </div>
+      </#if>
+
+
+
+
       <#if friends?size == 0>
       <div class="row">
         Sorry, you have not friends yet.
@@ -64,7 +74,7 @@
          <form method="post">
            <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
            <input name="friendId" value="${friend.id}" type="hidden">
-           <button name="sendMessageToFriend" 
+           <button name="sendMessageToFriend"
            type="submit" class="btn btn-primary btn-sm button">Send message</button>
          </form>
          &nbsp&nbsp

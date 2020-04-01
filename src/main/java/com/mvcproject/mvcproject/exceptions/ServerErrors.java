@@ -26,4 +26,5 @@ public class ServerErrors {
     public static final String WRONG_CHANGE_STATUS = "Wrong change status in lobby. Bot api is out of sync";
     public static final String NOT_ENOUGH_MONEY = "Sorry, but your deposit is lower than the bet value!";
     public static final String USER_NOT_FOUND = "Sorry, user not found!";
+    public static final String ALREADY_IN_FRIENDS = "This user is already your friend!";
 }

@@ -26,7 +26,11 @@
       &nbsp&nbsp
 
       <#if error??>
-        ${error}
+      <div class="row">
+        <div class="alert alert-danger" role="alert">
+          ${error}
+        </div>
+      </div>
       <#else>
       <#if findUser??>
       <div class="row">
@@ -46,7 +50,7 @@
         &nbsp&nbsp
         <form method="post">
           <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
-          <input name="friendId" value="${findUser.username}" type="hidden">
+          <input name="username" value="${findUser.username}" type="hidden">
           <button name="addFriend"
           type="submit" class="btn btn-success btn-sm button">add to friends</button>
         </form>
