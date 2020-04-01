@@ -78,7 +78,8 @@ public class UserController {
     }
 
     @PostMapping("/friends/find_friends")
-    public ModelAndView findFriends(@AuthenticationPrincipal User user, ModelAndView model) {
+    public ModelAndView findFriends(@AuthenticationPrincipal User user, @RequestParam String username,
+                                    ModelAndView model) {
         User userFromDB = userService.getUserById(user.getId());
         UserService.ifAdmin(model, userFromDB);
         model.addObject("user", userFromDB);
