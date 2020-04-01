@@ -240,10 +240,15 @@ public class UserService implements UserDetailsService {
     public User addFriend(Long id, String inviteUsername, ModelAndView model) {
         User userFromDB = userRepo.findById(id).orElseThrow();
         User inviteUser = userRepo.findByUsername(inviteUsername).orElseThrow();
-        if (!userFromDB.getFriends().contains(inviteUser)) {
+        if (userFromDB.equals(inviteUser)) {
+            UserService.ifAdmin(model, userFromDB);
+            model.addObject("user", userFromDB);
+            model.addObject("newMessages", userFromDB.isHaveNewMessages());
+            model.addObject("newBets", userFromDB.isHaveNewBets());
+            throw new CustomServerException(ServerErrors.FRIEND_FOR_YOURSELF, model);
+        } else if (!userFromDB.getFriends().contains(inviteUser)) {
             userFromDB.getFriends().add(inviteUser);
-        }
-        else {
+        } else {
             UserService.ifAdmin(model, userFromDB);
             model.addObject("user", userFromDB);
             model.addObject("newMessages", userFromDB.isHaveNewMessages());
