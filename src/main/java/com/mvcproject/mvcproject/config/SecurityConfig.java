@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                     .authorizeRequests()
                     .antMatchers("/readme.txt", "/css/*", "/register", "/login?ok", "/email/**",
-                            "/static/**", "/favicon.ico", "/dota2/**").permitAll()
+                            "/static/**", "/favicon.ico", "/dota2/**", "/h2-console/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                     .formLogin().loginPage("/login").permitAll()

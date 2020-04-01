@@ -8,6 +8,7 @@ import com.mvcproject.mvcproject.exceptions.InternalServerExceptions;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import com.mvcproject.mvcproject.repositories.BetRepo;
 import freemarker.template.utility.StringUtil;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,12 +18,13 @@ public class Validator {
     @Autowired
     private BetRepo betRepo;
     private final String regexName = "^(?!\\s*$)[а-яА-Яa-zA-z]*$";
-    private final String regexUsername = "^[a-zA-Z0-9._-]{3,}$";
-    private final String regexEmail = "^(.+)@(.+)$";
-    private final String regexPassword = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[-_!@#$%^&*+=])(?=\\S+$).{4,}$";
+    @Getter
     private final int maxNameLength = 15;
+    @Getter
     private final int minNameLength = 2;
+    @Getter
     private final int maxPasswordLength = 15;
+    @Getter
     private final int minPasswordLength = 4;
 
     public void validate(String firstname, String lastname, String username, String password, String email,
@@ -116,7 +118,7 @@ public class Validator {
                     model);
         }
         if (lastname.length()<minNameLength) {
-            throw new CustomServerException(String.format(ServerErrors.WRONG_FIRSTNAME, minNameLength, maxNameLength),
+            throw new CustomServerException(String.format(ServerErrors.WRONG_LASTNAME, minNameLength, maxNameLength),
                     model);
         }
     }
@@ -130,7 +132,11 @@ public class Validator {
             throw new CustomServerException(String.format(ServerErrors.WRONG_USERNAME, minNameLength, maxNameLength),
                     model);
         }
-        if (!username.matches(regexUsername)) {
+        if (username.length() < minNameLength) {
+            throw new CustomServerException(String.format(ServerErrors.WRONG_USERNAME, minNameLength, maxNameLength),
+                    model);
+        }
+        if (!username.matches("^[a-zA-Z0-9._-]{3,}$")) {
             throw new CustomServerException(String.format(ServerErrors.WRONG_USERNAME, minNameLength, maxNameLength),
                     model);
         }
@@ -145,7 +151,7 @@ public class Validator {
             throw new CustomServerException(String.format(ServerErrors.WRONG_PASSWORD, minPasswordLength,
                     maxPasswordLength), model);
         }
-        if (!password.matches(regexPassword)) {
+        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[-_!@#$%^&*+=])(?=\\S+$).{4,}$")) {
             throw new CustomServerException(String.format(ServerErrors.WRONG_PASSWORD, minPasswordLength,
                     maxPasswordLength), model);
         }
@@ -159,7 +165,7 @@ public class Validator {
         if (email.length() < minPasswordLength) {
             throw new CustomServerException(ServerErrors.WRONG_EMAIL, model);
         }
-        if (!email.matches(regexEmail)) {
+        if (!email.matches("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)])")) {
             throw new CustomServerException(ServerErrors.WRONG_EMAIL, model);
         }
     }

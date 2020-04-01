@@ -36,6 +36,8 @@ public class UserService implements UserDetailsService {
     private String subject;
     @Value("${email.str}")
     private String msg;
+    @Value("${production}")
+    private boolean production;
     @Autowired
     private DataBaseCreate dbCreate;
     @Autowired
@@ -75,6 +77,7 @@ public class UserService implements UserDetailsService {
                 .accountNonLocked(true)
                 .credentialsNonExpired(true)
                 .enabled(true)
+                .isOnline(false)
                 .deposit(0f)
                 .steamId(null)
                 .haveNewBets(false)
@@ -102,8 +105,9 @@ public class UserService implements UserDetailsService {
     }
 
     private void sendMail(User user) {
-        emailService.sendSimpleMessage("dkvoznyuk@yandex.ru", subject, String.format(msg, user.getUsername(),
-                user.getActivationCode()));
+        if (production)
+            emailService.sendSimpleMessage("dkvoznyuk@yandex.ru", subject, String.format(msg, user.getUsername(),
+                    user.getActivationCode()));
     }
 
     public void changeUser(User user, String firstname, String lastname, String username, String password,
