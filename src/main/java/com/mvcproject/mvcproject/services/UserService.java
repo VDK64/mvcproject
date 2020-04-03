@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.util.*;
@@ -45,13 +44,13 @@ public class UserService implements UserDetailsService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @PostConstruct
-    public void init() {
-        dbCreate.createUsersInDataBase();
-        dbCreate.createDialogsInDataBase();
-        dbCreate.createBetsInDataBase();
-        dbCreate.formFriends();
-    }
+//    @PostConstruct
+//    public void init() {
+//        dbCreate.createUsersInDataBase();
+//        dbCreate.createDialogsInDataBase();
+//        dbCreate.createBetsInDataBase();
+//        dbCreate.formFriends();
+//    }
 
     private void checkUserExist(User user, ModelAndView model) {
         userRepo.findByUsername(user.getUsername()).
@@ -83,6 +82,8 @@ public class UserService implements UserDetailsService {
                 .haveNewBets(false)
                 .haveNewMessages(false)
                 .build());
+        if (!production)
+            user.setActivationCode(null);
         checkUserExist(user, model);
         userRepo.save(user);
         sendMail(user);
@@ -106,7 +107,7 @@ public class UserService implements UserDetailsService {
 
     private void sendMail(User user) {
         if (production)
-            emailService.sendSimpleMessage("dkvoznyuk@yandex.ru", subject, String.format(msg, user.getUsername(),
+            emailService.sendSimpleMessage(user.getEmail(), subject, String.format(msg, user.getUsername(),
                     user.getActivationCode()));
     }
 

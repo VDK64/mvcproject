@@ -40,19 +40,20 @@
        </div>
       </#list>
       <#else>
-
       <#if error??>
         <div class="alert alert-danger" role="alert">
           ${error}
         </div>
       </#if>
-
-
-
-
-      <#if friends?size == 0>
+      <#if friends?size == 0 && unconfirmeds?size==0>
       <div class="row">
         Sorry, you have not friends yet.
+      </div>
+        <div class="row">
+          <a href="/friends/find_friends">
+            <button type="button" class="btn btn-success btn-sm button">Find Friends
+            </button>
+          </a>
       </div>
       <#else>
       <#list friends as friend>
