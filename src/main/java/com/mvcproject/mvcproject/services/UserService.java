@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.util.*;
@@ -44,13 +45,13 @@ public class UserService implements UserDetailsService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-//    @PostConstruct
-//    public void init() {
-//        dbCreate.createUsersInDataBase();
-//        dbCreate.createDialogsInDataBase();
-//        dbCreate.createBetsInDataBase();
-//        dbCreate.formFriends();
-//    }
+    @PostConstruct
+    public void init() {
+        dbCreate.createUsersInDataBase();
+        dbCreate.createDialogsInDataBase();
+        dbCreate.createBetsInDataBase();
+        dbCreate.formFriends();
+    }
 
     private void checkUserExist(User user, ModelAndView model) {
         userRepo.findByUsername(user.getUsername()).
