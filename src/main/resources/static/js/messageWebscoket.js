@@ -38,7 +38,9 @@ stompClient.connect(headers, function(frame) {
   stompClient.subscribe('/user/queue/updates', function(msgOut) {
     newMessages = true;
     let message = JSON.parse(msgOut.body);
-    showNotification('You have new message');
+    if (!url.includes('/dialogs')) {
+      showNotification('You have new message');
+    }
     let event = new CustomEvent("message", {
       'detail': message.from
     });
@@ -66,14 +68,18 @@ function dialogStyle(username) {
   let elem = document.getElementById(username + '-new');
   if (!elem && username !== undefined) {
     let a = document.getElementById(username);
-    let td = a.parentElement;
-    let tr = td.parentElement;
-    let tbody = tr.parentElement;
-    let b = document.createElement('b');
-    b.setAttribute('id', username + '-new');
-    b.append(a);
-    td.prepend(b);
-    tr.prepend(td);
-    tbody.prepend(tr);
+    if (a == null) {
+      document.location.href = '/dialogs';
+    } else {
+      let td = a.parentElement;
+      let tr = td.parentElement;
+      let tbody = tr.parentElement;
+      let b = document.createElement('b');
+      b.setAttribute('id', username + '-new');
+      b.append(a);
+      td.prepend(b);
+      tr.prepend(td);
+      tbody.prepend(tr);
+    }
   }
 }
