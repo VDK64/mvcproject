@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Entity
 @Table(name = "shw_status")
-@SequenceGenerator(name = "seqShw_status", allocationSize = 1)
+@SequenceGenerator(name = "seqShw_status", allocationSize = 1, initialValue = 7)
 public class ShowStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqShw_status")

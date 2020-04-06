@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "dlg")
-@SequenceGenerator(name = "seqDialog", allocationSize = 1)
+@SequenceGenerator(name = "seqDialog", allocationSize = 1, initialValue = 3)
 public class Dialog {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqDialog")

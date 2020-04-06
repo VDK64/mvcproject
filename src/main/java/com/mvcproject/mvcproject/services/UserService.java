@@ -1,6 +1,5 @@
 package com.mvcproject.mvcproject.services;
 
-import com.mvcproject.mvcproject.data.DataBaseCreate;
 import com.mvcproject.mvcproject.email.EmailService;
 import com.mvcproject.mvcproject.entities.Role;
 import com.mvcproject.mvcproject.entities.User;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.util.*;
@@ -39,19 +37,9 @@ public class UserService implements UserDetailsService {
     @Value("${production}")
     private boolean production;
     @Autowired
-    private DataBaseCreate dbCreate;
-    @Autowired
     private Validator validator;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-
-    @PostConstruct
-    public void init() {
-        dbCreate.createUsersInDataBase();
-        dbCreate.createDialogsInDataBase();
-        dbCreate.createBetsInDataBase();
-        dbCreate.formFriends();
-    }
 
     private void checkUserExist(User user, ModelAndView model) {
         userRepo.findByUsername(user.getUsername()).
@@ -132,7 +120,8 @@ public class UserService implements UserDetailsService {
         userRepo.save(user);
     }
 
-    private Map<String, String> checkUserField(String firstname, String lastname, String username, String password, User user) {
+    private Map<String, String> checkUserField(String firstname, String lastname, String username,
+                                               String password, User user) {
         Map<String, String> res = new LinkedHashMap<>();
         if (firstname == null || firstname.equals("")) {
             res.put("firstname", user.getFirstname());

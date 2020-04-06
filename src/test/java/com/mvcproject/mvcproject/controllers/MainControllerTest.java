@@ -1,6 +1,5 @@
 package com.mvcproject.mvcproject.controllers;
 
-import com.mvcproject.mvcproject.common.DataBaseContent;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import com.mvcproject.mvcproject.repositories.UserRepo;
@@ -12,22 +11,19 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -40,9 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@TestPropertySource(locations = "classpath:test-application.properties")
-@ContextConfiguration
+@RunWith(SpringRunner.class)
 @SpringBootTest
 @WebAppConfiguration
 @AutoConfigureMockMvc
@@ -54,8 +48,6 @@ public class MainControllerTest {
     private Validator validator;
     @Autowired
     private UserRepo userRepo;
-    @Autowired
-    private DataBaseContent content;
 
     @Before
     public void setup() {
@@ -208,7 +200,7 @@ public class MainControllerTest {
 
     @Test
     public void testLogin() throws Exception {
-        User vdk64 = content.getUsers().get("vdk64");
+        User vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
         mockMvc.perform(formLogin("/login").user(vdk64.getUsername()).password("a"))
                 .andDo(print())
                 .andExpect(authenticated());
@@ -227,9 +219,9 @@ public class MainControllerTest {
 
     @Test
     public void testGuestPage() throws Exception {
-        User vdk64 = content.getUsers().get("vdk64");
-        User kasha111 = content.getUsers().get("kasha111");
-        User user = content.getUsers().get("user");
+        User vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
+        User kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
+        User user = userRepo.findByUsername("user").orElseThrow();
         mockMvc.perform(get("/friend/3").with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -250,9 +242,9 @@ public class MainControllerTest {
             put("sendMessageToFriend", Collections.singletonList(""));
             put("friendId", Collections.singletonList("3"));
         }};
-        User vdk64 = content.getUsers().get("vdk64");
-        User kasha111 = content.getUsers().get("kasha111");
-        User user = content.getUsers().get("user");
+        User vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
+        User kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
+        User user = userRepo.findByUsername("user").orElseThrow();
         MvcResult mvcResult = mockMvc.perform(post("/friend/3").params(params)
                 .with(user(vdk64)).with(csrf()))
                 .andDo(print())

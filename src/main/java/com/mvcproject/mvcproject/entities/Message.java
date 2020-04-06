@@ -12,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "msg")
-@SequenceGenerator(name = "seqMessage", allocationSize = 1)
+@SequenceGenerator(name = "seqMessage", allocationSize = 1, initialValue = 8)
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqMessage")

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(exclude = {"game", "user", "opponent"})
 @Entity
 @Table(name = "bet")
-@SequenceGenerator(name = "seqBet", allocationSize = 1)
+@SequenceGenerator(name = "seqBet", allocationSize = 1, initialValue = 3)
 public class Bet {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqBet")

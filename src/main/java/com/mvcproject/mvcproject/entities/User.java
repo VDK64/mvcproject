@@ -16,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "usr")
-@SequenceGenerator(name = "seqUser", allocationSize = 1)
+@SequenceGenerator(name = "seqUser", allocationSize = 1, initialValue = 7)
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqUser")
@@ -26,6 +26,7 @@ public class User implements UserDetails {
     @NotNull
     private String lastname;
     @NotNull
+    @Column(unique = true)
     private String username;
     private String email;
     private String activationCode;
