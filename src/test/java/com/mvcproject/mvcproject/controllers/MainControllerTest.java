@@ -15,12 +15,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -50,6 +51,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @AutoConfigureMockMvc
 public class MainControllerTest {
+    @Value("${success.confirm}")
+    private String ok;
+    @Value("${wrong.confirm}")
+    private String wringConfirm;
     @Autowired
     private WebApplicationContext context;
     private MockMvc mockMvc;
@@ -63,6 +68,8 @@ public class MainControllerTest {
     private DialogRepo dialogRepo;
     @Autowired
     private MessageRepo messageRepo;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
     private User vdk64;
     private User kasha111;
     private User user;
@@ -227,9 +234,6 @@ public class MainControllerTest {
                 .andDo(print())
                 .andExpect(unauthenticated())
                 .andExpect(redirectedUrlPattern("/login?error"));
-        mockMvc.perform(get("/login?error"))
-                .andDo(print())
-                .andExpect(model().attribute("error", false));
     }
 
     @Test
@@ -279,19 +283,49 @@ public class MainControllerTest {
     @Test
     public void testConfirmEmail() throws Exception {
         String activationCode = "activation001";
+        String password = "Passworld@123";
         User vanchk64 = new User(null, "Petr", "Ivanchenko", "vanchk64",
-                "yenmbgvf@10mail.org", activationCode,"default", null,
-                "Passworld@123", true, true, true,
-                true, null, null, 100F, null, null, false,
+                "yenmbgvf@10mail.org", activationCode,"default",
+                Stream.of(Role.USER).collect(Collectors.toSet()),
+                passwordEncoder.encode(password), true, true, true,
+                false, null, null, 100F, null, null, false,
                 null, false, false);
         userRepo.save(vanchk64);
-
-        MvcResult mvcResult = mockMvc.perform(get("/email/activate/" + activationCode))
+        mockMvc.perform(formLogin("/login")
+                .user(vanchk64.getUsername())
+                .password(password))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(unauthenticated());
+        mockMvc.perform(get("/email/activate/ascasd123"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(redirectedUrl("/messages/1"))
-                .andReturn();
-        System.out.println();
+                .andExpect(model().attribute("msg", wringConfirm));
+        mockMvc.perform(get("/email/activate/" + activationCode))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("msg", ok));
+        vanchk64 = userRepo.findByUsername("vanchk64").orElseThrow();
+        Assert.assertNull(vanchk64.getActivationCode());
+        mockMvc.perform(formLogin("/login")
+                .user(vanchk64.getUsername())
+                .password(password))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"))
+                .andExpect(authenticated());
+    }
+
+    @Test
+    public void testLoginMethod() throws Exception {
+        mockMvc.perform(get("/login?error="))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("error", "credentials"));
+        mockMvc.perform(get("/login?error=disabled"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("error", "disabled"));
     }
 
 
