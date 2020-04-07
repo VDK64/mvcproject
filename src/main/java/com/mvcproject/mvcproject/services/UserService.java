@@ -64,34 +64,28 @@ public class UserService implements UserDetailsService {
                 .avatar("default")
                 .accountNonLocked(true)
                 .credentialsNonExpired(true)
-                .enabled(true)
+                .enabled(false)
                 .isOnline(false)
                 .deposit(0f)
                 .steamId(null)
                 .haveNewBets(false)
                 .haveNewMessages(false)
                 .build());
-        if (!production)
+        if (!production) {
             user.setActivationCode(null);
+            user.setEnabled(true);
+        }
         checkUserExist(user, model);
         userRepo.save(user);
-        sendMail(user);
+        new Thread(() -> sendMail(user)).start();
     }
 
     public static void ifAdmin(Model model, User user) {
-        if (user.getAuthorities().contains(Role.ADMIN)) {
-            model.addAttribute("admin", true);
-        } else {
-            model.addAttribute("admin", false);
-        }
+        model.addAttribute("admin", user.getAuthorities().contains(Role.ADMIN));
     }
 
     public static void ifAdmin(ModelAndView model, User user) {
-        if (user.getAuthorities().contains(Role.ADMIN)) {
-            model.addObject("admin", true);
-        } else {
-            model.addObject("admin", false);
-        }
+        model.addObject("admin", user.getAuthorities().contains(Role.ADMIN));
     }
 
     private void sendMail(User user) {
@@ -160,17 +154,12 @@ public class UserService implements UserDetailsService {
     public boolean confirmEmail(String code, Model model) {
         User user = userRepo.findByActivationCode(code).orElse(null);
         if (user != null && user.getActivationCode().equals(code)) {
-            model.addAttribute("username", user.getUsername());
-            if (user.getAuthorities().contains(Role.ADMIN)) {
-                model.addAttribute("admin", "true");
-            }
             user.setActivationCode(null);
+            user.setEnabled(true);
             userRepo.save(user);
             return true;
-        } else {
-            model.addAttribute("username", "unknown");
+        } else
             return false;
-        }
     }
 
     @Transactional

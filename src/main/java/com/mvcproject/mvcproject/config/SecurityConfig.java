@@ -1,5 +1,6 @@
 package com.mvcproject.mvcproject.config;
 
+import com.mvcproject.mvcproject.exceptions.MyCustomFailureHandler;
 import com.mvcproject.mvcproject.services.UserService;
 import com.mvcproject.mvcproject.session.MyLogoutSuccessHandler;
 import com.mvcproject.mvcproject.session.MySimpleUrlAuthenticationSuccessHandler;
@@ -28,6 +29,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private MySimpleUrlAuthenticationSuccessHandler mySimpleUrlAuthenticationSuccessHandler;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private MyCustomFailureHandler myCustomFailureHandler;
 
     //Handlers are disabled because app working with dev tools and save last sessions.
 
@@ -36,10 +39,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                     .authorizeRequests()
                     .antMatchers("/readme.txt", "/css/*", "/register", "/login?ok", "/email/**",
-                            "/static/**", "/favicon.ico", "/dota2/**", "/h2-console/**").permitAll()
+                            "/static/**", "/favicon.ico", "/dota2/**", "/h2-console/**", "/login/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                     .formLogin().loginPage("/login").permitAll()
+                .and()
+                    .formLogin().failureHandler(myCustomFailureHandler)
 //                    .successHandler(mySimpleUrlAuthenticationSuccessHandler)
                 .and()
                     .logout()

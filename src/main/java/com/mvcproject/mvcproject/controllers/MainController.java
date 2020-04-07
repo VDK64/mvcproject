@@ -58,7 +58,10 @@ public class MainController {
     @RequestMapping("/login")
     public String getLogin(@RequestParam(value = "error", required = false) String error,
                            Model model) {
-        model.addAttribute("error", error != null);
+        if (error != null && error.equals("disabled"))
+            model.addAttribute("error", "disabled");
+        else if (error != null)
+            model.addAttribute("error", "credentials");
         return "login";
     }
 
@@ -89,8 +92,6 @@ public class MainController {
             model.addAttribute("msg", ok);
         else
             model.addAttribute("msg", wrongConfirm);
-        model.addAttribute("admin", false);
-        model.addAttribute("user", new User());
         return "emailConfirm";
     }
 }

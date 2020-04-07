@@ -21,8 +21,12 @@
               <h3 class="panel-title">Login with Username and Password</h3>
             </div>
             <div class="panel-body">
-              <#if error>
+              <#if error??>
+                <#if error == 'disabled'>
+                <div class="alert alert-danger" role="alert">Confirm your email first!</div>
+                <#else>
                 <div class="alert alert-danger" role="alert">Invalid Username or Password!</div>
+                </#if>
               </#if>
               <#if ok??>
                 <div class="alert alert-success" role="alert">You've been register successfully. Please, check your mailbox!</div>

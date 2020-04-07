@@ -1,10 +1,16 @@
 package com.mvcproject.mvcproject.controllers;
 
+import com.mvcproject.mvcproject.entities.Role;
+import com.mvcproject.mvcproject.entities.ShowStatus;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
+import com.mvcproject.mvcproject.repositories.DialogRepo;
+import com.mvcproject.mvcproject.repositories.MessageRepo;
+import com.mvcproject.mvcproject.repositories.ShowStatusRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.validation.Validator;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,10 +26,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -48,6 +57,15 @@ public class MainControllerTest {
     private Validator validator;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private ShowStatusRepo showStatusRepo;
+    @Autowired
+    private DialogRepo dialogRepo;
+    @Autowired
+    private MessageRepo messageRepo;
+    private User vdk64;
+    private User kasha111;
+    private User user;
 
     @Before
     public void setup() {
@@ -55,6 +73,9 @@ public class MainControllerTest {
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
+        vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
+        kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
+        user = userRepo.findByUsername("user").orElseThrow();
     }
 
     private void testEndpointModel(String paramName, String paramValue, Object expectMessage,
@@ -127,7 +148,6 @@ public class MainControllerTest {
             put("password", Collections.singletonList("Passworld@12"));
             put("email", Collections.singletonList("asd@asd.ru"));
         }};
-
         List<String> lastNameList = new ArrayList<>(Arrays.asList("a", "фы№", "asd@", "asd1",
                 "asdczAsdqweFgtrAasdawq"));
         lastNameList.forEach(lastName -> testEndpointModel("lastname", lastName,
@@ -200,13 +220,23 @@ public class MainControllerTest {
 
     @Test
     public void testLogin() throws Exception {
-        User vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
         mockMvc.perform(formLogin("/login").user(vdk64.getUsername()).password("a"))
                 .andDo(print())
                 .andExpect(authenticated());
         mockMvc.perform(formLogin("/login").user(vdk64.getUsername()).password("b"))
                 .andDo(print())
-                .andExpect(unauthenticated());
+                .andExpect(unauthenticated())
+                .andExpect(redirectedUrlPattern("/login?error"));
+        mockMvc.perform(get("/login?error"))
+                .andDo(print())
+                .andExpect(model().attribute("error", false));
+    }
+
+    @Test
+    public void testLoginAndMainPage() throws Exception {
+        mockMvc.perform(get("/").with(user(vdk64)))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -219,9 +249,6 @@ public class MainControllerTest {
 
     @Test
     public void testGuestPage() throws Exception {
-        User vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
-        User kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
-        User user = userRepo.findByUsername("user").orElseThrow();
         mockMvc.perform(get("/friend/3").with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -242,14 +269,47 @@ public class MainControllerTest {
             put("sendMessageToFriend", Collections.singletonList(""));
             put("friendId", Collections.singletonList("3"));
         }};
-        User vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
-        User kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
-        User user = userRepo.findByUsername("user").orElseThrow();
-        MvcResult mvcResult = mockMvc.perform(post("/friend/3").params(params)
+        mockMvc.perform(post("/friend/3").params(params)
                 .with(user(vdk64)).with(csrf()))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/messages/1"));
+    }
+
+    @Test
+    public void testConfirmEmail() throws Exception {
+        String activationCode = "activation001";
+        User vanchk64 = new User(null, "Petr", "Ivanchenko", "vanchk64",
+                "yenmbgvf@10mail.org", activationCode,"default", null,
+                "Passworld@123", true, true, true,
+                true, null, null, 100F, null, null, false,
+                null, false, false);
+        userRepo.save(vanchk64);
+
+        MvcResult mvcResult = mockMvc.perform(get("/email/activate/" + activationCode))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(redirectedUrl("/messages/1"))
                 .andReturn();
         System.out.println();
+    }
+
+
+    @Test
+    @Transactional
+    public void testSendMessageFromMainPage() throws Exception {
+        List<ShowStatus> byDialogId = showStatusRepo.findByDialogId(1L);
+        Assert.assertEquals(2, byDialogId.size());
+        Assert.assertTrue(byDialogId.stream().noneMatch(showStatus -> showStatus.getDialog().getHaveNewMessages()));
+        Assert.assertTrue(byDialogId.stream().allMatch(ShowStatus::isVisible));
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(){{
+            put("sendMessageToFriend", Collections.singletonList(""));
+            put("friendId", Collections.singletonList("3"));
+        }};
+        mockMvc.perform(post("/friend/3").params(params)
+                .with(user(vdk64)).with(csrf()))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/messages/1"));
     }
 }
