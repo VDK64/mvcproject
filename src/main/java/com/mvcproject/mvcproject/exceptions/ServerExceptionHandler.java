@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.ModelAndView;
 
 @ControllerAdvice
-public class CustomExceptionHandler {
+public class ServerExceptionHandler {
     @Autowired
     private BetService betService;
     @Autowired
@@ -33,9 +33,6 @@ public class CustomExceptionHandler {
                                                  MaxUploadSizeExceededException ex) {
         ModelAndView model = new ModelAndView("/settings");
         model.addObject("user", user);
-//        if (user.getAuthorities().contains(Role.valueOf("ADMIN"))) {
-//            model.addObject("admin", true);
-//        }
         UserService.ifAdmin(model, user);
         model.addObject("error", ServerErrors.FILE_LIMIT);
         return model;

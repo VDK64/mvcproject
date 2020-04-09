@@ -57,25 +57,21 @@ public class SettingsService {
         userRepo.save(user);
     }
 
-    public User setSettings(User user, String firstname, String lastname, String username, ModelAndView modelAndView) {
-        User userFromDB = userRepo.findById(user.getId()).orElseThrow();
+    public User setSettings(User user, String firstname, String lastname,
+                            ModelAndView modelAndView) {
         UserService.ifAdmin(modelAndView, user);
         modelAndView.addObject("user", user);
         if (!(StringUtil.emptyToNull(firstname) == null)) {
-            validator.validFirstname(firstname, modelAndView);
-            userFromDB.setFirstname(firstname);
+            validator.validFirstname(firstname, modelAndView, user);
+            user.setFirstname(firstname);
 
         }
         if (!(StringUtil.emptyToNull(lastname) == null)) {
-            validator.validLastname(lastname, modelAndView);
-            userFromDB.setLastname(lastname);
+            validator.validLastname(lastname, modelAndView, user);
+            user.setLastname(lastname);
         }
-        if (!(StringUtil.emptyToNull(username) == null)) {
-            validator.validUsername(username, modelAndView);
-            userFromDB.setUsername(username);
-        }
-        userRepo.save(userFromDB);
-        return userFromDB;
+        userRepo.save(user);
+        return user;
     }
 
     public void deposit(User user, String deposit, ModelAndView modelAndView) {

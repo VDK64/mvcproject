@@ -50,8 +50,8 @@ public class UserService implements UserDetailsService {
     }
 
     public void createUser(String firstname, String lastname, String username, String password, String email,
-                           ModelAndView model) {
-        validator.validate(firstname, lastname, username, password, email, model);
+                           ModelAndView model, User principal) {
+        validator.validate(firstname, lastname, username, password, email, model, principal);
         User user = (User.builder()
                 .username(username)
                 .firstname(firstname)
@@ -94,11 +94,13 @@ public class UserService implements UserDetailsService {
                     user.getActivationCode()));
     }
 
-    public void changeUser(User user, String firstname, String lastname, String username, String password,
-                           Map<String, String> authorities, ModelAndView model) {
-        Map<String, String> map = checkUserField(firstname, lastname, username, password, user);
-        model.addObject("username", user.getUsername());
+    public void changeUser(User user, String firstname, String lastname, String password,
+                           Map<String, String> authorities, ModelAndView model, User principal) {
+        model.addObject("user", principal);
+        UserService.ifAdmin(model, principal);
+        model.addObject("find", user);
         model.addObject("authorities", Role.values());
+        Map<String, String> map = checkUserField(model, firstname, lastname, password, user, principal);
         Set<Role> roles = new LinkedHashSet<>();
         authorities.forEach((s1, s2) -> {
             if (s1.contains("authority")) {
@@ -107,34 +109,31 @@ public class UserService implements UserDetailsService {
         });
         user.setFirstname(map.get("firstname"));
         user.setLastname(map.get("lastname"));
-        user.setUsername(map.get("username"));
         checkUserExist(user, model);
         user.setPassword(map.get("password"));
         user.setAuthorities(roles);
         userRepo.save(user);
     }
 
-    private Map<String, String> checkUserField(String firstname, String lastname, String username,
-                                               String password, User user) {
+    private Map<String, String> checkUserField(ModelAndView model, String firstname, String lastname,
+                                               String password, User user, User principal) {
         Map<String, String> res = new LinkedHashMap<>();
         if (firstname == null || firstname.equals("")) {
             res.put("firstname", user.getFirstname());
         } else {
+            validator.validFirstname(firstname, model, principal);
             res.put("firstname", firstname);
         }
         if (lastname == null || lastname.equals("")) {
             res.put("lastname", user.getLastname());
         } else {
+            validator.validLastname(lastname, model, principal);
             res.put("lastname", lastname);
-        }
-        if (username == null || username.equals("")) {
-            res.put("username", user.getUsername());
-        } else {
-            res.put("username", username);
         }
         if (password == null || password.equals("")) {
             res.put("password", user.getPassword());
         } else {
+            validator.validPassword(password, model, principal);
             res.put("password", passwordEncoder.encode(password));
         }
         return res;

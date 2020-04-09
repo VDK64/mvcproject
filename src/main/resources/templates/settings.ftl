@@ -36,7 +36,6 @@
                 <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
                 <input type="text" class="form-control" name="firstname" placeholder=${user.firstname}>
                 <input type="text" class="form-control" name="lastname" placeholder=${user.lastname}>
-                <input type="text" class="form-control" name="username" placeholder=${user.username}>
                 <button type="submit" name="changeData" class="btn btn-success" style="margin-top: 5px">Change data</button>
               </form>
             </div>

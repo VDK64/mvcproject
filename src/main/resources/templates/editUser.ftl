@@ -6,27 +6,21 @@
   <input id="newMessages" value="${newMessages?c}" type="hidden">
   <input id="newBets" value="${newBets?c}" type="hidden">
 
-    <div class="mainDiv" style="margin-top:45px">
+    <div class="container-fluid" style="margin-top:45px">
+      <#if error??>
+        <div class="alert alert-danger" role="alert">${error}</div>
+      </#if>
       <div class="row">
         <div class="col-md-6 col-md-offset-3">
-          <#if error??>
-            <div class="alert alert-danger" role="alert">
-              Username is already exist! Try another!
-            </div>
-          </#if>
           <form method="post">
             <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
             <div class="form-group">
               <label for="firstname">Firstname</label>
-              <input type="text" class="form-control" name="firstname" placeholder=${user.firstname}>
+              <input type="text" class="form-control" name="firstname" placeholder=${find.firstname}>
             </div>
             <div class="form-group">
               <label for="lastname">Lastname</label>
-              <input type="text" class="form-control" name="lastname" placeholder=${user.lastname}>
-            </div>
-            <div class="form-group">
-              <label for="username">Username</label>
-              <input type="text" class="form-control" name="username" placeholder=${user.username}>
+              <input type="text" class="form-control" name="lastname" placeholder=${find.lastname}>
             </div>
             <div class="form-group">
               <label for="password">Password</label>
@@ -37,7 +31,9 @@
               <#list authorities as authority>
                 <#assign i++>
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="authority${i}" value=${authority} ${user.authorities?seq_contains(authority)?string("checked", "" )}>
+                    <input class="form-check-input" type="checkbox"
+                    name="authority${i}" value=${authority}
+                    ${find.authorities?seq_contains(authority)?string("checked", "" )}>
                     <label class="form-check-label" for="exampleRadios1">
                       ${authority}
                     </label>

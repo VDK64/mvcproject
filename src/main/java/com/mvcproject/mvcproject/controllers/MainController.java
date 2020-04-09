@@ -78,7 +78,7 @@ public class MainController {
                                @RequestParam String email,
                                RedirectAttributes attributes) {
         userService.createUser(firstname, lastname, username, password, email,
-                new ModelAndView("register"));
+                new ModelAndView("register"), null);
         attributes.addFlashAttribute("ok", "true");
         return "redirect:/login";
     }

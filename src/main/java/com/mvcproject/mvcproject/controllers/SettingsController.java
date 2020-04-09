@@ -67,11 +67,11 @@ public class SettingsController {
 
     @PostMapping(params = "changeData")
     public String setSettings(@AuthenticationPrincipal User user, Model model, @RequestParam String firstname,
-                              @RequestParam String lastname, @RequestParam String username) {
+                              @RequestParam String lastname) {
         User userFromDB = userService.getUserById(user.getId());
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
         model.addAttribute("newBets", userFromDB.isHaveNewBets());
-        User updateUser = settingsService.setSettings(userFromDB, firstname, lastname, username,
+        User updateUser = settingsService.setSettings(userFromDB, firstname, lastname,
                 new ModelAndView("settings"));
         UserService.ifAdmin(model, updateUser);
         model.addAttribute("user", updateUser);
