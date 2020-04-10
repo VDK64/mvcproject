@@ -70,13 +70,18 @@ public class FriendController {
     public ModelAndView findFriends(@AuthenticationPrincipal User user, @RequestParam String username,
                                     ModelAndView model) {
         model.setViewName("findFriends");
-        User userFromDB = userService.getUserById(user.getId());
+        Map<String, Object> data = userService.isFriend(user, username);
+        User userFromDB = (User) data.get("user");
+        User findUser = (User) data.get("friend");
         UserService.ifAdmin(model, userFromDB);
         model.addObject("user", userFromDB);
         model.addObject("newMessages", userFromDB.isHaveNewMessages());
         model.addObject("newBets", userFromDB.isHaveNewBets());
-        User findUser = userService.findUser(userFromDB, username, model);
         model.addObject("findUser", findUser);
+        if (userFromDB.equals(findUser))
+            model.addObject("isFriend", true);
+        else
+            model.addObject("isFriend", data.get("isFriend"));
         return model;
     }
 

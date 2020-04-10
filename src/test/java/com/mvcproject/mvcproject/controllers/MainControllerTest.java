@@ -10,7 +10,6 @@ import com.mvcproject.mvcproject.repositories.ShowStatusRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.validation.Validator;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +34,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.junit.Assert.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -108,6 +108,7 @@ public class MainControllerTest {
             put("username", Collections.singletonList("username"));
             put("password", Collections.singletonList("Passworld@12"));
         }};
+
         List<String> emailList = new ArrayList<>(Arrays.asList("a", "ab", "ab@."));
         emailList.forEach(email -> testEndpointModel("email", email,
                 ServerErrors.WRONG_EMAIL, params));
@@ -155,6 +156,7 @@ public class MainControllerTest {
             put("password", Collections.singletonList("Passworld@12"));
             put("email", Collections.singletonList("asd@asd.ru"));
         }};
+
         List<String> lastNameList = new ArrayList<>(Arrays.asList("a", "фы№", "asd@", "asd1",
                 "asdczAsdqweFgtrAasdawq"));
         lastNameList.forEach(lastName -> testEndpointModel("lastname", lastName,
@@ -172,6 +174,7 @@ public class MainControllerTest {
             put("password", Collections.singletonList("Passworld@12"));
             put("email", Collections.singletonList("asd@asd.ru"));
         }};
+
         List<String> firstNameList = new ArrayList<>(Arrays.asList("a", "фы№", "asd@", "asd1",
                 "asdczAsdqweFgtrAasdawq"));
         firstNameList.forEach(firstName -> testEndpointModel("firstname", firstName,
@@ -189,6 +192,7 @@ public class MainControllerTest {
             put("username", Collections.singletonList("username"));
             put("email", Collections.singletonList("asd@asd.ru"));
         }};
+
         List<String> passwordList = new ArrayList<>(Arrays.asList("Passworld!@3123123",
                 "password!123", "password123", "Password123", "Password!"));
         passwordList.forEach(password -> testEndpointModel("password", password,
@@ -260,6 +264,7 @@ public class MainControllerTest {
                 .andExpect(model().attribute("isFriend", true))
                 .andExpect(content().string(Matchers.
                         containsString("\"sendMessageToFriend\"")));
+
         mockMvc.perform(get("/friend/2").with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -273,6 +278,7 @@ public class MainControllerTest {
             put("sendMessageToFriend", Collections.singletonList(""));
             put("friendId", Collections.singletonList("3"));
         }};
+
         mockMvc.perform(post("/friend/3").params(params)
                 .with(user(vdk64)).with(csrf()))
                 .andDo(print())
@@ -291,22 +297,27 @@ public class MainControllerTest {
                 false, null, null, 100F, null, null, false,
                 null, false, false);
         userRepo.save(vanchk64);
+
         mockMvc.perform(formLogin("/login")
                 .user(vanchk64.getUsername())
                 .password(password))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(unauthenticated());
+
         mockMvc.perform(get("/email/activate/ascasd123"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("msg", wringConfirm));
+
         mockMvc.perform(get("/email/activate/" + activationCode))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("msg", ok));
+
         vanchk64 = userRepo.findByUsername("vanchk64").orElseThrow();
-        Assert.assertNull(vanchk64.getActivationCode());
+        assertNull(vanchk64.getActivationCode());
+
         mockMvc.perform(formLogin("/login")
                 .user(vanchk64.getUsername())
                 .password(password))
@@ -322,6 +333,7 @@ public class MainControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("error", "credentials"));
+
         mockMvc.perform(get("/login?error=disabled"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -333,13 +345,15 @@ public class MainControllerTest {
     @Transactional
     public void testSendMessageFromMainPage() throws Exception {
         List<ShowStatus> byDialogId = showStatusRepo.findByDialogId(1L);
-        Assert.assertEquals(2, byDialogId.size());
-        Assert.assertTrue(byDialogId.stream().noneMatch(showStatus -> showStatus.getDialog().getHaveNewMessages()));
-        Assert.assertTrue(byDialogId.stream().allMatch(ShowStatus::isVisible));
+        assertEquals(2, byDialogId.size());
+        assertTrue(byDialogId.stream().noneMatch(showStatus -> showStatus.getDialog().getHaveNewMessages()));
+        assertTrue(byDialogId.stream().allMatch(ShowStatus::isVisible));
+
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>(){{
             put("sendMessageToFriend", Collections.singletonList(""));
             put("friendId", Collections.singletonList("3"));
         }};
+
         mockMvc.perform(post("/friend/3").params(params)
                 .with(user(vdk64)).with(csrf()))
                 .andDo(print())

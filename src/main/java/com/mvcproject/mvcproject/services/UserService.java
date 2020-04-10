@@ -222,21 +222,7 @@ public class UserService implements UserDetailsService {
     public User addFriend(Long id, String inviteUsername, ModelAndView model) {
         User userFromDB = userRepo.findById(id).orElseThrow();
         User inviteUser = userRepo.findByUsername(inviteUsername).orElseThrow();
-        if (userFromDB.equals(inviteUser)) {
-            UserService.ifAdmin(model, userFromDB);
-            model.addObject("user", userFromDB);
-            model.addObject("newMessages", userFromDB.isHaveNewMessages());
-            model.addObject("newBets", userFromDB.isHaveNewBets());
-            throw new CustomServerException(ServerErrors.FRIEND_FOR_YOURSELF, model);
-        } else if (!userFromDB.getFriends().contains(inviteUser)) {
-            userFromDB.getFriends().add(inviteUser);
-        } else {
-            UserService.ifAdmin(model, userFromDB);
-            model.addObject("user", userFromDB);
-            model.addObject("newMessages", userFromDB.isHaveNewMessages());
-            model.addObject("newBets", userFromDB.isHaveNewBets());
-            throw new CustomServerException(ServerErrors.ALREADY_IN_FRIENDS, model);
-        }
+        userFromDB.getFriends().add(inviteUser);
         return userRepo.save(userFromDB);
     }
 
@@ -251,6 +237,17 @@ public class UserService implements UserDetailsService {
     public Map<String, Object> isFriend(User principal, long id) {
         User user = getUserById(principal.getId());
         User friend = getUserById(id);
+        return new HashMap<>() {{
+            put("user", user);
+            put("friend", friend);
+            put("isFriend", user.getFriends().contains(friend));
+        }};
+    }
+
+    @Transactional
+    public Map<String, Object> isFriend(User principal, String username) {
+        User user = getUserById(principal.getId());
+        User friend = userRepo.findByUsername(username).orElseThrow();
         return new HashMap<>() {{
             put("user", user);
             put("friend", friend);

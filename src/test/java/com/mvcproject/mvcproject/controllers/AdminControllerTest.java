@@ -2,7 +2,7 @@ package com.mvcproject.mvcproject.controllers;
 
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.UserRepo;
-import org.junit.Assert;
+import freemarker.template.utility.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -60,8 +62,33 @@ public class AdminControllerTest {
         testUser = userRepo.findByUsername("testUser").orElseThrow();
     }
 
+    private MultiValueMap<String, String> formParams(String firstname,
+                                                     String lastname,
+                                                     String password,
+                                                     String authority1,
+                                                     String authority2) {
+        MultiValueMap<String, String> result = new LinkedMultiValueMap<>();
+        if (StringUtil.emptyToNull(firstname) != null)
+            result.put("firstname", Collections.singletonList(firstname));
+        else
+            result.put("firstname", Collections.singletonList(""));
+        if (StringUtil.emptyToNull(lastname) != null)
+            result.put("lastname", Collections.singletonList(lastname));
+        else
+            result.put("lastname", Collections.singletonList(""));
+        if (StringUtil.emptyToNull(password) != null)
+            result.put("password", Collections.singletonList(password));
+        else
+            result.put("password", Collections.singletonList(""));
+        if (StringUtil.emptyToNull(authority1) != null)
+            result.put("authority1", Collections.singletonList(authority1));
+        if (StringUtil.emptyToNull(authority2) != null)
+            result.put("authority2", Collections.singletonList(authority2));
+        return result;
+    }
+
     @Test
-    public void getUsersListWithoutLogin() throws Exception {
+    public void testGetUsersListWithoutLogin() throws Exception {
         mockMvc.perform(get("/admin/userList"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
@@ -69,7 +96,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void getUsersListWithAdmin() throws Exception {
+    public void testGetUsersListWithAdmin() throws Exception {
         mockMvc.perform(get("/admin/userList").with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -77,14 +104,14 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void getUsersListWithNotAdmin() throws Exception {
+    public void testGetUsersListWithNotAdmin() throws Exception {
         mockMvc.perform(get("/admin/userList").with(user(testUser)))
                 .andDo(print())
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    public void getEditUserWithoutLogin() throws Exception {
+    public void testGetEditUserWithoutLogin() throws Exception {
         mockMvc.perform(get("/admin/" + vdk64.getId()))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
@@ -92,14 +119,14 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void getEditUserWithNotAdmin() throws Exception {
+    public void testGetEditUserWithNotAdmin() throws Exception {
         mockMvc.perform(get("/admin/" + vdk64.getId()).with(user(testUser)))
                 .andDo(print())
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    public void getEditUserWithAdmin() throws Exception {
+    public void testGetEditUserWithAdmin() throws Exception {
         mockMvc.perform(get("/admin/" + vdk64.getId()).with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -107,14 +134,16 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void editUserWithoutLogin() throws Exception {
-        mockMvc.perform(post("/admin/" + vdk64.getId()))
+    public void testEditUserWithoutLogin() throws Exception {
+        mockMvc.perform(post("/admin/" + vdk64.getId())
+                .with(csrf()))
                 .andDo(print())
-                .andExpect(status().isForbidden());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
     }
 
     @Test
-    public void editUserWithoutCSRF() throws Exception {
+    public void testEditUserWithoutCSRF() throws Exception {
         mockMvc.perform(post("/admin/" + vdk64.getId())
                 .with(user(vdk64)))
                 .andDo(print())
@@ -122,7 +151,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void editUserWithoutAdmin() throws Exception {
+    public void testEditUserWithoutAdmin() throws Exception {
         mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .with(user(testUser)))
@@ -131,14 +160,10 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void editUserWithAdminWithoutChanges() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
-            put("firstname", Collections.singletonList(""));
-            put("lastname", Collections.singletonList(""));
-            put("password", Collections.singletonList(""));
-            put("authority1", Collections.singletonList("USER"));
-            put("authority2", Collections.singletonList("ADMIN"));
-        }};
+    public void testEditUserWithAdminWithoutChanges() throws Exception {
+        MultiValueMap<String, String> params = formParams(null, null,
+                null, "ADMIN", "USER");
+
         MvcResult mvcResult = mockMvc.perform(post("/admin/" + vdk64.getId())
                 .with(csrf())
                 .params(params)
@@ -147,19 +172,17 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
+
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> users = (List<?>) model.get("users");
-        Assert.assertTrue(users.contains(vdk64));
+        assertTrue(users.contains(vdk64));
     }
 
     @Test
-    public void editUserWithAdminChangeFirstNameInvalid() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
-            put("firstname", Collections.singletonList("a"));
-            put("lastname", Collections.singletonList(""));
-            put("password", Collections.singletonList(""));
-            put("authority1", Collections.singletonList("USER"));
-        }};
+    public void testEditUserWithAdminChangeFirstNameInvalid() throws Exception {
+        MultiValueMap<String, String> params = formParams("a", null,
+                null, "USER", null);
+
         mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
@@ -170,13 +193,10 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void editUserWithAdminChangeFirstName() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
-            put("firstname", Collections.singletonList("Firstname"));
-            put("lastname", Collections.singletonList(""));
-            put("password", Collections.singletonList(""));
-            put("authority1", Collections.singletonList("USER"));
-        }};
+    public void testEditUserWithAdminChangeFirstName() throws Exception {
+        MultiValueMap<String, String> params = formParams("Firstname", null,
+                null, "USER", null);
+
         MvcResult mvcResult = mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
@@ -185,20 +205,18 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
+
         testUser.setFirstname("Firstname");
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> users = (List<?>) model.get("users");
-        Assert.assertTrue(users.contains(testUser));
+        assertTrue(users.contains(testUser));
     }
 
     @Test
-    public void editUserWithAdminChangeLastNameInvalid() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
-            put("firstname", Collections.singletonList(""));
-            put("lastname", Collections.singletonList("a"));
-            put("password", Collections.singletonList(""));
-            put("authority1", Collections.singletonList("USER"));
-        }};
+    public void testEditUserWithAdminChangeLastNameInvalid() throws Exception {
+        MultiValueMap<String, String> params = formParams(null, "a",
+                null, "USER", null);
+
         mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
@@ -209,13 +227,10 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void editUserWithAdminChangeLastName() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
-            put("firstname", Collections.singletonList(""));
-            put("lastname", Collections.singletonList("Lastname"));
-            put("password", Collections.singletonList(""));
-            put("authority1", Collections.singletonList("USER"));
-        }};
+    public void testEditUserWithAdminChangeLastName() throws Exception {
+        MultiValueMap<String, String> params = formParams(null, "Lastname",
+                null, "USER", null);
+
         MvcResult mvcResult = mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
@@ -224,20 +239,18 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
+
         testUser.setLastname("Lastname");
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> users = (List<?>) model.get("users");
-        Assert.assertTrue(users.contains(testUser));
+        assertTrue(users.contains(testUser));
     }
 
     @Test
-    public void editUserWithAdminChangePasswordInvalid() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
-            put("firstname", Collections.singletonList(""));
-            put("lastname", Collections.singletonList(""));
-            put("password", Collections.singletonList("password"));
-            put("authority1", Collections.singletonList("USER"));
-        }};
+    public void testEditUserWithAdminChangePasswordInvalid() throws Exception {
+        MultiValueMap<String, String> params = formParams(null, null,
+                "password", "USER", null);
+
         mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
@@ -248,13 +261,10 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void editUserWithAdminChangePassword() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
-            put("firstname", Collections.singletonList(""));
-            put("lastname", Collections.singletonList(""));
-            put("password", Collections.singletonList("Passworld@123"));
-            put("authority1", Collections.singletonList("USER"));
-        }};
+    public void testEditUserWithAdminChangePassword() throws Exception {
+        MultiValueMap<String, String> params = formParams(null, null,
+                "Passworld@123", "USER", null);
+
         MvcResult mvcResult = mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
@@ -263,21 +273,18 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
+
         User newKasha111 = userRepo.findById(testUser.getId()).orElseThrow();
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> users = (List<?>) model.get("users");
-        Assert.assertTrue(users.contains(newKasha111));
+        assertTrue(users.contains(newKasha111));
     }
 
     @Test
-    public void editUserWithAdminChangeRoles() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
-            put("firstname", Collections.singletonList(""));
-            put("lastname", Collections.singletonList(""));
-            put("password", Collections.singletonList(""));
-            put("authority1", Collections.singletonList("USER"));
-            put("authority2", Collections.singletonList("ADMIN"));
-        }};
+    public void testEditUserWithAdminChangeRoles() throws Exception {
+        MultiValueMap<String, String> params = formParams(null, null,
+                null, "USER", "ADMIN");
+
         MvcResult mvcResult = mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
@@ -286,28 +293,33 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
+
         User newKasha111 = userRepo.findById(testUser.getId()).orElseThrow();
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> users = (List<?>) model.get("users");
-        Assert.assertTrue(users.contains(newKasha111));
+        assertTrue(users.contains(newKasha111));
     }
 
     @Test
-    public void getTokenWithoutLogin() throws Exception {
+    public void testGetTokenWithoutLogin() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("getToken", Collections.singletonList(""));
         }};
+
         mockMvc.perform(post("/admin/userList")
+                .with(csrf())
                 .params(params))
                 .andDo(print())
-                .andExpect(status().isForbidden());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
     }
 
     @Test
-    public void getTokenWithoutCSRF() throws Exception {
+    public void testGetTokenWithoutCSRF() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("getToken", Collections.singletonList(""));
         }};
+
         mockMvc.perform(post("/admin/userList")
                 .params(params)
                 .with(user(vdk64)))
@@ -316,11 +328,12 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void getTokenWithoutAdmin() throws Exception {
+    public void testGetTokenWithoutAdmin() throws Exception {
         User user = userRepo.findById(2L).orElseThrow();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("getToken", Collections.singletonList(""));
         }};
+
         mockMvc.perform(post("/admin/userList")
                 .params(params)
                 .with(csrf())
@@ -330,10 +343,11 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void getTokenWithAdmin() throws Exception {
+    public void testGetTokenWithAdmin() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("getToken", Collections.singletonList(""));
         }};
+
         MvcResult mvcResult = mockMvc.perform(post("/admin/userList")
                 .params(params)
                 .with(csrf())
@@ -341,8 +355,9 @@ public class AdminControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
+
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         Object token = model.get("token");
-        Assert.assertEquals(token, this.token);
+        assertEquals(token, this.token);
     }
 }

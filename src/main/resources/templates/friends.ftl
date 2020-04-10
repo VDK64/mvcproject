@@ -25,7 +25,7 @@
          </#if>
        </div>
        <div class="row">
-         ${invite.firstname} ${invite.username} ${invite.lastname}
+          <a href="/friend/${invite.id}">${invite.firstname} ${invite.username} ${invite.lastname}</a>
          <#if invite.isOnline>
          <p>&nbsp&nbsp Online</p>
          </#if>

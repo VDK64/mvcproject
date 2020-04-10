@@ -20,7 +20,7 @@ INSERT INTO role_authorities(authorities_id, authorities) VALUES (1, 'USER'), (1
 (4, 'USER'), (5, 'USER'), (6, 'USER'), (7, 'USER');
 
 
-INSERT INTO usr_fr(user_id, friend_id) VALUES (1, 3), (1, 5), (1, 6), (3, 1), (4, 1);
+INSERT INTO usr_fr(user_id, friend_id) VALUES (1, 3), (1, 5), (1, 6), (3, 1), (4, 1), (5, 1);
 
 
 INSERT INTO game(id, game_mode, is_opponent_ready, is_user_ready, lobby_name, opponent_steam_id64, password,
@@ -34,11 +34,11 @@ VALUES (1, true, false, 450, null, 1, 3, 1), (2, false, false, 730, 'vdk64', nul
 
 
 INSERT INTO dlg(id, have_new_messages, last_new_message) VALUES (1, false, 1586208708983),
-(2, false, 1586208712983), (3, false, 1586208715983);
+(2, false, 1586208712983);
 
 
 INSERT INTO dlg_usr(dlg_id, usr_id) VALUES (1, 1), (1, 3), (2, 6),
-(2, 1), (3, 1), (3, 5);
+(2, 1);
 
 
 INSERT INTO msg(id, date, from_id, new_message, text, to_id, dlg_id)
@@ -47,10 +47,8 @@ VALUES (1, '2020-04-07 01:46:19.617', 1, false, 'Hey, Kasha!', 3, 1),
 (3, '2020-04-07 01:46:19.617', 1, false, 'How are you?', 3, 1),
 (4, '2020-04-07 01:46:19.617', 3, false, 'Fine, and you?', 1, 1),
 (5, '2020-04-07 01:46:19.617', 1, false, 'Fine thanks', 3, 1),
-(6, '2020-04-07 01:46:19.617', 5, false, 'vasiliy228 text', 1, 3),
-(7, '2020-04-07 01:46:19.617', 6, false, 'petro123 text', 1, 2);
+(6, '2020-04-07 01:46:19.617', 6, false, 'petro123 text', 1, 2);
 
 
 INSERT INTO shw_status(id, username, visible, dlg_id) VALUES (1, 'vdk64', true, 1),
-(2, 'kasha111', true, 1), (3, 'vdk64', true, 2), (4, 'petro123', true, 2),
-(5, 'vdk64', true, 3), (6, 'vasiliy228', true, 3);
+(2, 'kasha111', true, 1), (3, 'vdk64', true, 2), (4, 'petro123', true, 2);
