@@ -48,7 +48,7 @@ public class AdminControllerTest {
     @Value("${token}")
     private String token;
     private User vdk64;
-    private User kasha111;
+    private User testUser;
 
     @Before
     public void setup() {
@@ -57,7 +57,7 @@ public class AdminControllerTest {
                 .apply(springSecurity())
                 .build();
         vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
-        kasha111 = userRepo.findByUsername("kasha111").orElseThrow();
+        testUser = userRepo.findByUsername("testUser").orElseThrow();
     }
 
     @Test
@@ -78,7 +78,7 @@ public class AdminControllerTest {
 
     @Test
     public void getUsersListWithNotAdmin() throws Exception {
-        mockMvc.perform(get("/admin/userList").with(user(kasha111)))
+        mockMvc.perform(get("/admin/userList").with(user(testUser)))
                 .andDo(print())
                 .andExpect(status().isForbidden());
     }
@@ -93,7 +93,7 @@ public class AdminControllerTest {
 
     @Test
     public void getEditUserWithNotAdmin() throws Exception {
-        mockMvc.perform(get("/admin/" + vdk64.getId()).with(user(kasha111)))
+        mockMvc.perform(get("/admin/" + vdk64.getId()).with(user(testUser)))
                 .andDo(print())
                 .andExpect(status().isForbidden());
     }
@@ -123,9 +123,9 @@ public class AdminControllerTest {
 
     @Test
     public void editUserWithoutAdmin() throws Exception {
-        mockMvc.perform(post("/admin/" + kasha111.getId())
+        mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
-                .with(user(kasha111)))
+                .with(user(testUser)))
                 .andDo(print())
                 .andExpect(status().isForbidden());
     }
@@ -160,7 +160,7 @@ public class AdminControllerTest {
             put("password", Collections.singletonList(""));
             put("authority1", Collections.singletonList("USER"));
         }};
-        mockMvc.perform(post("/admin/" + kasha111.getId())
+        mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
                 .with(user(vdk64)))
@@ -177,7 +177,7 @@ public class AdminControllerTest {
             put("password", Collections.singletonList(""));
             put("authority1", Collections.singletonList("USER"));
         }};
-        MvcResult mvcResult = mockMvc.perform(post("/admin/" + kasha111.getId())
+        MvcResult mvcResult = mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
                 .with(user(vdk64)))
@@ -185,10 +185,10 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
-        kasha111.setFirstname("Firstname");
+        testUser.setFirstname("Firstname");
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> users = (List<?>) model.get("users");
-        Assert.assertTrue(users.contains(kasha111));
+        Assert.assertTrue(users.contains(testUser));
     }
 
     @Test
@@ -199,7 +199,7 @@ public class AdminControllerTest {
             put("password", Collections.singletonList(""));
             put("authority1", Collections.singletonList("USER"));
         }};
-        mockMvc.perform(post("/admin/" + kasha111.getId())
+        mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
                 .with(user(vdk64)))
@@ -216,7 +216,7 @@ public class AdminControllerTest {
             put("password", Collections.singletonList(""));
             put("authority1", Collections.singletonList("USER"));
         }};
-        MvcResult mvcResult = mockMvc.perform(post("/admin/" + kasha111.getId())
+        MvcResult mvcResult = mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
                 .with(user(vdk64)))
@@ -224,10 +224,10 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
-        kasha111.setLastname("Lastname");
+        testUser.setLastname("Lastname");
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> users = (List<?>) model.get("users");
-        Assert.assertTrue(users.contains(kasha111));
+        Assert.assertTrue(users.contains(testUser));
     }
 
     @Test
@@ -238,7 +238,7 @@ public class AdminControllerTest {
             put("password", Collections.singletonList("password"));
             put("authority1", Collections.singletonList("USER"));
         }};
-        mockMvc.perform(post("/admin/" + kasha111.getId())
+        mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
                 .with(user(vdk64)))
@@ -255,7 +255,7 @@ public class AdminControllerTest {
             put("password", Collections.singletonList("Passworld@123"));
             put("authority1", Collections.singletonList("USER"));
         }};
-        MvcResult mvcResult = mockMvc.perform(post("/admin/" + kasha111.getId())
+        MvcResult mvcResult = mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
                 .with(user(vdk64)))
@@ -263,7 +263,7 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
-        User newKasha111 = userRepo.findById(kasha111.getId()).orElseThrow();
+        User newKasha111 = userRepo.findById(testUser.getId()).orElseThrow();
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> users = (List<?>) model.get("users");
         Assert.assertTrue(users.contains(newKasha111));
@@ -278,7 +278,7 @@ public class AdminControllerTest {
             put("authority1", Collections.singletonList("USER"));
             put("authority2", Collections.singletonList("ADMIN"));
         }};
-        MvcResult mvcResult = mockMvc.perform(post("/admin/" + kasha111.getId())
+        MvcResult mvcResult = mockMvc.perform(post("/admin/" + testUser.getId())
                 .with(csrf())
                 .params(params)
                 .with(user(vdk64)))
@@ -286,7 +286,7 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
-        User newKasha111 = userRepo.findById(kasha111.getId()).orElseThrow();
+        User newKasha111 = userRepo.findById(testUser.getId()).orElseThrow();
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> users = (List<?>) model.get("users");
         Assert.assertTrue(users.contains(newKasha111));

@@ -11,11 +11,13 @@ VALUES (1, true, true, null, 'default', true, 100, 'dkvoznyuk@yandex.ru', true, 
 (5, true, true, null, 'default', true, 100, 'vasdas@rambler.ru', true, 'Василий', false, false, false, 'Самойлов',
  '$2a$10$oDvbHz07EQga4Y8iZ5SI8eWHgUOZK5eOQ4bLmetlQxDx2/sEg7ILK', null, 'vasiliy228'),
 (6, true, true, null, 'default', true, 100, 'dobro@mail.ru', true, 'Петр', false, false, false, 'Добронравов',
-'$2a$10$oDvbHz07EQga4Y8iZ5SI8eWHgUOZK5eOQ4bLmetlQxDx2/sEg7ILK', null, 'petro123');
+'$2a$10$oDvbHz07EQga4Y8iZ5SI8eWHgUOZK5eOQ4bLmetlQxDx2/sEg7ILK', null, 'petro123'),
+(7, true, true, null, 'default', true, 100, 'test@test', true, 'test', false, false, false, 'test',
+'$2a$10$oDvbHz07EQga4Y8iZ5SI8eWHgUOZK5eOQ4bLmetlQxDx2/sEg7ILK', null, 'testUser');
 
 
 INSERT INTO role_authorities(authorities_id, authorities) VALUES (1, 'USER'), (1, 'ADMIN'), (2, 'USER'), (3, 'USER'),
-(4, 'USER'), (5, 'USER'), (6, 'USER');
+(4, 'USER'), (5, 'USER'), (6, 'USER'), (7, 'USER');
 
 
 INSERT INTO usr_fr(user_id, friend_id) VALUES (1, 3), (1, 5), (1, 6), (3, 1), (4, 1);
