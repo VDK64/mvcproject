@@ -51,7 +51,7 @@ public class Validator {
     }
 
     public void validUsername(String username, ModelAndView modelAndView, User principal) {
-        checkLastname(username, modelAndView, principal);
+        checkUsername(username, modelAndView, principal);
         modelAndView.addObject("lastname", username);
     }
 

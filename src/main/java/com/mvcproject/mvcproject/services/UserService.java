@@ -94,15 +94,14 @@ public class UserService implements UserDetailsService {
                     user.getActivationCode()));
     }
 
-    public void changeUser(User user, String firstname, String lastname, String password,
-                           Map<String, String> authorities, ModelAndView model, User principal) {
+    public void changeUser(User user, Map<String, String> params, ModelAndView model, User principal) {
         model.addObject("user", principal);
         UserService.ifAdmin(model, principal);
         model.addObject("find", user);
         model.addObject("authorities", Role.values());
-        Map<String, String> map = checkUserField(model, firstname, lastname, password, user, principal);
+        Map<String, String> map = checkUserField(model, user, principal, params);
         Set<Role> roles = new LinkedHashSet<>();
-        authorities.forEach((s1, s2) -> {
+        params.forEach((s1, s2) -> {
             if (s1.contains("authority")) {
                 roles.add(Role.valueOf(s2));
             }
@@ -115,26 +114,26 @@ public class UserService implements UserDetailsService {
         userRepo.save(user);
     }
 
-    private Map<String, String> checkUserField(ModelAndView model, String firstname, String lastname,
-                                               String password, User user, User principal) {
+    private Map<String, String> checkUserField(ModelAndView model, User user, User principal,
+                                               Map<String, String> params) {
         Map<String, String> res = new LinkedHashMap<>();
-        if (firstname == null || firstname.equals("")) {
+        if (params.get("firstname") == null || params.get("firstname").equals("")) {
             res.put("firstname", user.getFirstname());
         } else {
-            validator.validFirstname(firstname, model, principal);
-            res.put("firstname", firstname);
+            validator.validFirstname(params.get("firstname"), model, principal);
+            res.put("firstname", params.get("firstname"));
         }
-        if (lastname == null || lastname.equals("")) {
+        if (params.get("lastname") == null || params.get("lastname").equals("")) {
             res.put("lastname", user.getLastname());
         } else {
-            validator.validLastname(lastname, model, principal);
-            res.put("lastname", lastname);
+            validator.validLastname(params.get("lastname"), model, principal);
+            res.put("lastname", params.get("lastname"));
         }
-        if (password == null || password.equals("")) {
+        if (params.get("password") == null || params.get("password").equals("")) {
             res.put("password", user.getPassword());
         } else {
-            validator.validPassword(password, model, principal);
-            res.put("password", passwordEncoder.encode(password));
+            validator.validPassword(params.get("password"), model, principal);
+            res.put("password", passwordEncoder.encode(params.get("password")));
         }
         return res;
     }

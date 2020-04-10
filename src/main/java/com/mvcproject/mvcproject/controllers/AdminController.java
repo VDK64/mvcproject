@@ -57,13 +57,11 @@ public class AdminController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/{id}")
     public String editUser(@AuthenticationPrincipal User user, @PathVariable Long id,
-                           @RequestParam String firstname,
-                           @RequestParam String lastname, @RequestParam String password,
-                           @RequestParam Map<String, String> authorities, Model model) {
+                           @RequestParam Map<String, String> params, Model model) {
         ModelAndView error = new ModelAndView("editUser");
         User userFromDB = userService.getUserById(user.getId());
         User find = userService.getUserById(id);
-        userService.changeUser(find, firstname, lastname, password, authorities,
+        userService.changeUser(find, params,
                 error, userFromDB);
         Iterable<User> allUsers = userService.getAllUsers();
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());

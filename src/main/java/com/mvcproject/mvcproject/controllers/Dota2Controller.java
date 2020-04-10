@@ -3,6 +3,7 @@ package com.mvcproject.mvcproject.controllers;
 import com.mvcproject.mvcproject.dto.ResponseData;
 import com.mvcproject.mvcproject.services.Dota2Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class Dota2Controller {
     @Autowired
     private Dota2Service dota2Service;
-    public static final String token = "123"; /*UUID.randomUUID().toString() | 123 while debug*/;
+    public static String token; /*UUID.randomUUID().toString() | 123 while debug*/
     private final String okStatus = "----------------------done----------------------";
     private final String accessDenied = "----------------------access denied----------------------";
+
+    @Value("${token}")
+    public void setToken(String token) {
+        Dota2Controller.token = token;
+    }
 
     @PostMapping("/dota2/bot/start")
     public ResponseEntity<String> startLobby(@RequestBody ResponseData responseData) {
