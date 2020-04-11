@@ -1,9 +1,11 @@
 package com.mvcproject.mvcproject.controllers;
 
+import com.mvcproject.mvcproject.dto.MessageDto;
 import com.mvcproject.mvcproject.entities.Dialog;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.repositories.DialogRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
+import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
@@ -25,10 +27,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,6 +57,10 @@ public class FriendControllerTest {
     private DialogRepo dialogRepo;
     @Autowired
     private UserService userService;
+    @Autowired
+    private MessageService messageService;
+    @Autowired
+    private MessageController messageController;
     @Value("${token}")
     private String token;
     private User vdk64;
@@ -189,10 +192,11 @@ public class FriendControllerTest {
     }
 
     @Test
-    public void testSendMessage() throws Exception {
+    public void testSendMessageAndReply() throws Exception {
         User user = userRepo.findById(5L).orElseThrow();
 
-        mockMvc.perform(get("/dialogs").with(user(vdk64)))
+        mockMvc.perform(get("/dialogs")
+                .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(doesNotContainString(user.getUsername())));
@@ -218,39 +222,27 @@ public class FriendControllerTest {
         assertTrue(dialog.getUsers().contains(vdk64));
         assertTrue(dialog.getUsers().contains(user));
 
-        mockMvc.perform(get("/dialogs").with(user(vdk64)))
+        mockMvc.perform(get("/dialogs")
+                .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(user.getUsername())));
-    }
-
-    @Test
-    public void testSendMessageInReply() throws Exception {
-        User user = userRepo.findById(5L).orElseThrow();
 
         mockMvc.perform(get("/dialogs").with(user(user)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(doesNotContainString(vdk64.getUsername())));
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
-            put("sendMessageToFriend", Collections.singletonList(""));
-            put("friendId", Collections.singletonList(vdk64.getId().toString()));
-        }};
+        params.replace("friendId", Collections.singletonList(vdk64.getId().toString()));
 
-        MvcResult mvcResult = mockMvc.perform(post("/friends")
+        mockMvc.perform(post("/friends")
                 .with(csrf())
                 .with(user(user))
                 .params(params))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/messages/*"))
-                .andReturn();
+                .andExpect(redirectedUrlPattern("/messages/*"));
 
-        String redirectedUrl = mvcResult.getResponse().getRedirectedUrl();
-        String[] split = Objects.requireNonNull(redirectedUrl).split("/");
-        Long dialogId = Long.valueOf(split[split.length - 1]);
-        Dialog dialog = dialogRepo.findById(dialogId).orElseThrow();
         assertTrue(dialog.getUsers().contains(vdk64));
         assertTrue(dialog.getUsers().contains(user));
 
@@ -258,6 +250,8 @@ public class FriendControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(vdk64.getUsername())));
+
+        dialogRepo.deleteById(dialogId);
     }
 
     @Test
@@ -399,5 +393,57 @@ public class FriendControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(doesNotContainString("add to friends")));
+    }
+
+    @Test
+    public void testDialogIsAppearWhenSendNewMessage() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
+            put("sendMessageToFriend", Collections.singletonList(""));
+            put("friendId", Collections.singletonList("5"));
+        }};
+
+        User vasily = userRepo.findById(5L).orElseThrow();
+
+        MvcResult mvcResult = mockMvc.perform(post("/friends")
+                .params(params)
+                .with(csrf())
+                .with(user(vdk64)))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/messages/*"))
+                .andReturn();
+
+        String[] splitUrl = Objects.requireNonNull(mvcResult
+                .getResponse()
+                .getRedirectedUrl())
+                .split("/");
+        Long dialogId = Long.valueOf(splitUrl[splitUrl.length - 1]);
+
+        MessageDto messageDto = new MessageDto("vdk64", "vasiliy228",
+                "Hello, Vasily! It's a test message.", new Date().toString(), dialogId);
+
+        mockMvc.perform(get("/dialogs")
+                .with(user(vdk64)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("vasiliy228")));
+
+        mockMvc.perform(get("/dialogs")
+                .with(user(vasily)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Sorry, no Dialogs")));
+
+        messageController.sendSpecific(messageDto);
+
+        mockMvc.perform(get("/dialogs")
+                .with(user(vasily)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(doesNotContainString("Sorry, no Dialogs")))
+                .andExpect(content().string(containsString("vdk64")));
+
+        dialogRepo.deleteById(dialogId);
+
     }
 }
