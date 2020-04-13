@@ -15,7 +15,10 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -54,7 +57,7 @@ public class MessageController {
         return "redirect:/dialogs";
     }
 
-    @RequestMapping("/messages/{dialogId}")
+    @GetMapping("/messages/{dialogId}")
     public ModelAndView getMessages(@AuthenticationPrincipal User user,
                                     @PathVariable Long dialogId, ModelAndView model) {
         List<MessageDto> messageList = new ArrayList<>();

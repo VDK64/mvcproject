@@ -7,8 +7,6 @@ import com.mvcproject.mvcproject.repositories.DialogRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import com.mvcproject.mvcproject.services.MessageService;
 import com.mvcproject.mvcproject.services.UserService;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.mvcproject.mvcproject.common.CustomMatcher.doesNotContainString;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -74,10 +73,6 @@ public class FriendControllerTest {
                 .build();
         vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
         testUser = userRepo.findByUsername("testUser").orElseThrow();
-    }
-
-    private Matcher<String> doesNotContainString(String s) {
-        return CoreMatchers.not(containsString(s));
     }
 
     @Test
