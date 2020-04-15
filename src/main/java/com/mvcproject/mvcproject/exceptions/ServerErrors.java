@@ -2,10 +2,10 @@ package com.mvcproject.mvcproject.exceptions;
 
 public class ServerErrors {
     public static final String ALREADY_EXIST = "This username is already exist. Please, try another username.";
-    public static final String FIRSTNAME_NULL = "First name can not be empty!";
-    public static final String WRONG_FIRSTNAME = "Wrong first name! Use only letters. First name have a range %d - %d";
-    public static final String WRONG_LASTNAME = "Wrong last name! Use only letters. Last name have a range %d - %d";
-    public static final String LASTNAME_NULL = "Last name can not be empty!";
+    public static final String FIRSTNAME_NULL = "Firstname can not be empty!";
+    public static final String WRONG_FIRSTNAME = "Wrong firstname! Use only letters. Firstname have a range %d - %d";
+    public static final String WRONG_LASTNAME = "Wrong lastname! Use only letters. Lastname have a range %d - %d";
+    public static final String LASTNAME_NULL = "Lastname can not be empty!";
     public static final String WRONG_PASSWORD = "Wrong password! Password must consist from letters " +
             "(one upper case), min. one symbol (-_!@#$^&*+=) and min. one number. Password range %d - %d";
     public static final String PASSWORD_NULL = "Password can not be null!";

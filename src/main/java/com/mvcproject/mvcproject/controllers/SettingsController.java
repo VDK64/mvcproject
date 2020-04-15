@@ -75,7 +75,7 @@ public class SettingsController {
                 new ModelAndView("settings"));
         UserService.ifAdmin(model, updateUser);
         model.addAttribute("user", updateUser);
-        model.addAttribute("ok", "Please, relogin to update changes!");
+        model.addAttribute("ok", "Changes was successfully update.");
         model.addAttribute("auth", jOpenId.getUrl());
         return "settings";
     }

@@ -29,32 +29,23 @@ public class SettingsService {
 
     public void saveFile(MultipartFile file, User user) throws IOException {
         if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
+            if (!user.getAvatar().equals("default"))
+                deleteDirectoryAndFileFromDiskAndChangeUserAvatar(user);
             File uploadDir = new File(uploadPath + "/" + user.getId());
             if (!uploadDir.exists()) {
                 //noinspection ResultOfMethodCallIgnored
                 uploadDir.mkdirs();
             }
-            if (user.getAvatar().equals("default")) {
-                String uuidFile = UUID.randomUUID().toString();
-                String resultFilename = uuidFile + "." + file.getOriginalFilename();
-                file.transferTo(new File(uploadPath + "/" + user.getId() + "/" + resultFilename));
-                user.setAvatar(resultFilename);
-                userRepo.save(user);
-            }
+            createAvatarSaveFileAndSetToUser(file, user);
         }
     }
 
     public void deleteAvatar(User user, ModelAndView model) {
-        if (StringUtil.emptyToNull(user.getAvatar()) == null) {
+        if (StringUtil.emptyToNull(user.getAvatar()).equals("default")) {
             model.addObject("user", user);
             throw new CustomServerException(ServerErrors.DEFAULT_AVATAR, model);
         }
-        //noinspection ResultOfMethodCallIgnored
-        new File(uploadPath + "/" + user.getId(), user.getAvatar()).delete();
-        //noinspection ResultOfMethodCallIgnored
-        new File(uploadPath + "/" + user.getId()).delete();
-        user.setAvatar("default");
-        userRepo.save(user);
+        deleteDirectoryAndFileFromDiskAndChangeUserAvatar(user);
     }
 
     public User setSettings(User user, String firstname, String lastname,
@@ -104,5 +95,22 @@ public class SettingsService {
 
     private String getSteamIdFromIdentity(String identity) {
         return identity.split("/")[5];
+    }
+
+    private void deleteDirectoryAndFileFromDiskAndChangeUserAvatar(User user) {
+        //noinspection ResultOfMethodCallIgnored
+        new File(uploadPath + "/" + user.getId(), user.getAvatar()).delete();
+        //noinspection ResultOfMethodCallIgnored
+        new File(uploadPath + "/" + user.getId()).delete();
+        user.setAvatar("default");
+        userRepo.save(user);
+    }
+
+    private void createAvatarSaveFileAndSetToUser(MultipartFile file, User user) throws IOException {
+        String uuidFile = UUID.randomUUID().toString();
+        String resultFilename = uuidFile + "." + file.getOriginalFilename();
+        file.transferTo(new File(uploadPath + "/" + user.getId() + "/" + resultFilename));
+        user.setAvatar(resultFilename);
+        userRepo.save(user);
     }
 }
