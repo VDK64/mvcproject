@@ -59,8 +59,6 @@ public class FriendControllerTest {
     private MessageService messageService;
     @Autowired
     private MessageController messageController;
-//    @Value("${token}")
-//    private String token;
     private User vdk64;
     private User testUser;
 
