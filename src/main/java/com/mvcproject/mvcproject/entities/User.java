@@ -48,9 +48,9 @@ public class User implements UserDetails {
     @ManyToMany()
     @JoinTable(name = "usr_fr",
             joinColumns =
-            @JoinColumn(name = "user_id", referencedColumnName = "Id"),
+            @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns =
-            @JoinColumn(name = "friend_id", referencedColumnName = "Id"))
+            @JoinColumn(name = "friend_id", referencedColumnName = "id"))
     private Set<User> friends = new HashSet<>();
     @NotNull
     private Float deposit;
