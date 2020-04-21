@@ -85,7 +85,6 @@ public class BetService {
                 katka, true);
         betRepo.save(bet);
         user.setDeposit(user.getDeposit() - floatValue);
-        user.setHaveNewBets(true);
         opponentFromDB.setHaveNewBets(true);
         userRepo.save(opponentFromDB);
         userRepo.save(user);
@@ -195,7 +194,7 @@ public class BetService {
 
     public Bet setConfirm(Long id, User user, ModelAndView modelAndView) {
         Bet betFromDB = betRepo.findById(id).orElseThrow();
-        validator.validateAndSetDepositAfterBetTaking(user, betFromDB.getValue(), modelAndView);
+        validator.validateToSetConfirm(user, betFromDB.getValue(), modelAndView);
         user.setDeposit(user.getDeposit() - betFromDB.getValue());
         betFromDB.setIsConfirm(true);
         betRepo.save(betFromDB);

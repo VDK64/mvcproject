@@ -228,9 +228,14 @@ public class Validator {
         }
     }
 
-    public void validateAndSetDepositAfterBetTaking(User opponent, Float value, ModelAndView modelAndView) {
-        if (opponent.getDeposit() < value)
-            modelAndView.addObject("user", opponent);
+    public void validateToSetConfirm(User user, Float value, ModelAndView modelAndView) {
+        if (StringUtil.emptyToNull(user.getSteamId()) == null) {
+            modelAndView.addObject("user", user);
+            throw new CustomServerException(ServerErrors.STEAM_ID_NULL, modelAndView);
+        }
+        if (user.getDeposit() < value) {
+            modelAndView.addObject("user", user);
             throw new CustomServerException(ServerErrors.NOT_ENOUGH_MONEY, modelAndView);
+        }
     }
 }

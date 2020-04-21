@@ -66,7 +66,6 @@ public class BetControllerTest {
         testUser = userRepo.findByUsername("testUser").orElseThrow();
     }
 
-
     @Test
     public void testBetsWithoutLogin() throws Exception {
         mockMvc.perform(get("/bets"))
@@ -115,11 +114,9 @@ public class BetControllerTest {
         checkDetailsExist(mvcResult);
     }
 
-//----------------------------------------------------------------------------------------------------------------------
-
     @Test
     public void TestGetTableWithoutCSRF() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(){{
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("chooseTable", Collections.singletonList(""));
             put("table", Collections.singletonList("opponent"));
         }};
@@ -133,7 +130,7 @@ public class BetControllerTest {
 
     @Test
     public void TestGetTableWithoutLogin() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(){{
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("chooseTable", Collections.singletonList(""));
             put("table", Collections.singletonList("opponent"));
         }};
@@ -148,7 +145,7 @@ public class BetControllerTest {
 
     @Test
     public void TestGetTableOwnerWithoutSteamIdOwner() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(){{
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("chooseTable", Collections.singletonList(""));
             put("table", Collections.singletonList("owner"));
         }};
@@ -170,7 +167,7 @@ public class BetControllerTest {
 
     @Test
     public void TestGetTableOwnerWithoutSteamIdOpponent() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(){{
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("chooseTable", Collections.singletonList(""));
             put("table", Collections.singletonList("opponent"));
         }};
@@ -192,7 +189,7 @@ public class BetControllerTest {
 
     @Test
     public void TestGetTableOwnerWithSteamIdOwner() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(){{
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("chooseTable", Collections.singletonList(""));
             put("table", Collections.singletonList("owner"));
         }};
@@ -214,7 +211,7 @@ public class BetControllerTest {
 
     @Test
     public void TestGetTableOwnerWithSteamIdOpponent() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(){{
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("chooseTable", Collections.singletonList(""));
             put("table", Collections.singletonList("opponent"));
         }};
@@ -234,29 +231,94 @@ public class BetControllerTest {
         checkDetailsExist(mvcResult);
     }
 
-//----------------------------------------------------------------------------------------------------------------------
+    @Test
+    public void TestBetsTableWithoutLogin() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
+            put("tablePage", Collections.singletonList(""));
+            put("tableName", Collections.singletonList("Owner"));
+            put("page", Collections.singletonList("3"));
+        }};
 
-//    @Test
-//    public void TestBetsTable() throws Exception {
-//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(){{
-//            put("tablePage", Collections.singletonList(""));
-//            put("table", Collections.singletonList("opponent"));
-//        }};
-//
-//        MvcResult mvcResult = mockMvc.perform(post("/bets")
-//                .with(csrf())
-//                .with(user(vdk64))
-//                .params(params))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(model().attributeExists("admin"))
-//                .andExpect(model().attributeExists("newBets"))
-//                .andExpect(model().attributeExists("newMessages"))
-//                .andExpect(content().string(doesNotContainString(withoutSteamId)))
-//                .andExpect(content().string(containsString(createButtonText)))
-//                .andReturn();
-//        checkDetailsExist(mvcResult);
-//    }
+        mockMvc.perform(post("/bets")
+                .with(csrf())
+                .params(params))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
+    }
+
+    @Test
+    public void TestBetsTableWithoutCSRF() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
+            put("tablePage", Collections.singletonList(""));
+            put("tableName", Collections.singletonList("Owner"));
+            put("page", Collections.singletonList("3"));
+        }};
+
+        mockMvc.perform(post("/bets")
+                .with(user(testUser))
+                .params(params))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void TestBetsTableOwner() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
+            put("tablePage", Collections.singletonList(""));
+            put("tableName", Collections.singletonList("Owner"));
+            put("page", Collections.singletonList("3"));
+        }};
+
+        MvcResult mvcResult = mockMvc.perform(post("/bets")
+                .with(csrf())
+                .with(user(testUser))
+                .params(params))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newBets"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attribute("totalPages", 3))
+                .andExpect(model().attribute("currentPage", 3))
+                .andExpect(content().string(containsString(withoutSteamId)))
+                .andExpect(content().string(doesNotContainString(createButtonText)))
+                .andReturn();
+        checkDetailsExist(mvcResult);
+        Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
+        List<?> items = (List<?>) model.get("items");
+        Bet bet = (Bet) items.get(items.size() - 1);
+        assertEquals(28, bet.getValue(), 0.0);
+    }
+
+    @Test
+    public void TestBetsTableOpponent() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
+            put("tablePage", Collections.singletonList(""));
+            put("tableName", Collections.singletonList("opponent"));
+            put("page", Collections.singletonList("4"));
+        }};
+
+        MvcResult mvcResult = mockMvc.perform(post("/bets")
+                .with(csrf())
+                .with(user(testUser))
+                .params(params))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newBets"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attribute("totalPages", 4))
+                .andExpect(model().attribute("currentPage", 4))
+                .andExpect(content().string(containsString(withoutSteamId)))
+                .andExpect(content().string(doesNotContainString(createButtonText)))
+                .andReturn();
+        checkDetailsExist(mvcResult);
+        Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
+        List<?> items = (List<?>) model.get("items");
+        Bet bet = (Bet) items.get(items.size() - 1);
+        assertEquals(32, bet.getValue(), 0.0);
+    }
 
     @Test
     public void createBet() {

@@ -54,7 +54,7 @@ stompClient2.connect(headers, function(frame) {
     } else {
       newBets = true;
       if (!urlBet.includes('/bets')) {
-        showNotification('Your friend call your to play!');
+        showNotification('Your friend calls your to play!');
       }
       let event = new CustomEvent("bet");
       document.dispatchEvent(event);
