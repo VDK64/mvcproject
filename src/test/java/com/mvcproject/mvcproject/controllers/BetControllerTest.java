@@ -236,27 +236,27 @@ public class BetControllerTest {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-    @Test
-    public void TestBetsTable() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(){{
-            put("tablePage", Collections.singletonList(""));
-            put("table", Collections.singletonList("opponent"));
-        }};
-
-        MvcResult mvcResult = mockMvc.perform(post("/bets")
-                .with(csrf())
-                .with(user(vdk64))
-                .params(params))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("admin"))
-                .andExpect(model().attributeExists("newBets"))
-                .andExpect(model().attributeExists("newMessages"))
-                .andExpect(content().string(doesNotContainString(withoutSteamId)))
-                .andExpect(content().string(containsString(createButtonText)))
-                .andReturn();
-        checkDetailsExist(mvcResult);
-    }
+//    @Test
+//    public void TestBetsTable() throws Exception {
+//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(){{
+//            put("tablePage", Collections.singletonList(""));
+//            put("table", Collections.singletonList("opponent"));
+//        }};
+//
+//        MvcResult mvcResult = mockMvc.perform(post("/bets")
+//                .with(csrf())
+//                .with(user(vdk64))
+//                .params(params))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(model().attributeExists("admin"))
+//                .andExpect(model().attributeExists("newBets"))
+//                .andExpect(model().attributeExists("newMessages"))
+//                .andExpect(content().string(doesNotContainString(withoutSteamId)))
+//                .andExpect(content().string(containsString(createButtonText)))
+//                .andReturn();
+//        checkDetailsExist(mvcResult);
+//    }
 
     @Test
     public void createBet() {

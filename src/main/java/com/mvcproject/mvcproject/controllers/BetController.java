@@ -50,7 +50,7 @@ public class BetController {
                             @RequestParam(required = false) String tableName,
                             @RequestParam(required = false) int page) {
         User userFromDB = userService.getUserById(user.getId());
-        Page<Bet> response = betService.getBetInfo(userFromDB, tableName);
+        Page<Bet> response = betService.getBetInfo(userFromDB, tableName, page);
         int totalPages = response.getTotalPages();
         List<Bet> items = betService.listFromPage(response);
         UserService.ifAdmin(model, userFromDB);
@@ -60,6 +60,7 @@ public class BetController {
         model.addAttribute("items", items);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("tableName", tableName);
+        model.addAttribute("currentPage", page);
         return "bets";
     }
 

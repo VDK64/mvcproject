@@ -64,7 +64,7 @@ public class BetService {
     }
 
     public Page<Bet> getBetInfo(User user, String who, int offset) {
-        if (who.equalsIgnoreCase("user"))
+        if (who.equalsIgnoreCase("owner"))
             return betRepo.findByUser(user, PageRequest.of(offset - 1, 10));
         if (who.equalsIgnoreCase("opponent"))
             return betRepo.findByOpponent(user, PageRequest.of(offset - 1, 10));
@@ -190,6 +190,7 @@ public class BetService {
         model.addAttribute("items", items);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("tableName", table);
+        model.addAttribute("currentPage", 1);
     }
 
     public Bet setConfirm(Long id, User user, ModelAndView modelAndView) {

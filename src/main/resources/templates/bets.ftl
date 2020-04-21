@@ -98,7 +98,7 @@
           </table>
           <form method="post" style="margin-bottom: 30px">
             <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
-            <input type="number" size="3" name="page" min="1" max="${totalPages}" value="1" step="1">
+            <input type="number" size="3" name="page" min="1" max="${totalPages}" value="${currentPage}" step="1">
             <input name="tableName" value="${tableName}" type="hidden">
             <button name="tablePage" type="submit">Browse</button>
           </form>
@@ -112,7 +112,7 @@
 
       <script type="text/javascript">
         document.body.style.overflow = "auto"
-        document.body.style['overflow-x'] = "hidden";        
+        document.body.style['overflow-x'] = "hidden";
 
         function createBet() {
           document.location.href = "/bets/createBet";
