@@ -104,7 +104,6 @@ public class BetController {
         User userFromDB = userService.getUserById(user.getId());
         Bet bet = betService.getBet(id);
         UserService.ifAdmin(model, userFromDB);
-        betService.readNewBet(id, userFromDB);
         model.addAttribute("user", userFromDB);
         model.addAttribute("bet", bet);
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
@@ -112,6 +111,7 @@ public class BetController {
         if (bet == null || betService.access(bet, userFromDB)) {
             return "errorPage";
         }
+        betService.readNewBet(id, userFromDB);
         return "details";
     }
 

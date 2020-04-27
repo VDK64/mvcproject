@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "game")
-@SequenceGenerator(name = "seqGame", allocationSize = 1, initialValue = 2)
+@SequenceGenerator(name = "seqGame", allocationSize = 1, initialValue = 3)
 public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqGame")

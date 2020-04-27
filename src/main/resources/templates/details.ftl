@@ -22,14 +22,18 @@
             </b>
           </p>
         </div>
-          <!-- <div id="errorMessage" class="alert alert-danger" role="alert">
-          </div> -->
-        <#if bet??>
 
+        <div class="row">
+          <#if error??>
+            <div id="errorMessage" class="alert alert-danger" role="alert">
+              ${error}
+            </div>
+          </#if>
+        </div>
+
+        <#if bet??>
         <input id="betUser" value="${bet.user.username}" type="hidden">
         <input id="betOpponent" value="${bet.opponent.username}" type="hidden">
-
-
         <div class="row">
           <#if bet.opponent.username == user.username && !bet.isConfirm>
           <form method="post">
@@ -37,7 +41,6 @@
             <button type="submit" name="confirmBet" class="btn btn-success">Confirm</button>
           </form>
           </#if>
-
         </div>
         <#if bet.isConfirm>
         <div class="row">

@@ -1,10 +1,10 @@
 INSERT INTO usr(id, account_non_expired, account_non_locked, activation_code, avatar, credentials_non_expired, deposit,
 email, enabled, firstname, have_new_bets, have_new_messages, is_online, lastname, password, steam_id, username)
-VALUES (1, true, true, null, 'default', true, 100, 'dkvoznyuk@yandex.ru', true, 'Дмитрий', false, false, false,
+VALUES (1, true, true, null, 'default', true, 1000, 'dkvoznyuk@yandex.ru', true, 'Дмитрий', false, false, false,
 'Вознюк', '$2a$10$oDvbHz07EQga4Y8iZ5SI8eWHgUOZK5eOQ4bLmetlQxDx2/sEg7ILK', '76561198799034987', 'vdk64'),
 (2, true, true, null, 'default', true, 100, 'user@mail.ru', true, 'Ivan', false, false, false, 'Petrov',
 '$2a$10$oDvbHz07EQga4Y8iZ5SI8eWHgUOZK5eOQ4bLmetlQxDx2/sEg7ILK', null, 'user'),
-(3, true, true, null, 'default', true, 100, 'kasha@mail.ru', true, 'Аркадий', false, false, false, 'Ротенберг',
+(3, true, true, null, 'default', true, 1000, 'kasha@mail.ru', true, 'Аркадий', false, false, false, 'Ротенберг',
 '$2a$10$oDvbHz07EQga4Y8iZ5SI8eWHgUOZK5eOQ4bLmetlQxDx2/sEg7ILK', '76561199004382586', 'kasha111'),
 (4, true, true, null, 'default', true, 100, 'antony@yandex.ru', true, 'Антон', false, false, false, 'Васильев',
 '$2a$10$oDvbHz07EQga4Y8iZ5SI8eWHgUOZK5eOQ4bLmetlQxDx2/sEg7ILK', null, 'tony64'),
@@ -24,11 +24,12 @@ INSERT INTO usr_fr(user_id, friend_id) VALUES (1, 3), (1, 5), (1, 6), (3, 1), (4
 
 
 INSERT INTO game(id, game_mode, is_opponent_ready, is_user_ready, lobby_name, opponent_steam_id64, password,
-server_start_time, status, user_steam_id64) VALUES (1, '1x1', true, true, 'MyLobby', '76561199004382586', 'app',
-1584523845, null, '76561198799034987');
+server_start_time, status, user_steam_id64) VALUES (1, '1x1', false, false, 'MyLobby', '76561199004382586', 'app',
+null, null, '76561198799034987'), (2, '1x1', false, false, 'TestLobby', '123', 'app',
+null, null, '76561198799034987');
 
 INSERT INTO bet(id, is_confirm, is_new, value, who_win, game_id, opponent_id, usr_id)
-VALUES (1, true, false, 450, null, 1, 3, 1), (2, false, false, 730, 'vdk64', null, 1, 6),
+VALUES (1, false, false, 450, null, 1, 3, 1), (2, false, false, 730, 'vdk64', null, 1, 6),
 (3, false, false, 200, 'vdk64', null, 1, 2), (4, false, false, 1, 'testUser', null, 2, 7),
 (5, false, false, 2, 'testUser', null, 2, 7), (6, false, false, 3, 'testUser', null, 2, 7),
 (7, false, false, 4, 'testUser', null, 2, 7), (8, false, false, 5, 'testUser', null, 2, 7),
@@ -60,7 +61,8 @@ VALUES (1, true, false, 450, null, 1, 3, 1), (2, false, false, 730, 'vdk64', nul
 (56, false, false, 25, 'testUser', null, 7, 5), (57, false, false, 26, 'testUser', null, 7, 5),
 (58, false, false, 27, 'testUser', null, 7, 5), (59, false, false, 28, 'testUser', null, 7, 5),
 (60, false, false, 29, 'testUser', null, 7, 5), (61, false, false, 30, 'testUser', null, 7, 5),
-(62, false, false, 31, 'testUser', null, 7, 5), (63, false, false, 32, 'testUser', null, 7, 5);
+(62, false, false, 31, 'testUser', null, 7, 5), (63, false, false, 32, 'testUser', null, 7, 5),
+(64, false, false, 200, 'testUser', null, 7, 1);
 
 
 

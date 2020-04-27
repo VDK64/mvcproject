@@ -295,10 +295,10 @@ public class AdminControllerTest {
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
 
-        User newKasha111 = userRepo.findById(testUser.getId()).orElseThrow();
+        User testUser = userRepo.findById(this.testUser.getId()).orElseThrow();
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> users = (List<?>) model.get("users");
-        assertTrue(users.contains(newKasha111));
+        assertTrue(users.contains(testUser));
     }
 
     @Test

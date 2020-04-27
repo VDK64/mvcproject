@@ -506,7 +506,7 @@ public class SettingsControllerTest {
                 .andExpect(model().attribute("admin", true))
                 .andExpect(model().attribute("ok", "Your deposit was successfully replenished!"));
         assertEquals(userRepo.findByUsername(vdk64.getUsername()).orElseThrow().getDeposit(),
-                200.50F, 0.0);
+                1100.5F, 0.0);
         userRepo.save(vdk64);
     }
 
@@ -528,7 +528,7 @@ public class SettingsControllerTest {
                 .andExpect(model().attribute("admin", true))
                 .andExpect(model().attribute("ok", "Your deposit was successfully replenished!"));
         assertEquals(userRepo.findByUsername(vdk64.getUsername()).orElseThrow().getDeposit(),
-                200.50F, 0.0);
+                1100.5F, 0.0);
         userRepo.save(vdk64);
     }
 
@@ -550,7 +550,7 @@ public class SettingsControllerTest {
                 .andExpect(model().attribute("admin", true))
                 .andExpect(model().attribute("ok", "Your deposit was successfully replenished!"));
         assertEquals(userRepo.findByUsername(vdk64.getUsername()).orElseThrow().getDeposit(),
-                200F, 0.0);
+                1100F, 0.0);
         userRepo.save(vdk64);
     }
 
@@ -613,7 +613,7 @@ public class SettingsControllerTest {
     public void testWithdrawMoreThanDeposit() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("withdraw", Collections.singletonList(""));
-            put("value", Collections.singletonList("100.1"));
+            put("value", Collections.singletonList("1000.1"));
         }};
 
         mockMvc.perform(post("/settings")
@@ -629,7 +629,7 @@ public class SettingsControllerTest {
     public void testWithdrawWithDot() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("withdraw", Collections.singletonList(""));
-            put("value", Collections.singletonList("99.50"));
+            put("value", Collections.singletonList("999.50"));
         }};
 
         mockMvc.perform(post("/settings")
@@ -651,7 +651,7 @@ public class SettingsControllerTest {
     public void testWithdrawWithComma() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("withdraw", Collections.singletonList(""));
-            put("value", Collections.singletonList("99.50"));
+            put("value", Collections.singletonList("999.50"));
         }};
 
         mockMvc.perform(post("/settings")
@@ -673,7 +673,7 @@ public class SettingsControllerTest {
     public void testWithdraw() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("withdraw", Collections.singletonList(""));
-            put("value", Collections.singletonList("100"));
+            put("value", Collections.singletonList("1000"));
         }};
 
         mockMvc.perform(post("/settings")

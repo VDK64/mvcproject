@@ -22,12 +22,12 @@ INSERT INTO usr_fr(user_id, friend_id) VALUES (1, 3), (1, 5), (1, 6), (3, 1), (4
 
 
 INSERT INTO game(id, game_mode, is_opponent_ready, is_user_ready, lobby_name, opponent_steam_id64, password,
-server_start_time, status, user_steam_id64) VALUES (1, '1x1', true, true, 'MyLobby', '76561199004382586', 'app',
-1584523845, 'POSITIVE_LEAVE', '76561198799034987');
+server_start_time, status, user_steam_id64) VALUES (1, '1x1', false, false, 'MyLobby', '76561199004382586', 'app',
+null, null, '76561198799034987');
 
 
 INSERT INTO bet(id, is_confirm, is_new, value, who_win, game_id, opponent_id, usr_id)
-VALUES (1, true, false, 450, null, 1, 3, 1), (2, false, false, 730, 'vdk64', null, 1, 6),
+VALUES (1, false, false, 450, null, 1, 3, 1), (2, false, false, 730, 'vdk64', null, 1, 6),
 (3, false, false, 200, 'vdk64', null, 1, 2);
 
 
