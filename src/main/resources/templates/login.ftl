@@ -29,7 +29,7 @@
                 </#if>
               </#if>
               <#if ok??>
-                <div class="alert alert-success" role="alert">You've been register successfully. Please, check your mailbox!</div>
+                <div class="alert alert-success" role="alert">You've been registered successfully. Please, check your mailbox!</div>
               </#if>
               <form method="post">
                 <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
