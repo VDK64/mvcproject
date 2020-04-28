@@ -40,8 +40,7 @@ public class FriendController {
     @PostMapping(params = "confirmInvite")
     public String addFriend(@AuthenticationPrincipal User user,
                             @RequestParam String inviteUsername, Model model) {
-        User userFromDB = userService.addFriend(user.getId(), inviteUsername,
-                new ModelAndView("/friends"));
+        User userFromDB = userService.addFriend(user.getId(), inviteUsername);
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);
         model.addAttribute("newMessages", userFromDB.isHaveNewMessages());
@@ -89,7 +88,7 @@ public class FriendController {
     public ModelAndView addFriend(@AuthenticationPrincipal User user, @RequestParam String username,
                                   ModelAndView model) {
         model.setViewName("findFriends");
-        User userFromDB = userService.addFriend(user.getId(), username, model);
+        User userFromDB = userService.addFriend(user.getId(), username);
         UserService.ifAdmin(model, userFromDB);
         model.addObject("user", userFromDB);
         model.addObject("newMessages", userFromDB.isHaveNewMessages());

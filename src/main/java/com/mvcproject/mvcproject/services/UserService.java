@@ -219,7 +219,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User addFriend(Long id, String inviteUsername, ModelAndView model) {
+    public User addFriend(Long id, String inviteUsername) {
         User userFromDB = userRepo.findById(id).orElseThrow();
         User inviteUser = userRepo.findByUsername(inviteUsername).orElseThrow();
         userFromDB.getFriends().add(inviteUser);
