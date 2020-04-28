@@ -380,6 +380,9 @@ public class BetControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("error", ServerErrors.BET_EXIST));
         List<Bet> afterWrongCreateBet = (List<Bet>) betRepo.findAll();
         assertEquals(all.size(), afterWrongCreateBet.size());
@@ -403,6 +406,9 @@ public class BetControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("error", ServerErrors.WRONG_BET_VALUE));
         List<Bet> afterWrongCreateBet = (List<Bet>) betRepo.findAll();
         assertEquals(all.size(), afterWrongCreateBet.size());
@@ -426,6 +432,9 @@ public class BetControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("error", ServerErrors.WRONG_VALUE));
         List<Bet> afterWrongCreateBet = (List<Bet>) betRepo.findAll();
         assertEquals(all.size(), afterWrongCreateBet.size());
@@ -449,6 +458,9 @@ public class BetControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("error", ServerErrors.LOBBYPASSWORD_NULL));
         List<Bet> afterWrongCreateBet = (List<Bet>) betRepo.findAll();
         assertEquals(all.size(), afterWrongCreateBet.size());
@@ -472,6 +484,9 @@ public class BetControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("error", ServerErrors.LOBBYNAME_NULL));
         List<Bet> afterWrongCreateBet = (List<Bet>) betRepo.findAll();
         assertEquals(all.size(), afterWrongCreateBet.size());
@@ -547,6 +562,9 @@ public class BetControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(view().name("errorPage"));
     }
 
@@ -556,6 +574,9 @@ public class BetControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(view().name("errorPage"));
     }
 
