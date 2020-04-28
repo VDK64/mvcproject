@@ -101,6 +101,9 @@ public class AdminControllerTest {
         mockMvc.perform(get("/admin/userList").with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("admin", true));
     }
 
@@ -131,6 +134,9 @@ public class AdminControllerTest {
         mockMvc.perform(get("/admin/" + vdk64.getId()).with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("admin", true));
     }
 
@@ -171,6 +177,9 @@ public class AdminControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
 
@@ -190,6 +199,9 @@ public class AdminControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeExists("error"));
     }
 
@@ -204,6 +216,9 @@ public class AdminControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
 
@@ -224,6 +239,9 @@ public class AdminControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeExists("error"));
     }
 
@@ -238,6 +256,9 @@ public class AdminControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
 
@@ -258,6 +279,9 @@ public class AdminControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeExists("error"));
     }
 
@@ -272,6 +296,9 @@ public class AdminControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
 
@@ -292,6 +319,9 @@ public class AdminControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andReturn();
 
@@ -355,6 +385,9 @@ public class AdminControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andReturn();
 
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
