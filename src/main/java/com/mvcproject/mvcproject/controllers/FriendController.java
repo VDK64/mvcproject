@@ -28,7 +28,7 @@ public class FriendController {
         Map<String, Object> data = userService.getFriendsSeparately(user.getId());
         User userFromDB = (User) data.get("user");
         model.addAttribute("friends", data.get("friends"));
-        model.addAttribute("unconfirmeds", data.get("unconfirmeds"));
+        model.addAttribute("unconfirmed", data.get("unconfirmed"));
         model.addAttribute("invites", data.get("invites"));
         UserService.ifAdmin(model, userFromDB);
         model.addAttribute("user", userFromDB);

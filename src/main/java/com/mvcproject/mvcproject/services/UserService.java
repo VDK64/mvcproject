@@ -164,7 +164,7 @@ public class UserService implements UserDetailsService {
     public Map<String, Object> getFriendsSeparately(Long id) {
         Map<String, Object> result = new HashMap<>();
         List<User> friends = new ArrayList<>();
-        List<User> unconfirmeds = new ArrayList<>();
+        List<User> unconfirmed = new ArrayList<>();
         User userFromDB = userRepo.findById(id).orElseThrow();
         invites(userFromDB, result);
         result.put("user", userFromDB);
@@ -172,10 +172,10 @@ public class UserService implements UserDetailsService {
             if (user.getFriends().contains(userFromDB))
                 friends.add(user);
             else
-                unconfirmeds.add(user);
+                unconfirmed.add(user);
         });
         result.put("friends", friends);
-        result.put("unconfirmeds", unconfirmeds);
+        result.put("unconfirmed", unconfirmed);
         return result;
     }
 

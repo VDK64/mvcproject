@@ -45,7 +45,7 @@
           ${error}
         </div>
       </#if>
-      <#if friends?size == 0 && unconfirmeds?size==0>
+      <#if friends?size == 0 && unconfirmed?size==0>
       <div class="row">
         Sorry, you have not friends yet.
       </div>
@@ -86,7 +86,7 @@
        </div>
       </#list>
       </#if>
-      <#list unconfirmeds as unconfirmed>
+      <#list unconfirmed as unconfirmed>
        <div class="row">
          <#if unconfirmed.avatar=="default">
            <img src="/img/avatar.png" class="img-thumbnail"
