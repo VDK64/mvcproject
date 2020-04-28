@@ -244,7 +244,10 @@ public class MainControllerTest {
     public void testLoginAndMainPage() throws Exception {
         mockMvc.perform(get("/").with(user(vdk64)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"));
     }
 
     @Test
@@ -260,6 +263,9 @@ public class MainControllerTest {
         mockMvc.perform(get("/friend/3").with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("friend", kasha111))
                 .andExpect(model().attribute("isFriend", true))
                 .andExpect(content().string(Matchers.
@@ -268,6 +274,9 @@ public class MainControllerTest {
         mockMvc.perform(get("/friend/2").with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("friend", user))
                 .andExpect(model().attribute("isFriend", false));
     }

@@ -84,6 +84,9 @@ public class MessageControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeExists("dialogs"))
                 .andReturn();
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
@@ -127,6 +130,9 @@ public class MessageControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeExists("dialogs"))
                 .andReturn();
 
@@ -151,6 +157,8 @@ public class MessageControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newBets"))
                 .andReturn();
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> messages = (List<?>) model.get("messages");
@@ -166,6 +174,8 @@ public class MessageControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newBets"))
                 .andReturn();
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> messages = (List<?>) model.get("messages");
@@ -176,6 +186,9 @@ public class MessageControllerTest {
         mockMvc.perform(get("/dialogs").with(user(kasha)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(content().string(containsString("vdk64-new")));
 
         messageController.updateMessage(kasha, messageDto);
@@ -183,6 +196,9 @@ public class MessageControllerTest {
         mockMvc.perform(get("/dialogs").with(user(kasha)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(content().string(doesNotContainString("vdk64-new")));
     }
 }

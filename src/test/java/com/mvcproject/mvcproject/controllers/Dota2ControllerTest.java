@@ -67,8 +67,8 @@ public class Dota2ControllerTest {
         testUser = userRepo.findByUsername("kasha111").orElseThrow();
     }
 
-    private Bet getBet(User user, User opponent, String whoWin) {
-        return betRepo.findByUserAndOpponentAndWhoWin(user, opponent, whoWin).orElseThrow();
+    private Bet getBet(User user, User opponent) {
+        return betRepo.findByUserAndOpponentAndWhoWin(user, opponent, null).orElseThrow();
     }
 
     private void changeGameStatus(Game game, GameStatus gameStatus) {
@@ -81,7 +81,7 @@ public class Dota2ControllerTest {
         ResponseData responseData = new ResponseData("1", vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
         String responseDataJson = mapper.writeValueAsString(responseData);
-        Bet bet = getBet(vdk64, testUser, null);
+        Bet bet = getBet(vdk64, testUser);
         assertNull(bet.getGame().getStatus());
 
         mockMvc.perform(post("/dota2/bot/start")
@@ -92,7 +92,7 @@ public class Dota2ControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(accessDenied));
 
-        Bet betAfterRequest = getBet(vdk64, testUser, null);
+        Bet betAfterRequest = getBet(vdk64, testUser);
         assertNull(betAfterRequest.getGame().getStatus());
     }
 
@@ -101,7 +101,7 @@ public class Dota2ControllerTest {
         ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
         String responseDataJson = mapper.writeValueAsString(responseData);
-        Bet bet = getBet(vdk64, testUser, null);
+        Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), null);
 
         mockMvc.perform(post("/dota2/bot/start")
@@ -112,7 +112,7 @@ public class Dota2ControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(okStatus));
 
-        Bet betAfterRequest = getBet(vdk64, testUser, null);
+        Bet betAfterRequest = getBet(vdk64, testUser);
         assertSame(betAfterRequest.getGame().getStatus(), GameStatus.STARTED);
     }
 
@@ -121,7 +121,7 @@ public class Dota2ControllerTest {
         ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
         String responseDataJson = mapper.writeValueAsString(responseData);
-        Bet bet = getBet(vdk64, testUser, null);
+        Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), null);
 
         mockMvc.perform(post("/dota2/bot/leave")
@@ -131,7 +131,7 @@ public class Dota2ControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        Bet betAfterRequest = getBet(vdk64, testUser, null);
+        Bet betAfterRequest = getBet(vdk64, testUser);
         changeGameStatus(betAfterRequest.getGame(), null);
     }
 
@@ -140,7 +140,7 @@ public class Dota2ControllerTest {
         ResponseData responseData = new ResponseData("1", vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
         String responseDataJson = mapper.writeValueAsString(responseData);
-        Bet bet = getBet(vdk64, testUser, null);
+        Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.STARTED);
 
         mockMvc.perform(post("/dota2/bot/leave")
@@ -151,7 +151,7 @@ public class Dota2ControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(accessDenied));
 
-        Bet betAfterRequest = getBet(vdk64, testUser, null);
+        Bet betAfterRequest = getBet(vdk64, testUser);
         assertSame(betAfterRequest.getGame().getStatus(), GameStatus.STARTED);
     }
 
@@ -160,7 +160,7 @@ public class Dota2ControllerTest {
         ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
         String responseDataJson = mapper.writeValueAsString(responseData);
-        Bet bet = getBet(vdk64, testUser, null);
+        Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.STARTED);
 
         mockMvc.perform(post("/dota2/bot/leave")
@@ -171,7 +171,7 @@ public class Dota2ControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(okStatus));
 
-        Bet betAfterRequest = getBet(vdk64, testUser, null);
+        Bet betAfterRequest = getBet(vdk64, testUser);
         assertSame(betAfterRequest.getGame().getStatus(), GameStatus.LEAVE);
     }
 
@@ -180,7 +180,7 @@ public class Dota2ControllerTest {
         ResponseData responseData = new ResponseData("1", vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
         String responseDataJson = mapper.writeValueAsString(responseData);
-        Bet bet = getBet(vdk64, testUser, null);
+        Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.STARTED);
 
         mockMvc.perform(post("/dota2/bot/positiveLeave")
@@ -191,7 +191,7 @@ public class Dota2ControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(accessDenied));
 
-        Bet betAfterRequest = getBet(vdk64, testUser, null);
+        Bet betAfterRequest = getBet(vdk64, testUser);
         assertSame(betAfterRequest.getGame().getStatus(), GameStatus.STARTED);
     }
 
@@ -200,7 +200,7 @@ public class Dota2ControllerTest {
         ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
         String responseDataJson = mapper.writeValueAsString(responseData);
-        Bet bet = getBet(vdk64, testUser, null);
+        Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.LEAVE);
 
         mockMvc.perform(post("/dota2/bot/positiveLeave")
@@ -210,7 +210,7 @@ public class Dota2ControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        Bet betAfterRequest = getBet(vdk64, testUser, null);
+        Bet betAfterRequest = getBet(vdk64, testUser);
         assertSame(betAfterRequest.getGame().getStatus(), GameStatus.LEAVE);
     }
 
@@ -219,7 +219,7 @@ public class Dota2ControllerTest {
         ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
         String responseDataJson = mapper.writeValueAsString(responseData);
-        Bet bet = getBet(vdk64, testUser, null);
+        Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.TIMEOUT);
 
         mockMvc.perform(post("/dota2/bot/positiveLeave")
@@ -229,7 +229,7 @@ public class Dota2ControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        Bet betAfterRequest = getBet(vdk64, testUser, null);
+        Bet betAfterRequest = getBet(vdk64, testUser);
         assertSame(betAfterRequest.getGame().getStatus(), GameStatus.TIMEOUT);
     }
 
@@ -238,7 +238,7 @@ public class Dota2ControllerTest {
         ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
         String responseDataJson = mapper.writeValueAsString(responseData);
-        Bet bet = getBet(vdk64, testUser, null);
+        Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.STARTED);
 
         mockMvc.perform(post("/dota2/bot/positiveLeave")
@@ -249,7 +249,7 @@ public class Dota2ControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(okStatus));
 
-        Bet betAfterRequest = getBet(vdk64, testUser, null);
+        Bet betAfterRequest = getBet(vdk64, testUser);
         assertSame(betAfterRequest.getGame().getStatus(), GameStatus.POSITIVE_LEAVE);
     }
 
@@ -258,7 +258,7 @@ public class Dota2ControllerTest {
         ResponseData responseData = new ResponseData("1", vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
         String responseDataJson = mapper.writeValueAsString(responseData);
-        Bet bet = getBet(vdk64, testUser, null);
+        Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.STARTED);
 
         mockMvc.perform(post("/dota2/bot/timeout")
@@ -269,7 +269,7 @@ public class Dota2ControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(accessDenied));
 
-        Bet betAfterRequest = getBet(vdk64, testUser, null);
+        Bet betAfterRequest = getBet(vdk64, testUser);
         assertSame(betAfterRequest.getGame().getStatus(), GameStatus.STARTED);
     }
 
@@ -278,7 +278,7 @@ public class Dota2ControllerTest {
         ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
         String responseDataJson = mapper.writeValueAsString(responseData);
-        Bet bet = getBet(vdk64, testUser, null);
+        Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), null);
 
         mockMvc.perform(post("/dota2/bot/timeout")
@@ -288,7 +288,7 @@ public class Dota2ControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        Bet betAfterRequest = getBet(vdk64, testUser, null);
+        Bet betAfterRequest = getBet(vdk64, testUser);
         assertSame(betAfterRequest.getGame().getStatus(), null);
     }
 
@@ -297,7 +297,7 @@ public class Dota2ControllerTest {
         ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
         String responseDataJson = mapper.writeValueAsString(responseData);
-        Bet bet = getBet(vdk64, testUser, null);
+        Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.STARTED);
 
         mockMvc.perform(post("/dota2/bot/timeout")
@@ -308,7 +308,7 @@ public class Dota2ControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(okStatus));
 
-        Bet betAfterRequest = getBet(vdk64, testUser, null);
+        Bet betAfterRequest = getBet(vdk64, testUser);
         assertSame(betAfterRequest.getGame().getStatus(), GameStatus.TIMEOUT);
     }
 }

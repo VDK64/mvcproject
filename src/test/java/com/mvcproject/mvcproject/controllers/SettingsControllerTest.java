@@ -223,6 +223,9 @@ public class SettingsControllerTest {
                 .params(params))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeDoesNotExist("error"));
         assertFalse(file.exists());
         User userWithDeletedAvatar = userRepo.findByUsername(vdk64.getUsername()).orElseThrow();
@@ -274,6 +277,9 @@ public class SettingsControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("error", String.format(ServerErrors.WRONG_FIRSTNAME,
                         validator.getMinNameLength(), validator.getMaxNameLength())));
         User afterPostUser = userRepo.findByUsername(vdk64.getUsername()).orElseThrow();
@@ -294,6 +300,9 @@ public class SettingsControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("error", String.format(ServerErrors.WRONG_FIRSTNAME,
                         validator.getMinNameLength(), validator.getMaxNameLength())));
         User afterPostUser = userRepo.findByUsername(vdk64.getUsername()).orElseThrow();
@@ -314,6 +323,9 @@ public class SettingsControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("error", String.format(ServerErrors.WRONG_LASTNAME,
                         validator.getMinNameLength(), validator.getMaxNameLength())));
         User afterPostUser = userRepo.findByUsername(vdk64.getUsername()).orElseThrow();
@@ -334,6 +346,9 @@ public class SettingsControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("error", String.format(ServerErrors.WRONG_LASTNAME,
                         validator.getMinNameLength(), validator.getMaxNameLength())));
         User afterPostUser = userRepo.findByUsername(vdk64.getUsername()).orElseThrow();
@@ -475,6 +490,9 @@ public class SettingsControllerTest {
                 .params(params))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("error", ServerErrors.WRONG_VALUE));
     }
 
@@ -596,6 +614,9 @@ public class SettingsControllerTest {
                 .params(params))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("error", ServerErrors.WRONG_VALUE));
     }
 
@@ -622,6 +643,9 @@ public class SettingsControllerTest {
                 .params(params))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("error", ServerErrors.NOT_ENOUGH_DEPOSIT_TO_TRANSACTION));
     }
 
@@ -717,6 +741,9 @@ public class SettingsControllerTest {
                     .param("value", value))
                     .andDo(print())
                     .andExpect(status().isOk())
+                    .andExpect(model().attributeExists("admin"))
+                    .andExpect(model().attributeExists("newMessages"))
+                    .andExpect(model().attributeExists("newBets"))
                     .andExpect(model().attribute("error", ServerErrors.WRONG_VALUE));
         } catch (Exception e) {
             e.printStackTrace();

@@ -88,6 +88,9 @@ public class FriendControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeExists("invites"))
                 .andReturn();
 
@@ -148,6 +151,9 @@ public class FriendControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andReturn();
 
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
@@ -191,6 +197,9 @@ public class FriendControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(content().string(doesNotContainString(user.getUsername())));
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
@@ -218,11 +227,17 @@ public class FriendControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(content().string(containsString(user.getUsername())));
 
         mockMvc.perform(get("/dialogs").with(user(user)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(content().string(doesNotContainString(vdk64.getUsername())));
 
         params.replace("friendId", Collections.singletonList(vdk64.getId().toString()));
@@ -241,6 +256,9 @@ public class FriendControllerTest {
         mockMvc.perform(get("/dialogs").with(user(user)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(content().string(containsString(vdk64.getUsername())));
 
         dialogRepo.deleteById(dialogId);
@@ -259,7 +277,10 @@ public class FriendControllerTest {
         mockMvc.perform(get("/friends/find_friends")
                 .with(user(vdk64)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"));
     }
 
     @Test
@@ -291,6 +312,9 @@ public class FriendControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeExists("findUser"))
                 .andExpect(model().attribute("findUser", testUser))
                 .andExpect(model().attribute("isFriend", false))
@@ -310,6 +334,9 @@ public class FriendControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attributeExists("findUser"))
                 .andExpect(model().attribute("findUser", kasha111))
                 .andExpect(model().attribute("isFriend", true))
@@ -350,7 +377,10 @@ public class FriendControllerTest {
                 .with(user(vdk64))
                 .params(params))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"));
 
         assertTrue(vdk64.getFriends().contains(testUser));
 
@@ -358,6 +388,9 @@ public class FriendControllerTest {
                 .with(user(testUser)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(model().attribute("invites", Stream.of(vdk64).collect(Collectors.toSet())));
 
         params.replace("username", Collections.singletonList(vdk64.getUsername()));
@@ -367,7 +400,10 @@ public class FriendControllerTest {
                 .with(user(testUser))
                 .params(params))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"));
 
         assertTrue(testUser.getFriends().contains(vdk64));
     }
@@ -384,6 +420,9 @@ public class FriendControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(content().string(doesNotContainString("add to friends")));
     }
 
@@ -418,12 +457,18 @@ public class FriendControllerTest {
                 .with(user(vdk64)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(content().string(containsString("vasiliy228")));
 
         mockMvc.perform(get("/dialogs")
                 .with(user(vasily)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(content().string(containsString("Sorry, no Dialogs")));
 
         messageController.sendSpecific(messageDto);
@@ -432,6 +477,9 @@ public class FriendControllerTest {
                 .with(user(vasily)))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("admin"))
+                .andExpect(model().attributeExists("newMessages"))
+                .andExpect(model().attributeExists("newBets"))
                 .andExpect(content().string(doesNotContainString("Sorry, no Dialogs")))
                 .andExpect(content().string(containsString("vdk64")));
 
