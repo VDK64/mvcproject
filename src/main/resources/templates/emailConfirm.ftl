@@ -33,6 +33,9 @@
       <div class="col-md-12 d-flex justify-content-center" style="margin-top: 10px">
         <h5 class="page-header">${msg}</h5>
       </div>
+      <div class="col-md-12 d-flex justify-content-center" style="margin-top: 10px">
+        <h5 class="page-header"><a href="/"> Main Page </a></h5>
+      </div>
     </div>
   </div>
 
