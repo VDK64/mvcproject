@@ -55,6 +55,10 @@ public class BetControllerTest {
     private String withoutSteamId;
     @Value("${create_button_text}")
     private String createButtonText;
+    @Value("${regex_enable_details}")
+    private String enableDetailsButton;
+    @Value("${regex_disable_details}")
+    private String disableDetailsButton;
     private User vdk64;
     private User testUser;
 
@@ -694,12 +698,14 @@ public class BetControllerTest {
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> items = (List<?>) model.get("items");
         String contentAsString = mvcResult.getResponse().getContentAsString();
-        Pattern pattern = Pattern.compile("<a class=\"nav-link\" href=\"/bets/\\d+\">Details</a>");
-        Matcher matcher = pattern.matcher(contentAsString);
+        Pattern disabledPattern = Pattern.compile(disableDetailsButton);
+        Pattern enabledPattern = Pattern.compile(enableDetailsButton);
+        Matcher disabledMatcher = disabledPattern.matcher(contentAsString);
+        Matcher enabledMatcher = enabledPattern.matcher(contentAsString);
         boolean boo = items.stream().anyMatch(item -> item instanceof Bet && ((Bet) item).getWhoWin() == null);
         if (boo)
-            assertTrue(matcher.find());
+            assertTrue(enabledMatcher.find());
         else
-            assertFalse(matcher.find());
+            assertTrue(disabledMatcher.find());
     }
 }

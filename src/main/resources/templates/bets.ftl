@@ -67,14 +67,11 @@
                         <#else>
                           <td><b>undefined</b></td>
                       </#if>
-                      <#if item.whoWin??>
-                        <td />
-                      <#else>
-                          <#if user.steamId??>
-                            <td> <a class="nav-link" href="/bets/${item.id}">Details</a></td>
-                            <#else>
-                          </#if>
-                      </#if>
+                      <td>
+                        <button onclick="toBetDetails(${item.id})" type="button"<#if item.whoWin?? || !user.steamId??>disabled</#if>>
+                          Details
+                        </button>
+                      </td>
                       <td>
                         <form method="post">
                           <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
@@ -97,14 +94,11 @@
                           <#else>
                             <td>undefined</td>
                         </#if>
-                        <#if item.whoWin??>
-                          <td />
-                          <#else>
-                            <#if user.steamId??>
-                              <td> <a class="nav-link" href="/bets/${item.id}">Details</a></td>
-                              <#else>
-                            </#if>
-                        </#if>
+                        <td>
+                          <button onclick="toBetDetails(${item.id})" type="button"<#if item.whoWin?? || !user.steamId??>disabled</#if>>
+                            Details
+                          </button>
+                        </td>
                         <td>
                           <form method="post">
                             <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
@@ -138,6 +132,10 @@
 
       function createBet() {
         document.location.href = "/bets/createBet";
+      }
+
+      function toBetDetails(id) {
+        window.location = "/bets/" + id;
       }
     </script>
 
