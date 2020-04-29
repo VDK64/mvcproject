@@ -25,6 +25,8 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.mvcproject.mvcproject.common.CustomMatcher.doesNotContainString;
 import static org.hamcrest.Matchers.containsString;
@@ -691,10 +693,13 @@ public class BetControllerTest {
     private void checkDetailsExist(MvcResult mvcResult) throws UnsupportedEncodingException {
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> items = (List<?>) model.get("items");
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        Pattern pattern = Pattern.compile("<a class=\"nav-link\" href=\"/bets/\\d+\">Details</a>");
+        Matcher matcher = pattern.matcher(contentAsString);
         boolean boo = items.stream().anyMatch(item -> item instanceof Bet && ((Bet) item).getWhoWin() == null);
         if (boo)
-            assertTrue(mvcResult.getResponse().getContentAsString().contains("See details"));
+            assertTrue(matcher.find());
         else
-            assertFalse(mvcResult.getResponse().getContentAsString().contains("See details"));
+            assertFalse(matcher.find());
     }
 }

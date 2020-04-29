@@ -116,7 +116,7 @@ public class BetController {
     }
 
     @PostMapping(value = "/{id}", params = "confirmBet")
-    private ModelAndView setConfirm(@AuthenticationPrincipal User user, ModelAndView modelAndView,
+    public ModelAndView setConfirm(@AuthenticationPrincipal User user, ModelAndView modelAndView,
                                     @PathVariable Long id) {
         User userFromDB = userService.getUserById(user.getId());
         modelAndView.setViewName("details");
@@ -129,5 +129,19 @@ public class BetController {
                 null, "showOtherInfo"));
         modelAndView.addObject("user", userFromDB);
         return modelAndView;
+    }
+
+    @PostMapping(params = "deleteBet")
+    public String deleteBet(@AuthenticationPrincipal User user, Model model,
+                                    @RequestParam Long betId, @RequestParam String table) {
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.setViewName("bets");
+//        UserService.ifAdmin(modelAndView, userFromDB);
+//        modelAndView.addObject("newMessages", userFromDB.isHaveNewMessages());
+//        modelAndView.addObject("newBets", userFromDB.isHaveNewBets());
+//        modelAndView.addObject("user", userFromDB);
+        User userFromDB = betService.deleteBet(betId, user.getId());
+        betService.formModelForBets(model, userFromDB, table);
+        return "bets";
     }
 }

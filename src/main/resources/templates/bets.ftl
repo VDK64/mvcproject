@@ -44,6 +44,7 @@
               <th scope="col"> Is confirmed </th>
               <th scope="col"> Win </th>
               <th scope="col"> Details </th>
+              <th scope="col"> Delete </th>
             </tr>
           </thead>
           <tbody>
@@ -67,12 +68,21 @@
                           <td><b>undefined</b></td>
                       </#if>
                       <#if item.whoWin??>
-                        <#else>
+                        <td />
+                      <#else>
                           <#if user.steamId??>
-                            <td> <a class="nav-link" href="/bets/${item.id}"> See details</a> </td>
+                            <td> <a class="nav-link" href="/bets/${item.id}">Details</a></td>
                             <#else>
                           </#if>
                       </#if>
+                      <td>
+                        <form method="post">
+                          <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+                          <input name="betId" value="${item.id}" type="hidden">
+                          <input name="table" value="${tableName}" type="hidden">
+                          <button name="deleteBet" type="submit" <#if item.isConfirm>disabled</#if>>Delete</button>
+                        </form>
+                      </td>
                       <#else>
                         <td>${item.user.firstname}</td>
                         <td>${item.user.username}</td>
@@ -88,12 +98,21 @@
                             <td>undefined</td>
                         </#if>
                         <#if item.whoWin??>
+                          <td />
                           <#else>
                             <#if user.steamId??>
-                              <td> <a class="nav-link" href="/bets/${item.id}"> See details</a> </td>
+                              <td> <a class="nav-link" href="/bets/${item.id}">Details</a></td>
                               <#else>
                             </#if>
                         </#if>
+                        <td>
+                          <form method="post">
+                            <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+                            <input name="betId" value="${item.id}" type="hidden">
+                            <input name="table" value="${tableName}" type="hidden">
+                            <button name="deleteBet" type="submit" <#if item.isConfirm>disabled</#if>>Delete</button>
+                          </form>
+                        </td>
                     </#if>
                   </tr>
               </#list>

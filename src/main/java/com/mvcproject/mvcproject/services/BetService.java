@@ -202,6 +202,21 @@ public class BetService {
         return betFromDB;
     }
 
+    @Transactional
+    public User deleteBet(Long betId, Long userId) {
+        User user = userService.getUserById(userId);
+        Set<Bet> bets = user.getBets();
+        bets.stream()
+                .filter(bet -> bet.getId().equals(betId))
+                .findFirst()
+                .ifPresent(bet -> {
+                    user.setDeposit(user.getDeposit() + bet.getValue());
+                    bets.remove(bet);
+                    userRepo.save(user);
+                });
+        return user;
+    }
+
     public void messageParser(User user, BetDto betDto) throws JsonProcessingException {
         if (betDto.getInfo().equals("check"))
             betService.checkGames(user, betDto);
