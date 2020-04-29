@@ -134,12 +134,6 @@ public class BetController {
     @PostMapping(params = "deleteBet")
     public String deleteBet(@AuthenticationPrincipal User user, Model model,
                                     @RequestParam Long betId, @RequestParam String table) {
-//        ModelAndView modelAndView = new ModelAndView();
-//        modelAndView.setViewName("bets");
-//        UserService.ifAdmin(modelAndView, userFromDB);
-//        modelAndView.addObject("newMessages", userFromDB.isHaveNewMessages());
-//        modelAndView.addObject("newBets", userFromDB.isHaveNewBets());
-//        modelAndView.addObject("user", userFromDB);
         User userFromDB = betService.deleteBet(betId, user.getId());
         betService.formModelForBets(model, userFromDB, table);
         return "bets";
