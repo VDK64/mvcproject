@@ -5,6 +5,7 @@ import com.mvcproject.mvcproject.entities.Game;
 import com.mvcproject.mvcproject.entities.User;
 import com.mvcproject.mvcproject.exceptions.ServerErrors;
 import com.mvcproject.mvcproject.repositories.BetRepo;
+import com.mvcproject.mvcproject.repositories.GameRepo;
 import com.mvcproject.mvcproject.repositories.UserRepo;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,6 +52,8 @@ public class BetControllerTest {
     private UserRepo userRepo;
     @Autowired
     private BetRepo betRepo;
+    @Autowired
+    private GameRepo gameRepo;
     @Value("${without_steamId}")
     private String withoutSteamId;
     @Value("${create_button_text}")
@@ -509,6 +512,7 @@ public class BetControllerTest {
             put("lobbyName", Collections.singletonList("lobby"));
             put("password", Collections.singletonList("pass"));
         }};
+        Float deposit = userRepo.findByUsername(vdk64.getUsername()).orElseThrow().getDeposit();
 
         mockMvc.perform(post("/bets/createBet")
                 .with(csrf())
@@ -524,7 +528,7 @@ public class BetControllerTest {
         assertEquals("pass", game.getPassword());
         assertEquals("1x1", game.getGameMode());
         assertEquals("lobby", game.getLobbyName());
-        assertEquals(999, userRepo.findByUsername(vdk64.getUsername())
+        assertEquals(deposit - 1, userRepo.findByUsername(vdk64.getUsername())
                 .orElseThrow().getDeposit(), 0.0);
 
         mockMvc.perform(get("/bets")
@@ -692,6 +696,27 @@ public class BetControllerTest {
         User user = (User) model.get("user");
         assertTrue(bet.getIsConfirm());
         assertEquals(user.getDeposit(), 550, 0.0);
+    }
+
+    @Test
+    public void testDeleteBet() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(){{
+            put("deleteBet", Collections.singletonList(""));
+            put("betId", Collections.singletonList("65"));
+            put("table", Collections.singletonList("Owner"));
+        }};
+
+        MvcResult mvcResult = mockMvc.perform(post("/bets")
+                .params(params)
+                .with(user(vdk64))
+                .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+        Optional<Bet> bet = betRepo.findById(65L);
+        Optional<Game> game = gameRepo.findById(3L);
+        assertFalse(bet.isPresent());
+        assertFalse(game.isPresent());
     }
 
     private void checkDetailsExist(MvcResult mvcResult) throws UnsupportedEncodingException {

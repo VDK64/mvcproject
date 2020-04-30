@@ -508,6 +508,7 @@ public class SettingsControllerTest {
 
     @Test
     public void testDepositWithDot() throws Exception {
+        Float deposit = vdk64.getDeposit();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("deposit", Collections.singletonList(""));
             put("value", Collections.singletonList("100.50"));
@@ -524,12 +525,13 @@ public class SettingsControllerTest {
                 .andExpect(model().attribute("admin", true))
                 .andExpect(model().attribute("ok", "Your deposit was successfully replenished!"));
         assertEquals(userRepo.findByUsername(vdk64.getUsername()).orElseThrow().getDeposit(),
-                1100.5F, 0.0);
+                deposit + 100.5F, 0.0);
         userRepo.save(vdk64);
     }
 
     @Test
     public void testDepositWithComma() throws Exception {
+        Float deposit = vdk64.getDeposit();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("deposit", Collections.singletonList(""));
             put("value", Collections.singletonList("100,50"));
@@ -546,12 +548,13 @@ public class SettingsControllerTest {
                 .andExpect(model().attribute("admin", true))
                 .andExpect(model().attribute("ok", "Your deposit was successfully replenished!"));
         assertEquals(userRepo.findByUsername(vdk64.getUsername()).orElseThrow().getDeposit(),
-                1100.5F, 0.0);
+                deposit + 100.5F, 0.0);
         userRepo.save(vdk64);
     }
 
     @Test
     public void testDeposit() throws Exception {
+        Float deposit = vdk64.getDeposit();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("deposit", Collections.singletonList(""));
             put("value", Collections.singletonList("100"));
@@ -568,7 +571,7 @@ public class SettingsControllerTest {
                 .andExpect(model().attribute("admin", true))
                 .andExpect(model().attribute("ok", "Your deposit was successfully replenished!"));
         assertEquals(userRepo.findByUsername(vdk64.getUsername()).orElseThrow().getDeposit(),
-                1100F, 0.0);
+                deposit + 100F, 0.0);
         userRepo.save(vdk64);
     }
 
@@ -632,9 +635,10 @@ public class SettingsControllerTest {
 
     @Test
     public void testWithdrawMoreThanDeposit() throws Exception {
+        Float deposit = vdk64.getDeposit();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("withdraw", Collections.singletonList(""));
-            put("value", Collections.singletonList("1000.1"));
+            put("value", Collections.singletonList((String.valueOf(deposit + 0.1F))));
         }};
 
         mockMvc.perform(post("/settings")
@@ -651,6 +655,7 @@ public class SettingsControllerTest {
 
     @Test
     public void testWithdrawWithDot() throws Exception {
+        Float deposit = vdk64.getDeposit();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("withdraw", Collections.singletonList(""));
             put("value", Collections.singletonList("999.50"));
@@ -667,15 +672,16 @@ public class SettingsControllerTest {
                 .andExpect(model().attribute("admin", true))
                 .andExpect(model().attribute("ok", "Withdraw was successfully!"));
         assertEquals(userRepo.findByUsername(vdk64.getUsername()).orElseThrow().getDeposit(),
-                0.50F, 0.0);
+                deposit - 999.50F, 0.0);
         userRepo.save(vdk64);
     }
 
     @Test
     public void testWithdrawWithComma() throws Exception {
+        Float deposit = vdk64.getDeposit();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("withdraw", Collections.singletonList(""));
-            put("value", Collections.singletonList("999.50"));
+            put("value", Collections.singletonList("999,50"));
         }};
 
         mockMvc.perform(post("/settings")
@@ -689,12 +695,13 @@ public class SettingsControllerTest {
                 .andExpect(model().attribute("admin", true))
                 .andExpect(model().attribute("ok", "Withdraw was successfully!"));
         assertEquals(userRepo.findByUsername(vdk64.getUsername()).orElseThrow().getDeposit(),
-                0.50F, 0.0);
+                deposit - 999.50F, 0.0);
         userRepo.save(vdk64);
     }
 
     @Test
     public void testWithdraw() throws Exception {
+        Float deposit = vdk64.getDeposit();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("withdraw", Collections.singletonList(""));
             put("value", Collections.singletonList("1000"));
@@ -711,7 +718,7 @@ public class SettingsControllerTest {
                 .andExpect(model().attribute("admin", true))
                 .andExpect(model().attribute("ok", "Withdraw was successfully!"));
         assertEquals(userRepo.findByUsername(vdk64.getUsername()).orElseThrow().getDeposit(),
-                0F, 0.0);
+                deposit - 1000F, 0.0);
         userRepo.save(vdk64);
     }
 
