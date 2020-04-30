@@ -797,7 +797,6 @@ public class BetControllerTest {
         assertFalse(bet.isPresent());
         assertFalse(game.isPresent());
         gameWhichDelete.setId(null);
-//        Game saveGame = gameRepo.save(gameWhichDelete);
         betWhichDelete.setId(null);
         betWhichDelete.setGame(gameWhichDelete);
         betRepo.save(betWhichDelete);
