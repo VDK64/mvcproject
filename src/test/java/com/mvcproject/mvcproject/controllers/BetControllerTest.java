@@ -62,8 +62,12 @@ public class BetControllerTest {
     private String enableDetailsButton;
     @Value("${regex_disable_details}")
     private String disableDetailsButton;
+    @Value("${regex_disable_delete_button}")
+    private String disableDeleteBetButton;
     private User vdk64;
     private User testUser;
+    private Bet betWhichDelete;
+    private Game gameWhichDelete;
 
     @Before
     public void setup() {
@@ -73,6 +77,8 @@ public class BetControllerTest {
                 .build();
         vdk64 = userRepo.findByUsername("vdk64").orElseThrow();
         testUser = userRepo.findByUsername("testUser").orElseThrow();
+        gameWhichDelete = gameRepo.findByLobbyName("TestLobbyWhichDelete").orElseThrow();
+        betWhichDelete = betRepo.findByGame(gameWhichDelete).orElseThrow();
     }
 
     @Test
@@ -699,8 +705,81 @@ public class BetControllerTest {
     }
 
     @Test
+    public void testDeleteBetWithoutCSRF() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
+            put("deleteBet", Collections.singletonList(""));
+            put("betId", Collections.singletonList("65"));
+            put("table", Collections.singletonList("Owner"));
+        }};
+
+        mockMvc.perform(post("/bets")
+                .params(params)
+                .with(user(vdk64)))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testDeleteBetWithoutLogin() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
+            put("deleteBet", Collections.singletonList(""));
+            put("betId", Collections.singletonList("65"));
+            put("table", Collections.singletonList("Owner"));
+        }};
+
+        mockMvc.perform(post("/bets")
+                .params(params)
+                .with(csrf()))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
+    }
+
+    @Test
+    public void testDeleteBetWithConfirmTrue() throws Exception {
+        prepareBet(betWhichDelete, true);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
+            put("deleteBet", Collections.singletonList(""));
+            put("betId", Collections.singletonList("65"));
+            put("table", Collections.singletonList("Owner"));
+        }};
+
+        MvcResult mvcResult = mockMvc.perform(post("/bets")
+                .params(params)
+                .with(user(vdk64))
+                .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+        Optional<Bet> bet = betRepo.findById(65L);
+        Optional<Game> game = gameRepo.findById(3L);
+        assertTrue(bet.isPresent());
+        assertTrue(game.isPresent());
+        prepareBet(betWhichDelete, false);
+    }
+
+    @Test
+    public void testDeleteBetCheckDisableButton() throws Exception {
+        prepareBet(betWhichDelete, true);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
+            put("chooseTable", Collections.singletonList(""));
+            put("table", Collections.singletonList("Owner"));
+        }};
+
+        MvcResult mvcResult = mockMvc.perform(post("/bets")
+                .params(params)
+                .with(user(vdk64))
+                .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+        assertTrue(findRegex(mvcResult.getResponse().getContentAsString(), disableDeleteBetButton, betWhichDelete.getId()));
+        prepareBet(betWhichDelete, false);
+    }
+
+    @Test
     public void testDeleteBet() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(){{
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>() {{
             put("deleteBet", Collections.singletonList(""));
             put("betId", Collections.singletonList("65"));
             put("table", Collections.singletonList("Owner"));
@@ -717,20 +796,32 @@ public class BetControllerTest {
         Optional<Game> game = gameRepo.findById(3L);
         assertFalse(bet.isPresent());
         assertFalse(game.isPresent());
+        gameWhichDelete.setId(null);
+//        Game saveGame = gameRepo.save(gameWhichDelete);
+        betWhichDelete.setId(null);
+        betWhichDelete.setGame(gameWhichDelete);
+        betRepo.save(betWhichDelete);
+    }
+
+    private void prepareBet(Bet bet, boolean setConfirm) {
+        bet.setIsConfirm(setConfirm);
+        betRepo.save(bet);
+    }
+
+    private boolean findRegex(String content, String regex, long id) {
+        Pattern compile = Pattern.compile(String.format(regex, id));
+        Matcher matcher = compile.matcher(content);
+        return matcher.find();
     }
 
     private void checkDetailsExist(MvcResult mvcResult) throws UnsupportedEncodingException {
         Map<String, Object> model = Objects.requireNonNull(mvcResult.getModelAndView()).getModel();
         List<?> items = (List<?>) model.get("items");
         String contentAsString = mvcResult.getResponse().getContentAsString();
-        Pattern disabledPattern = Pattern.compile(disableDetailsButton);
-        Pattern enabledPattern = Pattern.compile(enableDetailsButton);
-        Matcher disabledMatcher = disabledPattern.matcher(contentAsString);
-        Matcher enabledMatcher = enabledPattern.matcher(contentAsString);
         boolean boo = items.stream().anyMatch(item -> item instanceof Bet && ((Bet) item).getWhoWin() == null);
         if (boo)
-            assertTrue(enabledMatcher.find());
+            assertTrue(findRegex(contentAsString, enableDetailsButton, betWhichDelete.getId()));
         else
-            assertTrue(disabledMatcher.find());
+            assertTrue(findRegex(contentAsString, disableDetailsButton, betWhichDelete.getId()));
     }
 }

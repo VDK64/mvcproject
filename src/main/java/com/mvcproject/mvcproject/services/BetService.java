@@ -79,7 +79,6 @@ public class BetService {
                 lobbyName, password);
         Game katka = new Game(null, lobbyName, password, gamemode, false, false,
                 user.getSteamId(), opponentFromDB.getSteamId());
-        gameRepo.save(katka);
         Bet bet = new Bet(null, user, floatValue,
                 opponentFromDB, false, null,
                 katka, true);
@@ -207,7 +206,7 @@ public class BetService {
         User user = userService.getUserById(userId);
         Set<Bet> bets = user.getBets();
         bets.stream()
-                .filter(bet -> bet.getId().equals(betId))
+                .filter(bet -> bet.getId().equals(betId) && !bet.getIsConfirm())
                 .findFirst()
                 .ifPresent(bet -> {
                     user.setDeposit(user.getDeposit() + bet.getValue());

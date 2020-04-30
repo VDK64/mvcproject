@@ -104,7 +104,7 @@
                             <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
                             <input name="betId" value="${item.id}" type="hidden">
                             <input name="table" value="${tableName}" type="hidden">
-                            <button name="deleteBet" type="submit" <#if item.isConfirm>disabled</#if>>Delete</button>
+                            <button id="deleteBet${item.id}" name="deleteBet" type="submit" <#if item.isConfirm>disabled</#if>>Delete</button>
                           </form>
                         </td>
                     </#if>
