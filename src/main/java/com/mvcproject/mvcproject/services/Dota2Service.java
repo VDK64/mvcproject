@@ -84,24 +84,24 @@ public class Dota2Service {
         } while (!created);
     }
 
-    public synchronized void startLobby(String user, String opponent) {
+    public void startLobby(String user, String opponent) {
         Bet bet = getBetAndSetStatus(user, opponent, GameStatus.STARTED);
         bet.getGame().setServerStartTime(Math.toIntExact(System.currentTimeMillis() / 1000));
         gameRepo.save(bet.getGame());
     }
 
-    public synchronized void leaveLobby(String user, String opponent) {
+    public void leaveLobby(String user, String opponent) {
         Bet bet = getBetAndSetStatus(user, opponent, GameStatus.LEAVE);
         gameRepo.save(bet.getGame());
     }
 
-    public synchronized void positiveLeave(String user, String opponent) {
+    public void positiveLeave(String user, String opponent) {
         Bet bet = getBetAndSetStatus(user, opponent, GameStatus.POSITIVE_LEAVE);
         gameRepo.save(bet.getGame());
         bots.replace(localhost1347, true);
     }
 
-    public synchronized void timeout(String user, String opponent) {
+    public void timeout(String user, String opponent) {
         Bet bet = getBetAndSetStatus(user, opponent, GameStatus.TIMEOUT);
         Game game = bet.getGame();
         game.setIsUserReady(false);
