@@ -65,15 +65,15 @@ stompClient2.connect(headers, function(frame) {
 
 function prepareToReady() {
   if (urlBet.includes('/bets/')) {
-     ready();
-   } else {
-     if (!urlBet.includes('/bets')) {
-       showNotification('Your friend is ready to play');
-     }
-     newBets = true;
-     let event = new CustomEvent("bet");
-     document.dispatchEvent(event);
-   }
+    ready();
+  } else {
+    if (!urlBet.includes('/bets')) {
+      showNotification('Your friend is ready to play');
+    }
+    newBets = true;
+    let event = new CustomEvent("bet");
+    document.dispatchEvent(event);
+  }
 }
 
 function betInfo(info) {
@@ -123,6 +123,9 @@ function printErrorMessage() {
   p.innerHTML = 'Something goes wrong with creating new Lobby. Please, reload page and if you are not ready - try again';
   div.append(p);
   mainDiv.append(div);
+  setTimeout(() => {
+    div.parentNode.removeChild(div);
+  }, 5000);
 }
 
 function showOtherInfo() {
@@ -150,7 +153,9 @@ function deleteAndPrintStartInfo() {
   let text = document.getElementById('loadingP');
   let div = document.getElementById('loadingDiv');
   let span = document.getElementById('loadingSpan');
-  if (text != null) { text.remove(); }
+  if (text != null) {
+    text.remove();
+  }
   div.remove();
   span.remove();
   row.append(p);

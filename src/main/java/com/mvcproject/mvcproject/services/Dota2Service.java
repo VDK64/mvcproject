@@ -97,7 +97,7 @@ public class Dota2Service {
 
     public void positiveLeave(String user, String opponent) {
         Bet bet = getBetAndSetStatus(user, opponent, GameStatus.POSITIVE_LEAVE);
-        gameRepo.save(bet.getGame());
+        Game save = gameRepo.save(bet.getGame());
         bots.replace(localhost1347, true);
     }
 
