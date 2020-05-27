@@ -1,6 +1,6 @@
 package com.mvcproject.mvcproject.controllers;
 
-import com.mvcproject.mvcproject.dto.ResponseData;
+import com.mvcproject.mvcproject.dto.RequestData;
 import com.mvcproject.mvcproject.services.Dota2Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +24,9 @@ public class Dota2Controller {
     }
 
     @PostMapping("/dota2/bot/start")
-    public ResponseEntity<String> startLobby(@RequestBody ResponseData responseData) {
-        if (responseData.getToken().equals(Dota2Controller.token)) {
-            dota2Service.startLobby(responseData.getUser(), responseData.getOpponent());
+    public ResponseEntity<String> startLobby(@RequestBody RequestData requestData) {
+        if (requestData.getToken().equals(Dota2Controller.token)) {
+            dota2Service.startLobby(requestData.getUser(), requestData.getOpponent());
             return ResponseEntity.ok(okStatus);
         } else {
             return new ResponseEntity<>(accessDenied, HttpStatus.BAD_REQUEST);
@@ -34,9 +34,9 @@ public class Dota2Controller {
     }
 
     @PostMapping("/dota2/bot/leave")
-    public ResponseEntity<String> leaveLobby(@RequestBody ResponseData responseData) {
-        if (responseData.getToken().equals(Dota2Controller.token)) {
-            dota2Service.leaveLobby(responseData.getUser(), responseData.getOpponent());
+    public ResponseEntity<String> leaveLobby(@RequestBody RequestData requestData) {
+        if (requestData.getToken().equals(Dota2Controller.token)) {
+            dota2Service.leaveLobby(requestData.getUser(), requestData.getOpponent());
             return ResponseEntity.ok(okStatus);
         } else {
             return new ResponseEntity<>(accessDenied, HttpStatus.BAD_REQUEST);
@@ -44,9 +44,9 @@ public class Dota2Controller {
     }
 
     @PostMapping("/dota2/bot/positiveLeave")
-    public ResponseEntity<String> positiveLeave(@RequestBody ResponseData responseData) {
-        if (responseData.getToken().equals(Dota2Controller.token)) {
-            dota2Service.positiveLeave(responseData.getUser(), responseData.getOpponent());
+    public ResponseEntity<String> positiveLeave(@RequestBody RequestData requestData) {
+        if (requestData.getToken().equals(Dota2Controller.token)) {
+            dota2Service.positiveLeave(requestData.getUser(), requestData.getOpponent());
             return ResponseEntity.ok(okStatus);
         } else {
             return new ResponseEntity<>(accessDenied, HttpStatus.BAD_REQUEST);
@@ -54,9 +54,9 @@ public class Dota2Controller {
     }
 
     @PostMapping("/dota2/bot/timeout")
-        public ResponseEntity<String> lobbyTimeout(@RequestBody ResponseData responseData) {
-            if (responseData.getToken().equals(Dota2Controller.token)) {
-                dota2Service.timeout(responseData.getUser(), responseData.getOpponent());
+        public ResponseEntity<String> lobbyTimeout(@RequestBody RequestData requestData) {
+            if (requestData.getToken().equals(Dota2Controller.token)) {
+                dota2Service.timeout(requestData.getUser(), requestData.getOpponent());
                 return ResponseEntity.ok(okStatus);
             } else {
                 return new ResponseEntity<>(accessDenied, HttpStatus.BAD_REQUEST);

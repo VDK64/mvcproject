@@ -1,7 +1,7 @@
 package com.mvcproject.mvcproject.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mvcproject.mvcproject.dto.ResponseData;
+import com.mvcproject.mvcproject.dto.RequestData;
 import com.mvcproject.mvcproject.entities.Bet;
 import com.mvcproject.mvcproject.entities.Game;
 import com.mvcproject.mvcproject.entities.GameStatus;
@@ -78,9 +78,9 @@ public class Dota2ControllerTest {
 
     @Test
     public void testStartLobbyWithWrongToken() throws Exception {
-        ResponseData responseData = new ResponseData("1", vdk64.getSteamId(),
+        RequestData requestData = new RequestData("1", vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
-        String responseDataJson = mapper.writeValueAsString(responseData);
+        String responseDataJson = mapper.writeValueAsString(requestData);
         Bet bet = getBet(vdk64, testUser);
         assertNull(bet.getGame().getStatus());
 
@@ -98,9 +98,9 @@ public class Dota2ControllerTest {
 
     @Test
     public void testStartLobby() throws Exception {
-        ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
+        RequestData requestData = new RequestData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
-        String responseDataJson = mapper.writeValueAsString(responseData);
+        String responseDataJson = mapper.writeValueAsString(requestData);
         Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), null);
 
@@ -118,9 +118,9 @@ public class Dota2ControllerTest {
 
     @Test
     public void testLeaveLobbyWithWrongGameStatusNull() throws Exception {
-        ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
+        RequestData requestData = new RequestData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
-        String responseDataJson = mapper.writeValueAsString(responseData);
+        String responseDataJson = mapper.writeValueAsString(requestData);
         Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), null);
 
@@ -137,9 +137,9 @@ public class Dota2ControllerTest {
 
     @Test
     public void testLeaveLobbyWithWrongToken() throws Exception {
-        ResponseData responseData = new ResponseData("1", vdk64.getSteamId(),
+        RequestData requestData = new RequestData("1", vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
-        String responseDataJson = mapper.writeValueAsString(responseData);
+        String responseDataJson = mapper.writeValueAsString(requestData);
         Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.STARTED);
 
@@ -157,9 +157,9 @@ public class Dota2ControllerTest {
 
     @Test
     public void testLeaveLobby() throws Exception {
-        ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
+        RequestData requestData = new RequestData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
-        String responseDataJson = mapper.writeValueAsString(responseData);
+        String responseDataJson = mapper.writeValueAsString(requestData);
         Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.STARTED);
 
@@ -177,9 +177,9 @@ public class Dota2ControllerTest {
 
     @Test
     public void testPositiveLeaveWithWrongToken() throws Exception {
-        ResponseData responseData = new ResponseData("1", vdk64.getSteamId(),
+        RequestData requestData = new RequestData("1", vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
-        String responseDataJson = mapper.writeValueAsString(responseData);
+        String responseDataJson = mapper.writeValueAsString(requestData);
         Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.STARTED);
 
@@ -197,9 +197,9 @@ public class Dota2ControllerTest {
 
     @Test
     public void testPositiveLeaveWithWrongBetStatusLeave() throws Exception {
-        ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
+        RequestData requestData = new RequestData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
-        String responseDataJson = mapper.writeValueAsString(responseData);
+        String responseDataJson = mapper.writeValueAsString(requestData);
         Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.LEAVE);
 
@@ -216,9 +216,9 @@ public class Dota2ControllerTest {
 
     @Test
     public void testPositiveLeaveWithWrongBetStatusTimeout() throws Exception {
-        ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
+        RequestData requestData = new RequestData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
-        String responseDataJson = mapper.writeValueAsString(responseData);
+        String responseDataJson = mapper.writeValueAsString(requestData);
         Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.TIMEOUT);
 
@@ -235,9 +235,9 @@ public class Dota2ControllerTest {
 
     @Test
     public void testPositiveLeave() throws Exception {
-        ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
+        RequestData requestData = new RequestData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
-        String responseDataJson = mapper.writeValueAsString(responseData);
+        String responseDataJson = mapper.writeValueAsString(requestData);
         Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.STARTED);
 
@@ -255,9 +255,9 @@ public class Dota2ControllerTest {
 
     @Test
     public void testLobbyTimeoutWithWrongToken() throws Exception {
-        ResponseData responseData = new ResponseData("1", vdk64.getSteamId(),
+        RequestData requestData = new RequestData("1", vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
-        String responseDataJson = mapper.writeValueAsString(responseData);
+        String responseDataJson = mapper.writeValueAsString(requestData);
         Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.STARTED);
 
@@ -275,9 +275,9 @@ public class Dota2ControllerTest {
 
     @Test
     public void testLobbyTimeoutWithWrongGameStatusNull() throws Exception {
-        ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
+        RequestData requestData = new RequestData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
-        String responseDataJson = mapper.writeValueAsString(responseData);
+        String responseDataJson = mapper.writeValueAsString(requestData);
         Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), null);
 
@@ -294,9 +294,9 @@ public class Dota2ControllerTest {
 
     @Test
     public void testLobbyTimeout() throws Exception {
-        ResponseData responseData = new ResponseData(token, vdk64.getSteamId(),
+        RequestData requestData = new RequestData(token, vdk64.getSteamId(),
                 testUser.getSteamId(), null, port);
-        String responseDataJson = mapper.writeValueAsString(responseData);
+        String responseDataJson = mapper.writeValueAsString(requestData);
         Bet bet = getBet(vdk64, testUser);
         changeGameStatus(bet.getGame(), GameStatus.STARTED);
 

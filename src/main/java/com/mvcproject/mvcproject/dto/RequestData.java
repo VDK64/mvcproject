@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ResponseData {
+public class RequestData {
     private String token;
     private String user;
     private String opponent;
