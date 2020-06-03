@@ -5,7 +5,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Getter
 public class ErrorPageException extends RuntimeException {
-    private ModelAndView model;
+    private final ModelAndView model;
 
     public ErrorPageException(ModelAndView model) {
         this.model = model;

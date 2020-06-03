@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 public class JOpenId {
-    private String url;
+    private final String url;
 
     {
         OpenIdManager manager = new OpenIdManager();
