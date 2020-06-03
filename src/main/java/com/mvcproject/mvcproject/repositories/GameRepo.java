@@ -13,4 +13,6 @@ public interface GameRepo extends PagingAndSortingRepository<Game, Long> {
 
     List<Game> findByStatus(GameStatus status);
     Optional<Game> findByLobbyName(String lobbyName);
+    List<Game> findByUserSteamId64AndIsUserReady(String userSteamId64, Boolean isUserReady);
+    List<Game> findByOpponentSteamId64AndIsOpponentReady(String opponentSteamId64, Boolean isOpponentReady);
 }

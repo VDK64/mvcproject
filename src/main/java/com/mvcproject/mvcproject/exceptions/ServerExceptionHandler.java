@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.net.ConnectException;
+
 @ControllerAdvice
 public class ServerExceptionHandler {
     @Autowired
@@ -46,9 +48,14 @@ public class ServerExceptionHandler {
     @MessageExceptionHandler
     @SendToUser(destinations="/queue/events")
     public BetDto handleException(InternalServerExceptions exception) {
-        BetDto betDto = new BetDto(exception.getUser(), exception.getOpponent(), null, exception.getMessage());
-        template.convertAndSendToUser(betService.detectDestinationNotPrincipal(exception.getPrincipal(), betDto),
-                "/queue/events", betDto);
-        return betDto;
+        return new BetDto(exception.getUser(), exception.getOpponent(),
+                betService.whoPrincipal(exception.getUser(), exception.getPrincipal()), exception.getMessage());
+    }
+
+    @MessageExceptionHandler(ConnectException.class)
+    @SendToUser(destinations="/queue/events")
+    public BetDto connectException(ConnectException e, @AuthenticationPrincipal User user, BetDto bet) {
+        return new BetDto(null, null, betService.whoPrincipal(bet.getUser(),
+                user.getUsername()), "startError");
     }
 }

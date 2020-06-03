@@ -54,6 +54,10 @@ public class BetService {
     private UserService userService;
     @Autowired
     private RestTemplate restTemplate;
+    private static final String USER = "USER";
+    private static final String OPPONENT = "OPPONENT";
+    private static final String READY_ERROR = "readyError";
+    private static final String START_ERROR = "startError";
 
     public Page<Bet> getBetInfo(User user, String who) {
         if (who.equalsIgnoreCase("owner"))
@@ -125,8 +129,10 @@ public class BetService {
         betFromDB.setIsNew(true);
         Game game = betFromDB.getGame();
         if (betDto.getUser().equals(user.getUsername())) {
+            checkReadyGames(user, betFromDB.getOpponent(), USER);
             game.setIsUserReady(true);
         } else {
+            checkReadyGames(betFromDB.getUser(), user, OPPONENT);
             game.setIsOpponentReady(true);
         }
         if (game.getIsUserReady() && game.getIsOpponentReady()) {
@@ -147,6 +153,22 @@ public class BetService {
             betRepo.save(betFromDB);
             userRepo.save(user);
             template.convertAndSendToUser(detectDestinationUsername(user, betDto), "/queue/events", betDto);
+        }
+    }
+
+    private void checkReadyGames(User user, User opponent, String who) {
+        if (who.equals(USER)) {
+            List<Game> list = gameRepo.findByUserSteamId64AndIsUserReady(user.getSteamId(), true);
+            if (!list.isEmpty()) {
+                throw new InternalServerExceptions(READY_ERROR, user.getUsername(),
+                        opponent.getUsername(), user.getUsername());
+            }
+        } else {
+            List<Game> list = gameRepo.findByOpponentSteamId64AndIsOpponentReady(user.getSteamId(), true);
+            if (!list.isEmpty()) {
+                throw new InternalServerExceptions(READY_ERROR, user.getUsername(),
+                        opponent.getUsername(), opponent.getUsername());
+            }
         }
     }
 
@@ -236,7 +258,7 @@ public class BetService {
                 null, "closeBet");
         Map<String, String> response = makeRequestToFindMatch(game);
         if (response.size() == 0) {
-            throw new InternalServerExceptions("startError", bet.getUser().getUsername(),
+            throw new InternalServerExceptions(START_ERROR, bet.getUser().getUsername(),
                     bet.getOpponent().getUsername(), principal.getUsername());
         } else {
             if (isWinnerUser(response, game, user, opponent, bet)) {
@@ -314,5 +336,12 @@ public class BetService {
             }
         });
         return count.get() == 2 && radiant.get() < 2 && radiant.get() > 0;
+    }
+
+    public String whoPrincipal(String username, String principal) {
+        if (username.equals(principal))
+            return "user";
+        else
+            return "opponent";
     }
 }

@@ -9,7 +9,7 @@ VALUES (1, true, true, null, 'default', true, 100, 'dkvoznyuk@yandex.ru', true, 
 (4, true, true, null, 'default', true, 100, 'antony@yandex.ru', true, 'Антон', false, false, false, 'Васильев',
 '$2a$10$oDvbHz07EQga4Y8iZ5SI8eWHgUOZK5eOQ4bLmetlQxDx2/sEg7ILK', null, 'tony64'),
 (5, true, true, null, 'default', true, 100, 'vasdas@rambler.ru', true, 'Василий', false, false, false, 'Самойлов',
- '$2a$10$oDvbHz07EQga4Y8iZ5SI8eWHgUOZK5eOQ4bLmetlQxDx2/sEg7ILK', null, 'vasiliy228'),
+ '$2a$10$oDvbHz07EQga4Y8iZ5SI8eWHgUOZK5eOQ4bLmetlQxDx2/sEg7ILK', 'thisIsDebugSteamId123', 'vasiliy228'),
 (6, true, true, null, 'default', true, 100, 'dobro@mail.ru', true, 'Петр', false, false, false, 'Добронравов',
 '$2a$10$oDvbHz07EQga4Y8iZ5SI8eWHgUOZK5eOQ4bLmetlQxDx2/sEg7ILK', null, 'petro123');
 
@@ -22,13 +22,14 @@ INSERT INTO usr_fr(user_id, friend_id) VALUES (1, 3), (1, 5), (1, 6), (3, 1), (4
 
 
 INSERT INTO game(id, game_mode, is_opponent_ready, is_user_ready, lobby_name, opponent_steam_id64, password,
-server_start_time, status, user_steam_id64) VALUES (1, '1x1', false, false, 'MyLobby', '76561199004382586', 'app',
+server_start_time, status, user_steam_id64) VALUES (1, '1x1', false, true, 'MyLobby', '76561199004382586', 'app',
+null, null, '76561198799034987'), (2, '1x1', false, false, 'TestLobby', 'thisIsDebugSteamId123', 'a',
 null, null, '76561198799034987');
 
 
 INSERT INTO bet(id, is_confirm, is_new, value, who_win, game_id, opponent_id, usr_id)
-VALUES (1, false, false, 450, null, 1, 3, 1), (2, false, false, 730, 'vdk64', null, 1, 6),
-(3, false, false, 200, 'vdk64', null, 1, 2);
+VALUES (1, true, false, 450, null, 1, 3, 1), (2, false, false, 730, 'vdk64', null, 1, 6),
+(3, false, false, 200, 'vdk64', null, 1, 2), (4, true, true, 1, null, 2, 5, 1);
 
 
 INSERT INTO dlg(id, have_new_messages, last_new_message) VALUES (1, false, 1586208708983),

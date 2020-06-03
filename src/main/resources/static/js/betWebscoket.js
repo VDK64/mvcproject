@@ -50,7 +50,7 @@ stompClient2.connect(headers, function(frame) {
   stompClient2.subscribe('/user/queue/events', function(msgOut) {
     let message = JSON.parse(msgOut.body);
     if (message.info !== null) {
-      betInfo(message.info);
+      betInfo(message.info, message.game);
     } else {
       newBets = true;
       if (!urlBet.includes('/bets')) {
@@ -76,7 +76,7 @@ function prepareToReady() {
   }
 }
 
-function betInfo(info) {
+function betInfo(info, principal) {
   switch (info) {
     case 'ready':
       prepareToReady();
@@ -89,7 +89,10 @@ function betInfo(info) {
       deleteAndPrintStartInfo();
       break;
     case 'startError':
-      printErrorMessage();
+      printErrorMessage('Something goes wrong with creating new Lobby. Please, reload page and if you are not ready - try again', principal);
+      break;
+    case 'readyError':
+      printErrorMessage('You are ready to other game. Please end that game to begin this game.', principal);
       break;
     case 'showOtherInfo':
       showOtherInfo();
@@ -106,7 +109,11 @@ function toMainMenu() {
   }
 }
 
-function printErrorMessage() {
+function printErrorMessage(msg, principal) {
+  let ready = document.getElementById('readyInfo-' + principal);
+  if (ready != null) {
+    ready.remove();
+  }
   let lp = document.getElementById('loadingP');
   let ld = document.getElementById('loadingDiv');
   let ls = document.getElementById('loadingSpan');
@@ -120,7 +127,7 @@ function printErrorMessage() {
   div.setAttribute('class', 'alert alert-danger');
   div.setAttribute('role', 'alert');
   let p = document.createElement('p');
-  p.innerHTML = 'Something goes wrong with creating new Lobby. Please, reload page and if you are not ready - try again';
+  p.innerHTML = msg;
   div.append(p);
   mainDiv.append(div);
   setTimeout(() => {
